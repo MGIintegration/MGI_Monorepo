@@ -1,0 +1,8452 @@
+{
+  "cards": [
+    {
+      "uid": "HE1RB0001",
+      "cardTier": 1,
+      "name": "Grim Ranjit",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "RB"
+    },
+    {
+      "uid": "HE1OL0002",
+      "cardTier": 1,
+      "name": "Onyx Silver",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "HE1OL0003",
+      "cardTier": 1,
+      "name": "Raven Damini",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "HE1OL0004",
+      "cardTier": 1,
+      "name": "Jeckyll Neel",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "HE1R0005",
+      "cardTier": 1,
+      "name": "Xerxes Derek",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "HE1R0006",
+      "cardTier": 1,
+      "name": "Shiv Uttam",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "HE1S0007",
+      "cardTier": 1,
+      "name": "Obsidian Kori",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "HE1S0008",
+      "cardTier": 1,
+      "name": "Jeffy Doom",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "HE1DL0009",
+      "cardTier": 1,
+      "name": "Ranger Chris",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "HE1DL0010",
+      "cardTier": 1,
+      "name": "Gray Freddy",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "HE1DL0011",
+      "cardTier": 1,
+      "name": "Ice Magnus",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "HE1DB0012",
+      "cardTier": 1,
+      "name": "Rebel Tank",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "HE1DB0013",
+      "cardTier": 1,
+      "name": "Riptide Drake",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "HE2RB0014",
+      "cardTier": 2,
+      "name": "Chaos Boon",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "RB"
+    },
+    {
+      "uid": "HE2OL0015",
+      "cardTier": 2,
+      "name": "Arcane Chronos",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "HE2OL0016",
+      "cardTier": 2,
+      "name": "Thunder Hooch",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "HE2OL0017",
+      "cardTier": 2,
+      "name": "Merlin Thor",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "HE2R0018",
+      "cardTier": 2,
+      "name": "Hyde Lightning",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "HE2R0019",
+      "cardTier": 2,
+      "name": "Scandal Menace",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "HE2S0020",
+      "cardTier": 2,
+      "name": "Hades Odin",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "HE2S0021",
+      "cardTier": 2,
+      "name": "Bullet Rags",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "HE2DL0022",
+      "cardTier": 2,
+      "name": "Doom Aiyana",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "HE2DL0023",
+      "cardTier": 2,
+      "name": "Gunner Duke",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "HE2DL0024",
+      "cardTier": 2,
+      "name": "Hector Destiny",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "HE2DB0025",
+      "cardTier": 2,
+      "name": "Steele Nymph",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "HE2DB0026",
+      "cardTier": 2,
+      "name": "Torment Dot",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "HE3RB0027",
+      "cardTier": 3,
+      "name": "Whisper Atilla",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "RB"
+    },
+    {
+      "uid": "HE3OL0028",
+      "cardTier": 3,
+      "name": "Hannibal Phantom",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "HE3OL0029",
+      "cardTier": 3,
+      "name": "Thunder Blitz",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "HE3OL0030",
+      "cardTier": 3,
+      "name": "Blight Midnight",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "HE3R0031",
+      "cardTier": 3,
+      "name": "Storm Justice",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "HE3R0032",
+      "cardTier": 3,
+      "name": "Myst Maxima",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "HE3S0033",
+      "cardTier": 3,
+      "name": "Courage Nova",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "HE3S0034",
+      "cardTier": 3,
+      "name": "Hawkeye Luna",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "HE3DL0035",
+      "cardTier": 3,
+      "name": "Archer Blitzen",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "HE3DL0036",
+      "cardTier": 3,
+      "name": "Chaos Myth",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "HE3DL0037",
+      "cardTier": 3,
+      "name": "Vlad Shadow",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "HE3DB0038",
+      "cardTier": 3,
+      "name": "Ajax Lotus",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "HE3DB0039",
+      "cardTier": 3,
+      "name": "Sniper June",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "HE1QB0040",
+      "cardTier": 1,
+      "name": "Rock Mason",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "QB"
+    },
+    {
+      "uid": "HE4RB0046",
+      "cardTier": 4,
+      "name": "Ash Atilla",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "RB"
+    },
+    {
+      "uid": "HE4OL0047",
+      "cardTier": 4,
+      "name": "Hannibal Laika",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "HE4OL0048",
+      "cardTier": 4,
+      "name": "Lecter Mercy",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "HE4OL0049",
+      "cardTier": 4,
+      "name": "Wrath Helen",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "HE4R0050",
+      "cardTier": 4,
+      "name": "Bullet Acadia",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "HE4R0051",
+      "cardTier": 4,
+      "name": "Sky Diva",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "HE4S0052",
+      "cardTier": 4,
+      "name": "Sabath Codex",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "HE4S0053",
+      "cardTier": 4,
+      "name": "Bandit Bo",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "HE4DL0054",
+      "cardTier": 4,
+      "name": "Orion Ares",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "HE4DL0055",
+      "cardTier": 4,
+      "name": "Brawn Alaska",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "HE4DL0056",
+      "cardTier": 4,
+      "name": "Hero Onyxia",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "HE4DB0057",
+      "cardTier": 4,
+      "name": "Blaze Precious",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "HE4DB0058",
+      "cardTier": 4,
+      "name": "Hooch Blossom",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "HE5RB0059",
+      "cardTier": 5,
+      "name": "Hector Shadow",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "RB"
+    },
+    {
+      "uid": "HE5OL0060",
+      "cardTier": 5,
+      "name": "Wrath Snowball",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "HE5OL0061",
+      "cardTier": 5,
+      "name": "Vlad Ivory",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "HE5OL0062",
+      "cardTier": 5,
+      "name": "Comet Alexis",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "HE5R0063",
+      "cardTier": 5,
+      "name": "Hannibal Phantom",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "HE5R0064",
+      "cardTier": 5,
+      "name": "Maverick Girl",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "HE5S0065",
+      "cardTier": 5,
+      "name": "Raven Ares",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "HE5S0066",
+      "cardTier": 5,
+      "name": "Courage Paws",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "HE5DL0067",
+      "cardTier": 5,
+      "name": "Archer Atilla",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "HE5DL0068",
+      "cardTier": 5,
+      "name": "Chaos Laika",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "HE5DL0069",
+      "cardTier": 5,
+      "name": "Vlad Mercury",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "HE5DB0070",
+      "cardTier": 5,
+      "name": "Ajax Hellmouth",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "HE5DB0071",
+      "cardTier": 5,
+      "name": "Sniper Arcadia",
+      "team": "Hellion",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "DR1RB0072",
+      "cardTier": 1,
+      "name": "Sky Aphelia",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "RB"
+    },
+    {
+      "uid": "DR1OL0073",
+      "cardTier": 1,
+      "name": "Chewy Equinox",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "DR1OL0074",
+      "cardTier": 1,
+      "name": "Seti Equinox",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "DR1OL0075",
+      "cardTier": 1,
+      "name": "Grog Sputs",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "DR1R0076",
+      "cardTier": 1,
+      "name": "Zero Voide",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "DR1R0077",
+      "cardTier": 1,
+      "name": "Jet Plasma",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "DR1S0078",
+      "cardTier": 1,
+      "name": "Giokog Murmuuc",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "DR1S0079",
+      "cardTier": 1,
+      "name": "Basush Briotrade",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "DR1DL0080",
+      "cardTier": 1,
+      "name": "Eltud Phaaku",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "DR1DL0081",
+      "cardTier": 1,
+      "name": "Vuiner Bexrionea",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "DR1DL0082",
+      "cardTier": 1,
+      "name": "Orb Gibbsy",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "DR1DB0083",
+      "cardTier": 1,
+      "name": "Boo Syzygy",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "DR1DB0084",
+      "cardTier": 1,
+      "name": "Solace Lumina",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "DR2RB0085",
+      "cardTier": 2,
+      "name": "Nebula Starlight",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "RB"
+    },
+    {
+      "uid": "DR2OL0086",
+      "cardTier": 2,
+      "name": "Raye Nebula",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "DR2OL0087",
+      "cardTier": 2,
+      "name": "Iso Raye",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "DR2OL0088",
+      "cardTier": 2,
+      "name": "Zaahne Zuizern",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "DR2R0089",
+      "cardTier": 2,
+      "name": "Pusisz Seeddermua",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "DR2R0090",
+      "cardTier": 2,
+      "name": "Neteanz Purnirxee",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "DR2S0091",
+      "cardTier": 2,
+      "name": "Caemmi Wruaklotue",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "DR2S0092",
+      "cardTier": 2,
+      "name": "Hannibal Hydra",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "DR2DL0093",
+      "cardTier": 2,
+      "name": "Hubbles Duste",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "DR2DL0094",
+      "cardTier": 2,
+      "name": "Vlad Orbit",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "DR2DL0095",
+      "cardTier": 2,
+      "name": "Nibbler Astralle",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "DR2DB0096",
+      "cardTier": 2,
+      "name": "Boo Violet",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "DR2DB0097",
+      "cardTier": 2,
+      "name": "Dusty Moone",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "DR3RB0098",
+      "cardTier": 3,
+      "name": "Woukyim Sholai",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "RB"
+    },
+    {
+      "uid": "DR3OL0099",
+      "cardTier": 3,
+      "name": "Aoxyix Oaduce",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "DR3OL0100",
+      "cardTier": 3,
+      "name": "Shaze Hiestrirzo",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "DR3OL0101",
+      "cardTier": 3,
+      "name": "Loeni Zeyito",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "DR3R0102",
+      "cardTier": 3,
+      "name": "Irone Solstice",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "DR3R0103",
+      "cardTier": 3,
+      "name": "Orb Voide",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "DR3S0104",
+      "cardTier": 3,
+      "name": "Element Nova",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "DR3S0105",
+      "cardTier": 3,
+      "name": "Astro Syzygy",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "DR3DL0106",
+      "cardTier": 3,
+      "name": "Bullet Moone",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "DR3DL0107",
+      "cardTier": 3,
+      "name": "Chromos Shadow",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "DR3DL0108",
+      "cardTier": 3,
+      "name": "Iechud Wreluda",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "DR3DB0109",
+      "cardTier": 3,
+      "name": "Geervim Puecsorgee",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "DR3DB0110",
+      "cardTier": 3,
+      "name": "Beczek Zomarnia",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "DR1QB0111",
+      "cardTier": 1,
+      "name": "Big McHuge",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "QB"
+    },
+    {
+      "uid": "DR4RB0117",
+      "cardTier": 4,
+      "name": "Merlin Mare",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "RB"
+    },
+    {
+      "uid": "DR4OL0118",
+      "cardTier": 4,
+      "name": "Altair Aura",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "DR4OL0119",
+      "cardTier": 4,
+      "name": "Merlin Polaris",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "DR4OL0120",
+      "cardTier": 4,
+      "name": "Comet Seti",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "DR4R0121",
+      "cardTier": 4,
+      "name": "Crimson Ion",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "DR4R0122",
+      "cardTier": 4,
+      "name": "Hertz Ejecta",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "DR4S0123",
+      "cardTier": 4,
+      "name": "Caezlunz Leeltam",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "DR4S0124",
+      "cardTier": 4,
+      "name": "Baslenz Reavada",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "DR4DL0125",
+      "cardTier": 4,
+      "name": "Wriotzad Winotea",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "DR4DL0126",
+      "cardTier": 4,
+      "name": "Berlem Griugyoma",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "DR4DL0127",
+      "cardTier": 4,
+      "name": "Ogre Nebula",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "DR4DB0128",
+      "cardTier": 4,
+      "name": "Kelvin Solare",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "DR4DB0129",
+      "cardTier": 4,
+      "name": "Boo Solare",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "DR5RB0130",
+      "cardTier": 5,
+      "name": "Aether Astero",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "RB"
+    },
+    {
+      "uid": "DR5OL0131",
+      "cardTier": 5,
+      "name": "Phantom Moon",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "DR5OL0132",
+      "cardTier": 5,
+      "name": "Astro Astero",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "DR5OL0133",
+      "cardTier": 5,
+      "name": "Hiayosz Leovo",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "DR5R0134",
+      "cardTier": 5,
+      "name": "Glauhra Kutairt",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "DR5R0135",
+      "cardTier": 5,
+      "name": "Klexax Ticdaormee",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "DR5S0136",
+      "cardTier": 5,
+      "name": "Stiakre Looske",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "DR5S0137",
+      "cardTier": 5,
+      "name": "Ducnert Teablorsu",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "DR5DL0138",
+      "cardTier": 5,
+      "name": "Bullet Mare",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "DR5DL0139",
+      "cardTier": 5,
+      "name": "Chromos Aura",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "DR5DL0140",
+      "cardTier": 5,
+      "name": "Iechud Polaris",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "DR5DB0141",
+      "cardTier": 5,
+      "name": "Geervim Seti",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "DR5DB0142",
+      "cardTier": 5,
+      "name": "Beczek Ion",
+      "team": "Droid",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "EL1RB0143",
+      "cardTier": 1,
+      "name": "Duke Mischief",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "RB"
+    },
+    {
+      "uid": "EL1OL0144",
+      "cardTier": 1,
+      "name": "Kindle Blaze",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "EL1OL0145",
+      "cardTier": 1,
+      "name": "Phantom Faye",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "EL1OL0146",
+      "cardTier": 1,
+      "name": "Talon Luna",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "EL1R0147",
+      "cardTier": 1,
+      "name": "Thunder Arcane",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "EL1R0148",
+      "cardTier": 1,
+      "name": "Drake Vanity",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "EL1S0149",
+      "cardTier": 1,
+      "name": "Shiv Nighte",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "EL1S0150",
+      "cardTier": 1,
+      "name": "Storm Mystique",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "EL1DL0151",
+      "cardTier": 1,
+      "name": "Vlad Faith",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "EL1DL0152",
+      "cardTier": 1,
+      "name": "Hunter Labyrinth",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "EL1DL0153",
+      "cardTier": 1,
+      "name": "Mirage Banshee",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "EL1DB0154",
+      "cardTier": 1,
+      "name": "Hector Echo",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "EL1DB0155",
+      "cardTier": 1,
+      "name": "Surge Sanguine",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "EL2RB0156",
+      "cardTier": 2,
+      "name": "Butch Willow",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "RB"
+    },
+    {
+      "uid": "EL2OL0157",
+      "cardTier": 2,
+      "name": "Orion Moone",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "EL2OL0158",
+      "cardTier": 2,
+      "name": "Edge Eclipse",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "EL2OL0159",
+      "cardTier": 2,
+      "name": "Myst Arcane",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "EL2R0160",
+      "cardTier": 2,
+      "name": "Ace Dakota",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "EL2R0161",
+      "cardTier": 2,
+      "name": "Hannibal Jynx",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "EL2S0162",
+      "cardTier": 2,
+      "name": "Ammo Luna",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "EL2S0163",
+      "cardTier": 2,
+      "name": "Bullseye Xena",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "EL2DL0164",
+      "cardTier": 2,
+      "name": "Ghost Azure",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "EL2DL0165",
+      "cardTier": 2,
+      "name": "Brutus Xena",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "EL2DL0166",
+      "cardTier": 2,
+      "name": "Lecter Shade",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "EL2DB0167",
+      "cardTier": 2,
+      "name": "Nemesis Justice",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "EL2DB0168",
+      "cardTier": 2,
+      "name": "Artemis Victoria",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "EL3RB0169",
+      "cardTier": 3,
+      "name": "Champ Sanguine",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "RB"
+    },
+    {
+      "uid": "EL3OL0170",
+      "cardTier": 3,
+      "name": "Artemis Ribbon",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "EL3OL0171",
+      "cardTier": 3,
+      "name": "Courage Clemency",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "EL3OL0172",
+      "cardTier": 3,
+      "name": "Champ Rune",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "EL3R0173",
+      "cardTier": 3,
+      "name": "Avalanche Ivory",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "EL3R0174",
+      "cardTier": 3,
+      "name": "Riptide Lady",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "EL3S0175",
+      "cardTier": 3,
+      "name": "Ranger Arcane",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "EL3S0176",
+      "cardTier": 3,
+      "name": "Maverick Hazel",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "EL3DL0177",
+      "cardTier": 3,
+      "name": "Tank Onyxia",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "EL3DL0178",
+      "cardTier": 3,
+      "name": "Nemesis Medusa",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "EL3DL0179",
+      "cardTier": 3,
+      "name": "Viper Athena",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "EL3DB0180",
+      "cardTier": 3,
+      "name": "Scourge Midnight",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "EL3DB0181",
+      "cardTier": 3,
+      "name": "Viper Serenity",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "EL1QB0182",
+      "cardTier": 1,
+      "name": "Sludge Thunder",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "QB"
+    },
+    {
+      "uid": "EL4RB0188",
+      "cardTier": 4,
+      "name": "Reaper Alexis",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "RB"
+    },
+    {
+      "uid": "EL4OL0189",
+      "cardTier": 4,
+      "name": "Judge Rogue",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "EL4OL0190",
+      "cardTier": 4,
+      "name": "Butch Raven",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "EL4OL0191",
+      "cardTier": 4,
+      "name": "Slate Midnight",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "EL4R0192",
+      "cardTier": 4,
+      "name": "Hector Codex",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "EL4R0193",
+      "cardTier": 4,
+      "name": "Storm Amazone",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "EL4S0194",
+      "cardTier": 4,
+      "name": "Bolt Calypso",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "EL4S0195",
+      "cardTier": 4,
+      "name": "Bullseye Lady",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "EL4DL0196",
+      "cardTier": 4,
+      "name": "Panther Vixen",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "EL4DL0197",
+      "cardTier": 4,
+      "name": "Razor Love",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "EL4DL0198",
+      "cardTier": 4,
+      "name": "Sniper Siren",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "EL4DB0199",
+      "cardTier": 4,
+      "name": "Sable Termina",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "EL4DB0200",
+      "cardTier": 4,
+      "name": "Hero Eve",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "EL5RB0201",
+      "cardTier": 5,
+      "name": "Khan Dakota",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "RB"
+    },
+    {
+      "uid": "EL5OL0202",
+      "cardTier": 5,
+      "name": "Bullseye Azure",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "EL5OL0203",
+      "cardTier": 5,
+      "name": "Storm Winter",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "EL5OL0204",
+      "cardTier": 5,
+      "name": "Hawke Lady",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "EL5R0205",
+      "cardTier": 5,
+      "name": "Hannibal Justice",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "EL5R0206",
+      "cardTier": 5,
+      "name": "Mayhem Mystique",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "EL5S0207",
+      "cardTier": 5,
+      "name": "Bullseye Athena",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "EL5S0208",
+      "cardTier": 5,
+      "name": "Thunder Aphrodite",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "EL5DL0209",
+      "cardTier": 5,
+      "name": "Tank Alexis",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "EL5DL0210",
+      "cardTier": 5,
+      "name": "Nemesis Rogue",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "EL5DL0211",
+      "cardTier": 5,
+      "name": "Viper Raven",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "EL5DB0212",
+      "cardTier": 5,
+      "name": "Scourge Midnight",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "EL5DB0213",
+      "cardTier": 5,
+      "name": "Viper Codex",
+      "team": "Elemental",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "CR1RB0214",
+      "cardTier": 1,
+      "name": "Clawford Sparkles",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "RB"
+    },
+    {
+      "uid": "CR1OL0215",
+      "cardTier": 1,
+      "name": "Chuck Carapace",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "CR1OL0216",
+      "cardTier": 1,
+      "name": "Salty Clacky",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "CR1OL0217",
+      "cardTier": 1,
+      "name": "Snappah Clawford",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "CR1R0218",
+      "cardTier": 1,
+      "name": "Rocklobster Aurora",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "CR1R0219",
+      "cardTier": 1,
+      "name": "Hermi Bouncy",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "CR1S0220",
+      "cardTier": 1,
+      "name": "Apollo Button",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "CR1S0221",
+      "cardTier": 1,
+      "name": "Hardy Oceane",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "CR1DL0222",
+      "cardTier": 1,
+      "name": "Pointy Aqua",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "CR1DL0223",
+      "cardTier": 1,
+      "name": "Softshell Dots",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "CR1DL0224",
+      "cardTier": 1,
+      "name": "Scratch Crackles",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "CR1DB0225",
+      "cardTier": 1,
+      "name": "Gillian Nemo",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "CR1DB0226",
+      "cardTier": 1,
+      "name": "Payne Aura",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "CR2RB0227",
+      "cardTier": 2,
+      "name": "Barnacle Clacky",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "RB"
+    },
+    {
+      "uid": "CR2OL0228",
+      "cardTier": 2,
+      "name": "Clipper Checkers",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "CR2OL0229",
+      "cardTier": 2,
+      "name": "Griper Azure",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "CR2OL0230",
+      "cardTier": 2,
+      "name": "Grump Crabine",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "CR2R0231",
+      "cardTier": 2,
+      "name": "Hardy Grabbis",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "CR2R0232",
+      "cardTier": 2,
+      "name": "Carapace Lime",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "CR2S0233",
+      "cardTier": 2,
+      "name": "Snipper Sparkles",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "CR2S0234",
+      "cardTier": 2,
+      "name": "Biscuit Crabapple",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "CR2DL0235",
+      "cardTier": 2,
+      "name": "Crabapple Sally",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "CR2DL0236",
+      "cardTier": 2,
+      "name": "Pinchy Chesty",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "CR2DL0237",
+      "cardTier": 2,
+      "name": "Scratchy Crabine",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "CR2DB0238",
+      "cardTier": 2,
+      "name": "Sheldon Crash",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "CR2DB0239",
+      "cardTier": 2,
+      "name": "Prawn Wobble",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "CR3RB0240",
+      "cardTier": 3,
+      "name": "Rogue Biscuit",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "RB"
+    },
+    {
+      "uid": "CR3OL0241",
+      "cardTier": 3,
+      "name": "Gil Aura",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "CR3OL0242",
+      "cardTier": 3,
+      "name": "Payne Crash",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "CR3OL0243",
+      "cardTier": 3,
+      "name": "AlPinchino Biscuit",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "CR3R0244",
+      "cardTier": 3,
+      "name": "Herman Dazzle",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "CR3R0245",
+      "cardTier": 3,
+      "name": "Hyde Escape",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "CR3S0246",
+      "cardTier": 3,
+      "name": "Clyde Carapace",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "CR3S0247",
+      "cardTier": 3,
+      "name": "Snappah Atolle",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "CR3DL0248",
+      "cardTier": 3,
+      "name": "Butters Cami",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "CR3DL0249",
+      "cardTier": 3,
+      "name": "Aqua Cake",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "CR3DL0250",
+      "cardTier": 3,
+      "name": "Crusty Sapphire",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "CR3DB0251",
+      "cardTier": 3,
+      "name": "Waves Atolle",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "CR3DB0252",
+      "cardTier": 3,
+      "name": "Scratchy Hermione",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "CR1QB0253",
+      "cardTier": 1,
+      "name": "Jack Hammerhead",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "QB"
+    },
+    {
+      "uid": "CR4RB0259",
+      "cardTier": 4,
+      "name": "Salty Gill",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "RB"
+    },
+    {
+      "uid": "CR4OL0260",
+      "cardTier": 4,
+      "name": "Crabanasty Crabine",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "CR4OL0261",
+      "cardTier": 4,
+      "name": "Snap Sally",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "CR4OL0262",
+      "cardTier": 4,
+      "name": "Hardhead Biscuit",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "CR4R0263",
+      "cardTier": 4,
+      "name": "Herman Fuzzy",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "CR4R0264",
+      "cardTier": 4,
+      "name": "Prawn Atolle",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "CR4S0265",
+      "cardTier": 4,
+      "name": "Clawford Grabbis",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "CR4S0266",
+      "cardTier": 4,
+      "name": "Snappy Fuzzy",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "CR4DL0267",
+      "cardTier": 4,
+      "name": "Pinch Bashy",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "CR4DL0268",
+      "cardTier": 4,
+      "name": "Chuck Oasis",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "CR4DL0269",
+      "cardTier": 4,
+      "name": "Snookums Pinchy",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "CR4DB0270",
+      "cardTier": 4,
+      "name": "Grabandhold Crabina",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "CR4DB0271",
+      "cardTier": 4,
+      "name": "Kraken Bashy",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "CR5RB0272",
+      "cardTier": 5,
+      "name": "Onyx Nemo",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "RB"
+    },
+    {
+      "uid": "CR5OL0273",
+      "cardTier": 5,
+      "name": "Chowder Hermi",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "CR5OL0274",
+      "cardTier": 5,
+      "name": "Atoll Reefe",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "CR5OL0275",
+      "cardTier": 5,
+      "name": "Apollo Hermi",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "CR5R0276",
+      "cardTier": 5,
+      "name": "Blister Bubbles",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "CR5R0277",
+      "cardTier": 5,
+      "name": "Rogue Arial",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "CR5S0278",
+      "cardTier": 5,
+      "name": "Alpha Buttons",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "CR5S0279",
+      "cardTier": 5,
+      "name": "Pinch Reefe",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "CR5DL0280",
+      "cardTier": 5,
+      "name": "Butters Gill",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "CR5DL0281",
+      "cardTier": 5,
+      "name": "Aqua Crabine",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "CR5DL0282",
+      "cardTier": 5,
+      "name": "Crusty Bashy",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "CR5DB0283",
+      "cardTier": 5,
+      "name": "Waves Oasis",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "CR5DB0284",
+      "cardTier": 5,
+      "name": "Scratchy McPinchy",
+      "team": "Creature",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "ZO1RB0285",
+      "cardTier": 1,
+      "name": "Sonar Abby",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "RB"
+    },
+    {
+      "uid": "ZO1OL0286",
+      "cardTier": 1,
+      "name": "Sawyer Rhyme",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "ZO1OL0287",
+      "cardTier": 1,
+      "name": "Bullet Guani",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "ZO1OL0288",
+      "cardTier": 1,
+      "name": "Rainbow Ivy",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "ZO1R0289",
+      "cardTier": 1,
+      "name": "Rhonin Indigo",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "ZO1R0290",
+      "cardTier": 1,
+      "name": "Ripmaw Clementine",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "ZO1S0291",
+      "cardTier": 1,
+      "name": "Bruce Clementine",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "ZO1S0292",
+      "cardTier": 1,
+      "name": "Spitfire Cinderella",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "ZO1DL0293",
+      "cardTier": 1,
+      "name": "Blues Phoenix",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "ZO1DL0294",
+      "cardTier": 1,
+      "name": "Shrike Faune",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "ZO1DL0295",
+      "cardTier": 1,
+      "name": "Booboo Princess",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "ZO1DB0296",
+      "cardTier": 1,
+      "name": "Lucifer Fizzle",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "ZO1DB0297",
+      "cardTier": 1,
+      "name": "Gambat Noodles",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "ZO2RB0298",
+      "cardTier": 2,
+      "name": "Dexter Ember",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "RB"
+    },
+    {
+      "uid": "ZO2OL0299",
+      "cardTier": 2,
+      "name": "Dracula Haze",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "ZO2OL0300",
+      "cardTier": 2,
+      "name": "Shrike Blaze",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "ZO2OL0301",
+      "cardTier": 2,
+      "name": "Blues Echo",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "ZO2R0302",
+      "cardTier": 2,
+      "name": "Flicker Luna",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "ZO2R0303",
+      "cardTier": 2,
+      "name": "Buster Daphne",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "ZO2S0304",
+      "cardTier": 2,
+      "name": "Equinox Ivory",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "ZO2S0305",
+      "cardTier": 2,
+      "name": "Midnight Cinnamon",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "ZO2DL0306",
+      "cardTier": 2,
+      "name": "Apollo Azraelle",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "ZO2DL0307",
+      "cardTier": 2,
+      "name": "Screech Moone",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "ZO2DL0308",
+      "cardTier": 2,
+      "name": "Swoops Moone",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "ZO2DB0309",
+      "cardTier": 2,
+      "name": "Blaze Raven",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "ZO2DB0310",
+      "cardTier": 2,
+      "name": "Dodge Moonlight",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "ZO3RB0311",
+      "cardTier": 3,
+      "name": "Hunter Myst",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "RB"
+    },
+    {
+      "uid": "ZO3OL0312",
+      "cardTier": 3,
+      "name": "Pickle Shay",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "ZO3OL0313",
+      "cardTier": 3,
+      "name": "Mirage Batty",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "ZO3OL0314",
+      "cardTier": 3,
+      "name": "Lecter Biscuit",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "ZO3R0315",
+      "cardTier": 3,
+      "name": "Cole Melody",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "ZO3R0316",
+      "cardTier": 3,
+      "name": "Sonny Peaches",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "ZO3S0317",
+      "cardTier": 3,
+      "name": "Matrix Plume",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "ZO3S0318",
+      "cardTier": 3,
+      "name": "Quickfang Oracle",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "ZO3DL0319",
+      "cardTier": 3,
+      "name": "Sonny Shay",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "ZO3DL0320",
+      "cardTier": 3,
+      "name": "Quickfang Azraelle",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "ZO3DL0321",
+      "cardTier": 3,
+      "name": "Buster Maya",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "ZO3DB0322",
+      "cardTier": 3,
+      "name": "Lecter Draculette",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "ZO3DB0323",
+      "cardTier": 3,
+      "name": "Mirage Nova",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "ZO1QB0324",
+      "cardTier": 1,
+      "name": "Chunk Bonejaw",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "QB"
+    },
+    {
+      "uid": "ZO4RB0330",
+      "cardTier": 4,
+      "name": "Dexter Sora",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "RB"
+    },
+    {
+      "uid": "ZO4OL0331",
+      "cardTier": 4,
+      "name": "Render Fang",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "ZO4OL0332",
+      "cardTier": 4,
+      "name": "Bubbles Shade",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "ZO4OL0333",
+      "cardTier": 4,
+      "name": "Blitz Shay",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "ZO4R0334",
+      "cardTier": 4,
+      "name": "Flaps Bubble",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "ZO4R0335",
+      "cardTier": 4,
+      "name": "Patches Shade",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "ZO4S0336",
+      "cardTier": 4,
+      "name": "Ash Shadow",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "ZO4S0337",
+      "cardTier": 4,
+      "name": "Cupcake Star",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "ZO4DL0338",
+      "cardTier": 4,
+      "name": "Flaps Xena",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "ZO4DL0339",
+      "cardTier": 4,
+      "name": "Draculon Shine",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "ZO4DL0340",
+      "cardTier": 4,
+      "name": "Hawke Blaze",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "ZO4DB0341",
+      "cardTier": 4,
+      "name": "Lucifer Angie",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "ZO4DB0342",
+      "cardTier": 4,
+      "name": "Sawyer Hazel",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "ZO5RB0343",
+      "cardTier": 5,
+      "name": "Rhonin Maya",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "RB"
+    },
+    {
+      "uid": "ZO5OL0344",
+      "cardTier": 5,
+      "name": "Nukem Sugar",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "ZO5OL0345",
+      "cardTier": 5,
+      "name": "Azral Jinx",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "ZO5OL0346",
+      "cardTier": 5,
+      "name": "Baltazar Bandetta",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "OL"
+    },
+    {
+      "uid": "ZO5R0347",
+      "cardTier": 5,
+      "name": "Shade Xena",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "ZO5R0348",
+      "cardTier": 5,
+      "name": "Spuds Jinx",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "R"
+    },
+    {
+      "uid": "ZO5S0349",
+      "cardTier": 5,
+      "name": "Bane Peaches",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "ZO5S0350",
+      "cardTier": 5,
+      "name": "Titan Ash",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "S"
+    },
+    {
+      "uid": "ZO5DL0351",
+      "cardTier": 5,
+      "name": "Sonny Sora",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "ZO5DL0352",
+      "cardTier": 5,
+      "name": "Quickfang Fang",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "ZO5DL0353",
+      "cardTier": 5,
+      "name": "Buster Shade",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DL"
+    },
+    {
+      "uid": "ZO5DB0354",
+      "cardTier": 5,
+      "name": "Lecter Shay",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "ZO5DB0355",
+      "cardTier": 5,
+      "name": "Mirage Bandetta",
+      "team": "Zombie",
+      "element": "Radiation",
+      "position5": "DB"
+    },
+    {
+      "uid": "IN1RB0356",
+      "cardTier": 1,
+      "name": "Jaffa Velvet",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "RB"
+    },
+    {
+      "uid": "IN1OL0357",
+      "cardTier": 1,
+      "name": "Hercules Cleo",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "IN1OL0358",
+      "cardTier": 1,
+      "name": "Alpha Tilly",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "IN1OL0359",
+      "cardTier": 1,
+      "name": "Titan Enigma",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "IN1R0360",
+      "cardTier": 1,
+      "name": "Thunder Celeb",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "IN1R0361",
+      "cardTier": 1,
+      "name": "Midnight Shade",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "IN1S0362",
+      "cardTier": 1,
+      "name": "Midnight Venom",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "IN1S0363",
+      "cardTier": 1,
+      "name": "Buttons Button",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "IN1DL0364",
+      "cardTier": 1,
+      "name": "Psyche Dotty",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "IN1DL0365",
+      "cardTier": 1,
+      "name": "Chewbacca Midnight",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "IN1DL0366",
+      "cardTier": 1,
+      "name": "Venom Velvet",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "IN1DB0367",
+      "cardTier": 1,
+      "name": "Salt Scarlet",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "IN1DB0368",
+      "cardTier": 1,
+      "name": "Flopsie Shelley",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "IN2RB0369",
+      "cardTier": 2,
+      "name": "Gadget Delilah",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "RB"
+    },
+    {
+      "uid": "IN2OL0370",
+      "cardTier": 2,
+      "name": "Orion Angi",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "IN2OL0371",
+      "cardTier": 2,
+      "name": "Mittens Lady",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "IN2OL0372",
+      "cardTier": 2,
+      "name": "Striker Sugar",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "IN2R0373",
+      "cardTier": 2,
+      "name": "Fuzz Happy",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "IN2R0374",
+      "cardTier": 2,
+      "name": "Cosmo Dot",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "IN2S0375",
+      "cardTier": 2,
+      "name": "Chuckles Scarlet",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "IN2S0376",
+      "cardTier": 2,
+      "name": "Venom Ebony",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "IN2DL0377",
+      "cardTier": 2,
+      "name": "Mittens Brizzie",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "IN2DL0378",
+      "cardTier": 2,
+      "name": "Webster Charlotte",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "IN2DL0379",
+      "cardTier": 2,
+      "name": "Shadow Fangs",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "IN2DB0380",
+      "cardTier": 2,
+      "name": "Muffin Lady",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "IN2DB0381",
+      "cardTier": 2,
+      "name": "Handsome Spindle",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "IN3RB0382",
+      "cardTier": 3,
+      "name": "Whisper Hugsie",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "RB"
+    },
+    {
+      "uid": "IN3OL0383",
+      "cardTier": 3,
+      "name": "Ozzy Snickers",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "IN3OL0384",
+      "cardTier": 3,
+      "name": "Jiggles Sugar",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "IN3OL0385",
+      "cardTier": 3,
+      "name": "Dracula Psyche",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "IN3R0386",
+      "cardTier": 3,
+      "name": "Prometheus Tickles",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "IN3R0387",
+      "cardTier": 3,
+      "name": "Phantom Lacy",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "IN3S0388",
+      "cardTier": 3,
+      "name": "Rufus Arachne",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "IN3S0389",
+      "cardTier": 3,
+      "name": "Lance Scruffles",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "IN3DL0390",
+      "cardTier": 3,
+      "name": "Whiskers Rosebud",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "IN3DL0391",
+      "cardTier": 3,
+      "name": "Boots Stingy",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "IN3DL0392",
+      "cardTier": 3,
+      "name": "Nacho Flopsy",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "IN3DB0393",
+      "cardTier": 3,
+      "name": "Frankenstein Webzie",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "IN3DB0394",
+      "cardTier": 3,
+      "name": "Salt Snuggle",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "IN1QB0395",
+      "cardTier": 1,
+      "name": "Tank Thornbristle",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "QB"
+    },
+    {
+      "uid": "IN4RB0401",
+      "cardTier": 4,
+      "name": "Cuddles Hugsie",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "RB"
+    },
+    {
+      "uid": "IN4OL0402",
+      "cardTier": 4,
+      "name": "Nacho Stingy",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "IN4OL0403",
+      "cardTier": 4,
+      "name": "Whiskers Eep",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "IN4OL0404",
+      "cardTier": 4,
+      "name": "Cinder Charlotte",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "IN4R0405",
+      "cardTier": 4,
+      "name": "Nightmare Flopsy",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "IN4R0406",
+      "cardTier": 4,
+      "name": "Ozzy Ember",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "IN4S0407",
+      "cardTier": 4,
+      "name": "Omega Dawn",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "IN4S0408",
+      "cardTier": 4,
+      "name": "Symore Velvet",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "IN4DL0409",
+      "cardTier": 4,
+      "name": "Ziggy Legs",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "IN4DL0410",
+      "cardTier": 4,
+      "name": "Chuck Socks",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "IN4DL0411",
+      "cardTier": 4,
+      "name": "Symore Missy",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "IN4DB0412",
+      "cardTier": 4,
+      "name": "Sylvester Squirmy",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "IN4DB0413",
+      "cardTier": 4,
+      "name": "Titan Charlotte",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "IN5RB0414",
+      "cardTier": 5,
+      "name": "Jaffa Freckles",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "RB"
+    },
+    {
+      "uid": "IN5OL0415",
+      "cardTier": 5,
+      "name": "Sox Gloria",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "IN5OL0416",
+      "cardTier": 5,
+      "name": "Cosmo Princess",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "IN5OL0417",
+      "cardTier": 5,
+      "name": "Rebel Klaxie",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "IN5R0418",
+      "cardTier": 5,
+      "name": "Spinner Gloria",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "IN5R0419",
+      "cardTier": 5,
+      "name": "Poppers Queen",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "IN5S0420",
+      "cardTier": 5,
+      "name": "Poppers Coraline",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "IN5S0421",
+      "cardTier": 5,
+      "name": "Myst Fluffy",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "IN5DL0422",
+      "cardTier": 5,
+      "name": "Whiskers Ember",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "IN5DL0423",
+      "cardTier": 5,
+      "name": "Boots Dawn",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "IN5DL0424",
+      "cardTier": 5,
+      "name": "Nacho Velvet",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "IN5DB0425",
+      "cardTier": 5,
+      "name": "Frankenstein Legs",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "IN5DB0426",
+      "cardTier": 5,
+      "name": "Salt Klaxie",
+      "team": "Insectoid",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "GI1RB0427",
+      "cardTier": 1,
+      "name": "Bjorne Dilfi",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "RB"
+    },
+    {
+      "uid": "GI1OL0428",
+      "cardTier": 1,
+      "name": "Berend Digzed",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "GI1OL0429",
+      "cardTier": 1,
+      "name": "Bernat Dargash",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "GI1OL0430",
+      "cardTier": 1,
+      "name": "Berne Rogedh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "GI1R0431",
+      "cardTier": 1,
+      "name": "Arcadius Cezgel",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "GI1R0432",
+      "cardTier": 1,
+      "name": "Sugar Afdadh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "GI1S0433",
+      "cardTier": 1,
+      "name": "Niels Uldau",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "GI1S0434",
+      "cardTier": 1,
+      "name": "Hohots Urbec",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "GI1DL0435",
+      "cardTier": 1,
+      "name": "Huslu Uzre",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "GI1DL0436",
+      "cardTier": 1,
+      "name": "Geoff Arba",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "GI1DL0437",
+      "cardTier": 1,
+      "name": "Tarben Grilfi",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "GI1DB0438",
+      "cardTier": 1,
+      "name": "Tatty Craufdul",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "GI1DB0439",
+      "cardTier": 1,
+      "name": "Marley Muddot",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "GI2RB0440",
+      "cardTier": 2,
+      "name": "Ucumari Karcid",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "RB"
+    },
+    {
+      "uid": "GI2OL0441",
+      "cardTier": 2,
+      "name": "Mecho Laglukh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "GI2OL0442",
+      "cardTier": 2,
+      "name": "Toby Ozgush",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "GI2OL0443",
+      "cardTier": 2,
+      "name": "Barny Uzber",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "GI2R0444",
+      "cardTier": 2,
+      "name": "Arnbjorn Alfirg",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "GI2R0445",
+      "cardTier": 2,
+      "name": "Sooty Auzraugh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "GI2S0446",
+      "cardTier": 2,
+      "name": "Marshmellow Aucde",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "GI2S0447",
+      "cardTier": 2,
+      "name": "Dov Ghagleth",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "GI2DL0448",
+      "cardTier": 2,
+      "name": "Pridbjorn Creddogh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "GI2DL0449",
+      "cardTier": 2,
+      "name": "Artur Berdul",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "GI2DL0450",
+      "cardTier": 2,
+      "name": "Skittle Ligru",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "GI2DB0451",
+      "cardTier": 2,
+      "name": "Bastian Daulgaf",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "GI2DB0452",
+      "cardTier": 2,
+      "name": "Benard Ocbigh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "GI3RB0453",
+      "cardTier": 3,
+      "name": "Victor Augukh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "RB"
+    },
+    {
+      "uid": "GI3OL0454",
+      "cardTier": 3,
+      "name": "Tickles Augraul",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "GI3OL0455",
+      "cardTier": 3,
+      "name": "Norman Ozbedh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "GI3OL0456",
+      "cardTier": 3,
+      "name": "Sunshine Ugbo",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "GI3R0457",
+      "cardTier": 3,
+      "name": "Arnbjorn Greddadh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "GI3R0458",
+      "cardTier": 3,
+      "name": "Marshmellow Drirdat",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "GI3S0459",
+      "cardTier": 3,
+      "name": "Beringarius Reshnogh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "GI3S0460",
+      "cardTier": 3,
+      "name": "Boots Suzbaf",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "GI3DL0461",
+      "cardTier": 3,
+      "name": "Barney Lauggef",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "GI3DL0462",
+      "cardTier": 3,
+      "name": "Kuma Ahedh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "GI3DL0463",
+      "cardTier": 3,
+      "name": "Bearnabus Argaug",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "GI3DB0464",
+      "cardTier": 3,
+      "name": "Orsen Auzec",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "GI3DB0465",
+      "cardTier": 3,
+      "name": "Bernfried Oldash",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "GI1QB0466",
+      "cardTier": 1,
+      "name": "Slash Bonebody",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "QB"
+    },
+    {
+      "uid": "GI4RB0472",
+      "cardTier": 4,
+      "name": "Rolly Kaglush",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "RB"
+    },
+    {
+      "uid": "GI4OL0473",
+      "cardTier": 4,
+      "name": "Chancie Shauthral",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "GI4OL0474",
+      "cardTier": 4,
+      "name": "Yana Lezaugh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "GI4OL0475",
+      "cardTier": 4,
+      "name": "Marley Kaugdekh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "GI4R0476",
+      "cardTier": 4,
+      "name": "Bamey Srazu",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "GI4R0477",
+      "cardTier": 4,
+      "name": "Bamey Uddoth",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "GI4S0478",
+      "cardTier": 4,
+      "name": "Dopey Ogbad",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "GI4S0479",
+      "cardTier": 4,
+      "name": "Bjarne Ocbil",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "GI4DL0480",
+      "cardTier": 4,
+      "name": "Ucumari Ufdirg",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "GI4DL0481",
+      "cardTier": 4,
+      "name": "Bamard Aurbu",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "GI4DL0482",
+      "cardTier": 4,
+      "name": "Niels Kurcekh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "GI4DB0483",
+      "cardTier": 4,
+      "name": "Benard Shishneth",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "GI4DB0484",
+      "cardTier": 4,
+      "name": "Art Drocrac",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "GI5RB0485",
+      "cardTier": 5,
+      "name": "Bernardino Krargaur",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "RB"
+    },
+    {
+      "uid": "GI5OL0486",
+      "cardTier": 5,
+      "name": "Burnard Cruthraush",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "GI5OL0487",
+      "cardTier": 5,
+      "name": "Winston Ugzauth",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "GI5OL0488",
+      "cardTier": 5,
+      "name": "Barry Ushnagh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "GI5R0489",
+      "cardTier": 5,
+      "name": "Arshag Auzoc",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "GI5R0490",
+      "cardTier": 5,
+      "name": "Coco Audbedh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "GI5S0491",
+      "cardTier": 5,
+      "name": "Avonaco Uhaf",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "GI5S0492",
+      "cardTier": 5,
+      "name": "Sabby Aurbed",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "GI5DL0493",
+      "cardTier": 5,
+      "name": "Barney Kaglush",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "GI5DL0494",
+      "cardTier": 5,
+      "name": "Kuma Ogbad",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "GI5DL0495",
+      "cardTier": 5,
+      "name": "Bearnabus Auzoc",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "GI5DB0496",
+      "cardTier": 5,
+      "name": "Orsen Kaugdekh",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "GI5DB0497",
+      "cardTier": 5,
+      "name": "Bernfried Srazu",
+      "team": "Ogres",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "GH1RB0498",
+      "cardTier": 1,
+      "name": "Gargles Murn",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "RB"
+    },
+    {
+      "uid": "GH1OL0499",
+      "cardTier": 1,
+      "name": "Diablo Gum",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "GH1OL0500",
+      "cardTier": 1,
+      "name": "Grey Steg",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "GH1OL0501",
+      "cardTier": 1,
+      "name": "Ghost Gruggvom",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "GH1R0502",
+      "cardTier": 1,
+      "name": "Gargle Drundrilf",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "GH1R0503",
+      "cardTier": 1,
+      "name": "Kindle Stuntoll",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "GH1S0504",
+      "cardTier": 1,
+      "name": "Echo Sgaelsod",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "GH1S0505",
+      "cardTier": 1,
+      "name": "Vulkan Vofrord",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "GH1DL0506",
+      "cardTier": 1,
+      "name": "Marble Sgosnemkemm",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "GH1DL0507",
+      "cardTier": 1,
+      "name": "Blaze Heithregar",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "GH1DL0508",
+      "cardTier": 1,
+      "name": "Sonar Fraelf",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "GH1DB0509",
+      "cardTier": 1,
+      "name": "Ash Forn",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "GH1DB0510",
+      "cardTier": 1,
+      "name": "Gloom Tum",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "GH2RB0511",
+      "cardTier": 2,
+      "name": "Baltazar Gluzgodr",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "RB"
+    },
+    {
+      "uid": "GH2OL0512",
+      "cardTier": 2,
+      "name": "Archangel Blaeyvaet",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "GH2OL0513",
+      "cardTier": 2,
+      "name": "Patch Poddgalf",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "GH2OL0514",
+      "cardTier": 2,
+      "name": "Dexter Hyeltorn",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "GH2R0515",
+      "cardTier": 2,
+      "name": "Blackjack Kradbadr",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "GH2R0516",
+      "cardTier": 2,
+      "name": "Drake Gallvotvumm",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "GH2S0517",
+      "cardTier": 2,
+      "name": "Hawke Grulskeithurn",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "GH2S0518",
+      "cardTier": 2,
+      "name": "Darkh Dheill",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "GH2DL0519",
+      "cardTier": 2,
+      "name": "Onyx Thrilr",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "GH2DL0520",
+      "cardTier": 2,
+      "name": "Batista Drael",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "GH2DL0521",
+      "cardTier": 2,
+      "name": "Rhonin Rhathgam",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "GH2DB0522",
+      "cardTier": 2,
+      "name": "Onyx Baenwus",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "GH2DB0523",
+      "cardTier": 2,
+      "name": "Spuds Khesrak",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "GH3RB0524",
+      "cardTier": 3,
+      "name": "Buster Altaf",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "RB"
+    },
+    {
+      "uid": "GH3OL0525",
+      "cardTier": 3,
+      "name": "Hawke Hyorngell",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "GH3OL0526",
+      "cardTier": 3,
+      "name": "Drac Senlusnord",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "GH3OL0527",
+      "cardTier": 3,
+      "name": "Wayne Thruthvogvolk",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "GH3R0528",
+      "cardTier": 3,
+      "name": "Midas Dhard",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "GH3R0529",
+      "cardTier": 3,
+      "name": "Blaze Rind",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "GH3S0530",
+      "cardTier": 3,
+      "name": "Baxter Merr",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "GH3S0531",
+      "cardTier": 3,
+      "name": "Slithe Snomut",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "GH3DL0532",
+      "cardTier": 3,
+      "name": "Sabath Dheblurn",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "GH3DL0533",
+      "cardTier": 3,
+      "name": "Hannibal Llommol",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "GH3DL0534",
+      "cardTier": 3,
+      "name": "Buster Rhollkaf",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "GH3DB0535",
+      "cardTier": 3,
+      "name": "Rhonin Dhodmeld",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "GH3DB0536",
+      "cardTier": 3,
+      "name": "Doom Hroblizis",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "GH1QB0537",
+      "cardTier": 1,
+      "name": "Bash Rockface",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "QB"
+    },
+    {
+      "uid": "GH4RB0543",
+      "cardTier": 4,
+      "name": "Nightwing Bhend",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "RB"
+    },
+    {
+      "uid": "GH4OL0544",
+      "cardTier": 4,
+      "name": "Nibbles Smirn",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "GH4OL0545",
+      "cardTier": 4,
+      "name": "Pickle Skael",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "GH4OL0546",
+      "cardTier": 4,
+      "name": "Rhonin Jappald",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "GH4R0547",
+      "cardTier": 4,
+      "name": "Bruce Hyeilfoll",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "GH4R0548",
+      "cardTier": 4,
+      "name": "Sawyer Brergaud",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "GH4S0549",
+      "cardTier": 4,
+      "name": "Hyperion Smedrer",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "GH4S0550",
+      "cardTier": 4,
+      "name": "Twinkle Holfreg",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "GH4DL0551",
+      "cardTier": 4,
+      "name": "Hannibal Pamkuvud",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "GH4DL0552",
+      "cardTier": 4,
+      "name": "Sawyer Yaulsnurthan",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "GH4DL0553",
+      "cardTier": 4,
+      "name": "Moon Ghit",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "GH4DB0554",
+      "cardTier": 4,
+      "name": "Ripmaw Gram",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "GH4DB0555",
+      "cardTier": 4,
+      "name": "Flash Grarn",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "GH5RB0556",
+      "cardTier": 5,
+      "name": "Bloodwing Skiggvulk",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "RB"
+    },
+    {
+      "uid": "GH5OL0557",
+      "cardTier": 5,
+      "name": "Angel Atarr",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "GH5OL0558",
+      "cardTier": 5,
+      "name": "Apollo Ofdadr",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "GH5OL0559",
+      "cardTier": 5,
+      "name": "Bubbles Kerkmalk",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "GH5R0560",
+      "cardTier": 5,
+      "name": "Remus Priprakr",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "GH5R0561",
+      "cardTier": 5,
+      "name": "Monty Kresburthauth",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "GH5S0562",
+      "cardTier": 5,
+      "name": "Azar Greifsteppamm",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "GH5S0563",
+      "cardTier": 5,
+      "name": "Bloodwing Hrortaeskilr",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "GH5DL0564",
+      "cardTier": 5,
+      "name": "Sabath Bhend",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "GH5DL0565",
+      "cardTier": 5,
+      "name": "Hannibal Smirn",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "GH5DL0566",
+      "cardTier": 5,
+      "name": "Buster Skael",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "GH5DB0567",
+      "cardTier": 5,
+      "name": "Rhonin Jappald",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "GH5DB0568",
+      "cardTier": 5,
+      "name": "Doom Hyeilfoll",
+      "team": "Ghost",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "AL1RB0569",
+      "cardTier": 1,
+      "name": "Prism Idrogg",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "RB"
+    },
+    {
+      "uid": "AL1OL0570",
+      "cardTier": 1,
+      "name": "Zero Kedgath",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "AL1OL0571",
+      "cardTier": 1,
+      "name": "Aether Ozzaix",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "AL1OL0572",
+      "cardTier": 1,
+      "name": "Aether Trirad",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "AL1R0573",
+      "cardTier": 1,
+      "name": "Radio Irgreks",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "AL1R0574",
+      "cardTier": 1,
+      "name": "Phase Unund",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "AL1S0575",
+      "cardTier": 1,
+      "name": "Brogou Tirzeoke",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "AL1S0576",
+      "cardTier": 1,
+      "name": "Riermod Erzusi",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "AL1DL0577",
+      "cardTier": 1,
+      "name": "Haexrurt Maegatga",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "AL1DL0578",
+      "cardTier": 1,
+      "name": "Joosek Eguzkud",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "AL1DL0579",
+      "cardTier": 1,
+      "name": "Gamma Ukkix",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "AL1DB0580",
+      "cardTier": 1,
+      "name": "Meridian Sthighres",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "AL1DB0581",
+      "cardTier": 1,
+      "name": "Magni Phrelle",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "AL2RB0582",
+      "cardTier": 2,
+      "name": "Aster Enuh",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "RB"
+    },
+    {
+      "uid": "AL2OL0583",
+      "cardTier": 2,
+      "name": "Solstice Sthulzoth",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "AL2OL0584",
+      "cardTier": 2,
+      "name": "Reaper Iza",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "AL2OL0585",
+      "cardTier": 2,
+      "name": "Featlest Cagrune",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "AL2R0586",
+      "cardTier": 2,
+      "name": "Duuber Gasnoshu",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "AL2R0587",
+      "cardTier": 2,
+      "name": "Pierner Niterzoth",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "AL2S0588",
+      "cardTier": 2,
+      "name": "Breiveg Lixozhais",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "AL2S0589",
+      "cardTier": 2,
+      "name": "Milky Calna",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "AL2DL0590",
+      "cardTier": 2,
+      "name": "Blazar Gidhih",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "AL2DL0591",
+      "cardTier": 2,
+      "name": "Soleil Suke",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "AL2DL0592",
+      "cardTier": 2,
+      "name": "Drake Delno",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "AL2DB0593",
+      "cardTier": 2,
+      "name": "Malif Zharca",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "AL2DB0594",
+      "cardTier": 2,
+      "name": "Umbra Shrosnosh",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "AL3RB0595",
+      "cardTier": 3,
+      "name": "Zaubyirm Gendhaneh",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "RB"
+    },
+    {
+      "uid": "AL3OL0596",
+      "cardTier": 3,
+      "name": "Gorkic Thagtraxi",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "AL3OL0597",
+      "cardTier": 3,
+      "name": "Nirno Ixenu",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "AL3OL0598",
+      "cardTier": 3,
+      "name": "Nosmog Phranethah",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "AL3R0599",
+      "cardTier": 3,
+      "name": "Doppler Buzha",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "AL3R0600",
+      "cardTier": 3,
+      "name": "Ghost Anziz",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "AL3S0601",
+      "cardTier": 3,
+      "name": "Einstein Lolso",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "AL3S0602",
+      "cardTier": 3,
+      "name": "Halo Geldax",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "AL3DL0603",
+      "cardTier": 3,
+      "name": "Ogre Nalgru",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "AL3DL0604",
+      "cardTier": 3,
+      "name": "Trojan Phrasgu",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "AL3DL0605",
+      "cardTier": 3,
+      "name": "Kickirc Zhendhalaix",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "AL3DB0606",
+      "cardTier": 3,
+      "name": "Tooblem Zharzoxish",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "AL3DB0607",
+      "cardTier": 3,
+      "name": "Veryu Soshuri",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "AL1QB0608",
+      "cardTier": 1,
+      "name": "Beef St John",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "QB"
+    },
+    {
+      "uid": "AL4RB0614",
+      "cardTier": 4,
+      "name": "Reaper Thelzu",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "RB"
+    },
+    {
+      "uid": "AL4OL0615",
+      "cardTier": 4,
+      "name": "Zodiac Cunghe",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "AL4OL0616",
+      "cardTier": 4,
+      "name": "Fang Sazhoth",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "AL4OL0617",
+      "cardTier": 4,
+      "name": "Bolide Dilkhaz",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "AL4R0618",
+      "cardTier": 4,
+      "name": "Trojan Tashli",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "AL4R0619",
+      "cardTier": 4,
+      "name": "Spectre Nereth",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "AL4S0620",
+      "cardTier": 4,
+      "name": "Zohmur Isathoz",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "AL4S0621",
+      "cardTier": 4,
+      "name": "Vuscie Zusithu",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "AL4DL0622",
+      "cardTier": 4,
+      "name": "Paocstim Shruroze",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "AL4DL0623",
+      "cardTier": 4,
+      "name": "Iaskad Malindris",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "AL4DL0624",
+      "cardTier": 4,
+      "name": "Meridian Agtra",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "AL4DB0625",
+      "cardTier": 4,
+      "name": "Xray Ulzi",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "AL4DB0626",
+      "cardTier": 4,
+      "name": "Rocket Khethna",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "AL5RB0627",
+      "cardTier": 5,
+      "name": "Bose Chothna",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "RB"
+    },
+    {
+      "uid": "AL5OL0628",
+      "cardTier": 5,
+      "name": "Ion Othna",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "AL5OL0629",
+      "cardTier": 5,
+      "name": "Cosmo Roghro",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "AL5OL0630",
+      "cardTier": 5,
+      "name": "Sinnoo Ingite",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "AL5R0631",
+      "cardTier": 5,
+      "name": "Shaulla Ukanie",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "AL5R0632",
+      "cardTier": 5,
+      "name": "Sottak Eashuki",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "AL5S0633",
+      "cardTier": 5,
+      "name": "Raivud Asulzi",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "AL5S0634",
+      "cardTier": 5,
+      "name": "Taknerd Gulutrix",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "AL5DL0635",
+      "cardTier": 5,
+      "name": "Ogre Thelzu",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "AL5DL0636",
+      "cardTier": 5,
+      "name": "Trojan Cunghe",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "AL5DL0637",
+      "cardTier": 5,
+      "name": "Kickirc Sazhoth",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "AL5DB0638",
+      "cardTier": 5,
+      "name": "Tooblem Roghro",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "AL5DB0639",
+      "cardTier": 5,
+      "name": "Veryu Khethna",
+      "team": "Alien",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "SE1RB0640",
+      "cardTier": 1,
+      "name": "Mario Micrum",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "RB"
+    },
+    {
+      "uid": "SE1OL0641",
+      "cardTier": 1,
+      "name": "Squeak Alexor",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "SE1OL0642",
+      "cardTier": 1,
+      "name": "Blue Dukam",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "SE1OL0643",
+      "cardTier": 1,
+      "name": "Kinder Qajud",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "SE1R0644",
+      "cardTier": 1,
+      "name": "Basil Rarux",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "SE1R0645",
+      "cardTier": 1,
+      "name": "Bart Kujuck",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "SE1S0646",
+      "cardTier": 1,
+      "name": "Zebediah Ibomrar",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "SE1S0647",
+      "cardTier": 1,
+      "name": "Almond Nunulben",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "SE1DL0648",
+      "cardTier": 1,
+      "name": "Vinnie Jogubam",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "SE1DL0649",
+      "cardTier": 1,
+      "name": "Freddie Strizovur",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "SE1DL0650",
+      "cardTier": 1,
+      "name": "Casino Badad",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "SE1DB0651",
+      "cardTier": 1,
+      "name": "Snowball Kamus",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "SE1DB0652",
+      "cardTier": 1,
+      "name": "Frodo Kuzed",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "SE2RB0653",
+      "cardTier": 2,
+      "name": "Noodles Ozrum",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "RB"
+    },
+    {
+      "uid": "SE2OL0654",
+      "cardTier": 2,
+      "name": "Stanley Galval",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "SE2OL0655",
+      "cardTier": 2,
+      "name": "Kinder Rikid",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "SE2OL0656",
+      "cardTier": 2,
+      "name": "Moses Rubuzreth",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "SE2R0657",
+      "cardTier": 2,
+      "name": "Demeter Jonatras",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "SE2R0658",
+      "cardTier": 2,
+      "name": "Heinz Arobem",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "SE2S0659",
+      "cardTier": 2,
+      "name": "Pigeon Rammegu",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "SE2S0660",
+      "cardTier": 2,
+      "name": "Scruffy Sphernoh",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "SE2DL0661",
+      "cardTier": 2,
+      "name": "Fox Holo",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "SE2DL0662",
+      "cardTier": 2,
+      "name": "Archibald Qeri",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "SE2DL0663",
+      "cardTier": 2,
+      "name": "George Raaga",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "SE2DB0664",
+      "cardTier": 2,
+      "name": "Sonny Sanis",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "SE2DB0665",
+      "cardTier": 2,
+      "name": "Charles Qokkid",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "SE3RB0666",
+      "cardTier": 3,
+      "name": "Dusty Nokuscuth",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "RB"
+    },
+    {
+      "uid": "SE3OL0667",
+      "cardTier": 3,
+      "name": "Tigger Diruvnam",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "SE3OL0668",
+      "cardTier": 3,
+      "name": "Denzil Jakunum",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "SE3OL0669",
+      "cardTier": 3,
+      "name": "Dynamite Sadugath",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "SE3R0670",
+      "cardTier": 3,
+      "name": "Cirrus Ulejeh",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "SE3R0671",
+      "cardTier": 3,
+      "name": "Coconut Lonu",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "SE3S0672",
+      "cardTier": 3,
+      "name": "Buzz Nodoh",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "SE3S0673",
+      "cardTier": 3,
+      "name": "Trevor Jirluh",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "SE3DL0674",
+      "cardTier": 3,
+      "name": "Prince Jonath",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "SE3DL0675",
+      "cardTier": 3,
+      "name": "Yoshi Dulvul",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "SE3DL0676",
+      "cardTier": 3,
+      "name": "Jared Qugujex",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "SE3DB0677",
+      "cardTier": 3,
+      "name": "Ulysses Vigulvol",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "SE3DB0678",
+      "cardTier": 3,
+      "name": "Echo Vukivum",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "SE1QB0679",
+      "cardTier": 1,
+      "name": "Dirk Cracklebone",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "QB"
+    },
+    {
+      "uid": "SE4RB0685",
+      "cardTier": 4,
+      "name": "Fido Thukua",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "RB"
+    },
+    {
+      "uid": "SE4OL0686",
+      "cardTier": 4,
+      "name": "Scorpio Hemiggu",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "SE4OL0687",
+      "cardTier": 4,
+      "name": "Perry Qodeth",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "SE4OL0688",
+      "cardTier": 4,
+      "name": "Theo Gezrih",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "SE4R0689",
+      "cardTier": 4,
+      "name": "Lance Jabaax",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "SE4R0690",
+      "cardTier": 4,
+      "name": "Lion Jineh",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "SE4S0691",
+      "cardTier": 4,
+      "name": "Hopper Jukived",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "SE4S0692",
+      "cardTier": 4,
+      "name": "Solomon Qujangam",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "SE4DL0693",
+      "cardTier": 4,
+      "name": "Leo Dizima",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "SE4DL0694",
+      "cardTier": 4,
+      "name": "Ryan Khegridom",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "SE4DL0695",
+      "cardTier": 4,
+      "name": "Damian Aurol",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "SE4DB0696",
+      "cardTier": 4,
+      "name": "Gus Alsu",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "SE4DB0697",
+      "cardTier": 4,
+      "name": "Neptune Zade",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "SE5RB0698",
+      "cardTier": 5,
+      "name": "Cinder Khavol",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "RB"
+    },
+    {
+      "uid": "SE5OL0699",
+      "cardTier": 5,
+      "name": "Piglet Khukros",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "SE5OL0700",
+      "cardTier": 5,
+      "name": "Birch Vitrul",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "SE5OL0701",
+      "cardTier": 5,
+      "name": "Solomon Sozujaath",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "OL"
+    },
+    {
+      "uid": "SE5R0702",
+      "cardTier": 5,
+      "name": "Solomon Rivatrox",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "SE5R0703",
+      "cardTier": 5,
+      "name": "Hippie Ammorud",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "R"
+    },
+    {
+      "uid": "SE5S0704",
+      "cardTier": 5,
+      "name": "Bailey Nokkigus",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "SE5S0705",
+      "cardTier": 5,
+      "name": "Skip Alvudil",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "S"
+    },
+    {
+      "uid": "SE5DL0706",
+      "cardTier": 5,
+      "name": "Prince Thukua",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "SE5DL0707",
+      "cardTier": 5,
+      "name": "Yoshi Hemiggu",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "SE5DL0708",
+      "cardTier": 5,
+      "name": "Jared Qodeth",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DL"
+    },
+    {
+      "uid": "SE5DB0709",
+      "cardTier": 5,
+      "name": "Ulysses Gezrih",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "SE5DB0710",
+      "cardTier": 5,
+      "name": "Echo Jabaax",
+      "team": "SewerBeast",
+      "element": "Acid",
+      "position5": "DB"
+    },
+    {
+      "uid": "VA1RB0711",
+      "cardTier": 1,
+      "name": "Jet Dhaecs",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "RB"
+    },
+    {
+      "uid": "VA1OL0712",
+      "cardTier": 1,
+      "name": "Doom Meks",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "VA1OL0713",
+      "cardTier": 1,
+      "name": "Gambat Dzun",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "VA1OL0714",
+      "cardTier": 1,
+      "name": "Bruce Hwujel",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "VA1R0715",
+      "cardTier": 1,
+      "name": "Gavalon Kreateh",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "VA1R0716",
+      "cardTier": 1,
+      "name": "Dodger Gessinth",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "VA1S0717",
+      "cardTier": 1,
+      "name": "Orion Cudod",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "VA1S0718",
+      "cardTier": 1,
+      "name": "Bullet Vuqpioro",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "VA1DL0719",
+      "cardTier": 1,
+      "name": "Pickle Vrokuethil",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "VA1DL0720",
+      "cardTier": 1,
+      "name": "Lockjaw Giubaatocs",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "VA1DL0721",
+      "cardTier": 1,
+      "name": "Nibbles Cthul",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "VA1DB0722",
+      "cardTier": 1,
+      "name": "Shadow Cteil",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "VA1DB0723",
+      "cardTier": 1,
+      "name": "Psych Mhiok",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "VA2RB0724",
+      "cardTier": 2,
+      "name": "Artemis Thithuk",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "RB"
+    },
+    {
+      "uid": "VA2OL0725",
+      "cardTier": 2,
+      "name": "Midas Gurcueh",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "VA2OL0726",
+      "cardTier": 2,
+      "name": "Wayne Tolge",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "VA2OL0727",
+      "cardTier": 2,
+      "name": "Rascal Nutae",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "VA2R0728",
+      "cardTier": 2,
+      "name": "Quilla Mhajitha",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "VA2R0729",
+      "cardTier": 2,
+      "name": "Flapper Shasuagit",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "VA2S0730",
+      "cardTier": 2,
+      "name": "Nightmare Mupothar",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "VA2S0731",
+      "cardTier": 2,
+      "name": "Ripmaw Meoh",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "VA2DL0732",
+      "cardTier": 2,
+      "name": "Golbat Kooks",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "VA2DL0733",
+      "cardTier": 2,
+      "name": "Rainbow Goq",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "VA2DL0734",
+      "cardTier": 2,
+      "name": "Basil Krapthiu",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "VA2DB0735",
+      "cardTier": 2,
+      "name": "Onyx Vhudoor",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "VA2DB0736",
+      "cardTier": 2,
+      "name": "Equinox Vhiku",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "VA3RB0737",
+      "cardTier": 3,
+      "name": "Count Wrulox",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "RB"
+    },
+    {
+      "uid": "VA3OL0738",
+      "cardTier": 3,
+      "name": "Butch Briawocuath",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "VA3OL0739",
+      "cardTier": 3,
+      "name": "Wingnut Qhiuguhi",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "VA3OL0740",
+      "cardTier": 3,
+      "name": "Cupcake Dealdiastae",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "VA3R0741",
+      "cardTier": 3,
+      "name": "Shrike Wrer",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "VA3R0742",
+      "cardTier": 3,
+      "name": "Brutus Yed",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "VA3S0743",
+      "cardTier": 3,
+      "name": "Vlad Yan",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "VA3S0744",
+      "cardTier": 3,
+      "name": "Sawyer Etoonth",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "VA3DL0745",
+      "cardTier": 3,
+      "name": "Vlad Phatil",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "VA3DL0746",
+      "cardTier": 3,
+      "name": "Drac Ctheoma",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "VA3DL0747",
+      "cardTier": 3,
+      "name": "Blitz Wounoh",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "VA3DB0748",
+      "cardTier": 3,
+      "name": "Gambat Vrumwekaq",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "VA3DB0749",
+      "cardTier": 3,
+      "name": "Ajax Sangramore",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "VA1QB0750",
+      "cardTier": 1,
+      "name": "Vlad Crushnewski",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "QB"
+    },
+    {
+      "uid": "VA4RB0756",
+      "cardTier": 4,
+      "name": "Buster Yes",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "RB"
+    },
+    {
+      "uid": "VA4OL0757",
+      "cardTier": 4,
+      "name": "Dodge Bil",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "VA4OL0758",
+      "cardTier": 4,
+      "name": "Pebbles Qoc",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "VA4OL0759",
+      "cardTier": 4,
+      "name": "Spudnik Dhethuunth",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "VA4R0760",
+      "cardTier": 4,
+      "name": "Cupcake Wrotrav",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "VA4R0761",
+      "cardTier": 4,
+      "name": "Wayne Ghathiac",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "VA4S0762",
+      "cardTier": 4,
+      "name": "Fangs Pribah",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "VA4S0763",
+      "cardTier": 4,
+      "name": "Slithe Dranukaath",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "VA4DL0764",
+      "cardTier": 4,
+      "name": "Blitz Bodurguk",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "VA4DL0765",
+      "cardTier": 4,
+      "name": "Gargles Draenmamjeot",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "VA4DL0766",
+      "cardTier": 4,
+      "name": "Dexter Dzaq",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "VA4DB0767",
+      "cardTier": 4,
+      "name": "Gavalon Vrur",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "VA4DB0768",
+      "cardTier": 4,
+      "name": "Brutus Meq",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "VA5RB0769",
+      "cardTier": 5,
+      "name": "Azral Kheoha",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "RB"
+    },
+    {
+      "uid": "VA5OL0770",
+      "cardTier": 5,
+      "name": "Blitz Morruk",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "VA5OL0771",
+      "cardTier": 5,
+      "name": "Thunder Sepbe",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "VA5OL0772",
+      "cardTier": 5,
+      "name": "Rufus Obus",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "VA5R0773",
+      "cardTier": 5,
+      "name": "Flash Kheotamiu",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "VA5R0774",
+      "cardTier": 5,
+      "name": "Fuzz Laadediq",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "VA5S0775",
+      "cardTier": 5,
+      "name": "Cookie Cthuthostriun",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "VA5S0776",
+      "cardTier": 5,
+      "name": "Vlad Dhujunkun",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "VA5DL0777",
+      "cardTier": 5,
+      "name": "Drac Wrotrav",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "VA5DL0778",
+      "cardTier": 5,
+      "name": "Blitz Ghathiac",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "VA5DL0779",
+      "cardTier": 5,
+      "name": "Gambat Pribah",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "VA5DB0780",
+      "cardTier": 5,
+      "name": "Ajax Dranukaath",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "VA5DB0781",
+      "cardTier": 5,
+      "name": "Bodurguk",
+      "team": "Vampire",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "DE1RB0782",
+      "cardTier": 1,
+      "name": "Loki Maalik",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "RB"
+    },
+    {
+      "uid": "DE1OL0783",
+      "cardTier": 1,
+      "name": "Pride Trezzahn",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "DE1OL0784",
+      "cardTier": 1,
+      "name": "Echo Yamike",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "DE1OL0785",
+      "cardTier": 1,
+      "name": "Shiv Zulkaz",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "DE1R0786",
+      "cardTier": 1,
+      "name": "Champ Melkree",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "DE1R0787",
+      "cardTier": 1,
+      "name": "Hector Zulkaz",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "DE1S0788",
+      "cardTier": 1,
+      "name": "Nightmare Zulrajas",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "DE1S0789",
+      "cardTier": 1,
+      "name": "Xerxes Trolgar",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "DE1DL0790",
+      "cardTier": 1,
+      "name": "Hawkeye Jaafan",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "DE1DL0791",
+      "cardTier": 1,
+      "name": "Arcane Yetu",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "DE1DL0792",
+      "cardTier": 1,
+      "name": "Fury Zevrij",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "DE1DB0793",
+      "cardTier": 1,
+      "name": "Jeckyll Zaejin",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "DE1DB0794",
+      "cardTier": 1,
+      "name": "Nyx Equinus",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "DE2RB0795",
+      "cardTier": 2,
+      "name": "Pyro Sollix",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "RB"
+    },
+    {
+      "uid": "DE2OL0796",
+      "cardTier": 2,
+      "name": "Champ Kazko",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "DE2OL0797",
+      "cardTier": 2,
+      "name": "Buzz Jojin",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "DE2OL0798",
+      "cardTier": 2,
+      "name": "Shadow Wanjin",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "DE2R0799",
+      "cardTier": 2,
+      "name": "Ace Seji",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "DE2R0800",
+      "cardTier": 2,
+      "name": "Saber Maalik",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "DE2S0801",
+      "cardTier": 2,
+      "name": "Shade Zulrajas",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "DE2S0802",
+      "cardTier": 2,
+      "name": "Archer Trezzahn",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "DE2DL0803",
+      "cardTier": 2,
+      "name": "Blood Erodjan",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "DE2DL0804",
+      "cardTier": 2,
+      "name": "Lecter Zulkis",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "DE2DL0805",
+      "cardTier": 2,
+      "name": "Grim Zulabar",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "DE2DB0806",
+      "cardTier": 2,
+      "name": "Shade Voyambi",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "DE2DB0807",
+      "cardTier": 2,
+      "name": "Terror Nuenvan",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "DE3RB0808",
+      "cardTier": 3,
+      "name": "Fury Erasto",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "RB"
+    },
+    {
+      "uid": "DE3OL0809",
+      "cardTier": 3,
+      "name": "Hulk Vekuzz",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "DE3OL0810",
+      "cardTier": 3,
+      "name": "Hulk Zaejin",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "DE3OL0811",
+      "cardTier": 3,
+      "name": "Scandal Jaafan",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "DE3R0812",
+      "cardTier": 3,
+      "name": "Neo Rujin",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "DE3R0813",
+      "cardTier": 3,
+      "name": "Coal Makas",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "DE3S0814",
+      "cardTier": 3,
+      "name": "Orion Yamike",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "DE3S0815",
+      "cardTier": 3,
+      "name": "Obsidian Trolgar",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "DE3DL0816",
+      "cardTier": 3,
+      "name": "Titanium Ayargajin",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "DE3DL0817",
+      "cardTier": 3,
+      "name": "Ash Javyn",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "DE3DL0818",
+      "cardTier": 3,
+      "name": "Bane Wanjin",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "DE3DB0819",
+      "cardTier": 3,
+      "name": "Pandora Halasuwa",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "DE3DB0820",
+      "cardTier": 3,
+      "name": "Shadow Dorkuraz",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "DE1QB0821",
+      "cardTier": 1,
+      "name": "Biff Skullcrusher",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "QB"
+    },
+    {
+      "uid": "DE4RB0827",
+      "cardTier": 4,
+      "name": "Courage Zengu",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "RB"
+    },
+    {
+      "uid": "DE4OL0828",
+      "cardTier": 4,
+      "name": "Butch Senwe",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "DE4OL0829",
+      "cardTier": 4,
+      "name": "Vlad Seji",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "DE4OL0830",
+      "cardTier": 4,
+      "name": "Hyde Sollix",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "DE4R0831",
+      "cardTier": 4,
+      "name": "Storm Kazko",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "DE4R0832",
+      "cardTier": 4,
+      "name": "Force Rakash",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "DE4S0833",
+      "cardTier": 4,
+      "name": "Dusk Yetu",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "DE4S0834",
+      "cardTier": 4,
+      "name": "Sabath Zulbaljin",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "DE4DL0835",
+      "cardTier": 4,
+      "name": "Merlin Hokajin",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "DE4DL0836",
+      "cardTier": 4,
+      "name": "Cloud Zulrajas",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "DE4DL0837",
+      "cardTier": 4,
+      "name": "Saber Maalik",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "DE4DB0838",
+      "cardTier": 4,
+      "name": "Atlas Teshi",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "DE4DB0839",
+      "cardTier": 4,
+      "name": "Comet Trezzahn",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "DE5RB0840",
+      "cardTier": 5,
+      "name": "Phoenix Razi",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "RB"
+    },
+    {
+      "uid": "DE5OL0841",
+      "cardTier": 5,
+      "name": "Buck Jojin",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "DE5OL0842",
+      "cardTier": 5,
+      "name": "Talon Jabir",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "DE5OL0843",
+      "cardTier": 5,
+      "name": "Loki Malak",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "OL"
+    },
+    {
+      "uid": "DE5R0844",
+      "cardTier": 5,
+      "name": "Echo Zulyafi",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "DE5R0845",
+      "cardTier": 5,
+      "name": "Lucifer Trolgar",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "R"
+    },
+    {
+      "uid": "DE5S0846",
+      "cardTier": 5,
+      "name": "Goliath Melkree",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "DE5S0847",
+      "cardTier": 5,
+      "name": "Rebel Xukundi",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "S"
+    },
+    {
+      "uid": "DE5DL0848",
+      "cardTier": 5,
+      "name": "Titanium Senwe",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "DE5DL0849",
+      "cardTier": 5,
+      "name": "Ash Teshi",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "DE5DL0850",
+      "cardTier": 5,
+      "name": "Bane Sollix",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DL"
+    },
+    {
+      "uid": "DE5DB0851",
+      "cardTier": 5,
+      "name": "Pandora Kazko",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "DE5DB0852",
+      "cardTier": 5,
+      "name": "Shadow Rakash",
+      "team": "Demonoid",
+      "element": "Fire",
+      "position5": "DB"
+    },
+    {
+      "uid": "UN1RB0853",
+      "cardTier": 1,
+      "name": "Agamore Uah-prahet",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "RB"
+    },
+    {
+      "uid": "UN1OL0854",
+      "cardTier": 1,
+      "name": "Monk Psusennes",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "UN1OL0855",
+      "cardTier": 1,
+      "name": "Brand Ra-mei",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "UN1OL0856",
+      "cardTier": 1,
+      "name": "Moryn Mudads",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "UN1R0857",
+      "cardTier": 1,
+      "name": "Davey Anhur",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "UN1R0858",
+      "cardTier": 1,
+      "name": "Lothair Fai-hor-ouser",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "UN1S0859",
+      "cardTier": 1,
+      "name": "Jackson Uata-hor",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "UN1S0860",
+      "cardTier": 1,
+      "name": "Steve Sa-pi-hor",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "UN1DL0861",
+      "cardTier": 1,
+      "name": "Beamer Kekara",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "UN1DL0862",
+      "cardTier": 1,
+      "name": "Grissom Thema",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "UN1DL0863",
+      "cardTier": 1,
+      "name": "Darien Adofo",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "UN1DB0864",
+      "cardTier": 1,
+      "name": "Booger Suten-rekh-ata",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "UN1DB0865",
+      "cardTier": 1,
+      "name": "Roadh Si-muntu",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "UN2RB0866",
+      "cardTier": 2,
+      "name": "Zackery Ahu",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "RB"
+    },
+    {
+      "uid": "UN2OL0867",
+      "cardTier": 2,
+      "name": "Morgan Khentimentiu",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "UN2OL0868",
+      "cardTier": 2,
+      "name": "Elston Neb-seni",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "UN2OL0869",
+      "cardTier": 2,
+      "name": "Hanford Khak-hau",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "UN2R0870",
+      "cardTier": 2,
+      "name": "Hanir Rhampsinitus",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "UN2R0871",
+      "cardTier": 2,
+      "name": "Brion Petubastes",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "UN2S0872",
+      "cardTier": 2,
+      "name": "Hal Kanebti",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "UN2S0873",
+      "cardTier": 2,
+      "name": "Moe Sneferu",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "UN2DL0874",
+      "cardTier": 2,
+      "name": "Whitey Abu",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "UN2DL0875",
+      "cardTier": 2,
+      "name": "Simon Shai",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "UN2DL0876",
+      "cardTier": 2,
+      "name": "Baird Per-ui",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "UN2DB0877",
+      "cardTier": 2,
+      "name": "Avrey Henne",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "UN2DB0878",
+      "cardTier": 2,
+      "name": "Theo Osiris-rhotamenti",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "UN3RB0879",
+      "cardTier": 3,
+      "name": "Einhard Maa-antef-ef",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "RB"
+    },
+    {
+      "uid": "UN3OL0880",
+      "cardTier": 3,
+      "name": "Dyfed Ei-amen-nef-neb-oui",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "UN3OL0881",
+      "cardTier": 3,
+      "name": "Baldrick Saites",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "UN3OL0882",
+      "cardTier": 3,
+      "name": "Taz Thema",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "UN3R0883",
+      "cardTier": 3,
+      "name": "Burgess Thoth-mes",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "UN3R0884",
+      "cardTier": 3,
+      "name": "Eli Mera",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "UN3S0885",
+      "cardTier": 3,
+      "name": "Teig Atakheramen",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "UN3S0886",
+      "cardTier": 3,
+      "name": "Rutger Amenemant",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "UN3DL0887",
+      "cardTier": 3,
+      "name": "Lamond Set-auan",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "UN3DL0888",
+      "cardTier": 3,
+      "name": "Charles Sit-ka-mas",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "UN3DL0889",
+      "cardTier": 3,
+      "name": "Digits Amentotankhatra",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "UN3DB0890",
+      "cardTier": 3,
+      "name": "Blake Snefru",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "UN3DB0891",
+      "cardTier": 3,
+      "name": "Kirk Hondo",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "UN1QB0892",
+      "cardTier": 1,
+      "name": "Sling Sawbone",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "QB"
+    },
+    {
+      "uid": "UN4RB0898",
+      "cardTier": 4,
+      "name": "Cadman Seb",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "RB"
+    },
+    {
+      "uid": "UN4OL0899",
+      "cardTier": 4,
+      "name": "Dennie Horus",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "UN4OL0900",
+      "cardTier": 4,
+      "name": "Bonsai Radames",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "UN4OL0901",
+      "cardTier": 4,
+      "name": "Ezrah Nahresi",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "UN4R0902",
+      "cardTier": 4,
+      "name": "Darwin Abuskhau",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "UN4R0903",
+      "cardTier": 4,
+      "name": "Ceith Amenmer",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "UN4S0904",
+      "cardTier": 4,
+      "name": "Blain Sa-pi-nito",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "UN4S0905",
+      "cardTier": 4,
+      "name": "Barnett Ameni",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "UN4DL0906",
+      "cardTier": 4,
+      "name": "Jeckyl Quasshie",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "UN4DL0907",
+      "cardTier": 4,
+      "name": "Hide Meiri",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "UN4DL0908",
+      "cardTier": 4,
+      "name": "Bailoch Arnebaskenis",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "UN4DB0909",
+      "cardTier": 4,
+      "name": "Hugh Amran",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "UN4DB0910",
+      "cardTier": 4,
+      "name": "Cuinn Chuma",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "UN5RB0911",
+      "cardTier": 5,
+      "name": "Quincy Oohmes",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "RB"
+    },
+    {
+      "uid": "UN5OL0912",
+      "cardTier": 5,
+      "name": "Gadget Asa",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "UN5OL0913",
+      "cardTier": 5,
+      "name": "Beal Psusennes",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "UN5OL0914",
+      "cardTier": 5,
+      "name": "Reign Massui",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "OL"
+    },
+    {
+      "uid": "UN5R0915",
+      "cardTier": 5,
+      "name": "Booger Nahab",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "UN5R0916",
+      "cardTier": 5,
+      "name": "Fynbar Fai-nofre-bai",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "R"
+    },
+    {
+      "uid": "UN5S0917",
+      "cardTier": 5,
+      "name": "Bartholomew Nekh-ta-nebi",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "UN5S0918",
+      "cardTier": 5,
+      "name": "Kirk Ra-aa-kheper",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "S"
+    },
+    {
+      "uid": "UN5DL0919",
+      "cardTier": 5,
+      "name": "Lamond Radames",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "UN5DL0920",
+      "cardTier": 5,
+      "name": "Charles Nahresi",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "UN5DL0921",
+      "cardTier": 5,
+      "name": "Digits Abuskhau",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DL"
+    },
+    {
+      "uid": "UN5DB0922",
+      "cardTier": 5,
+      "name": "Blake Amenmer",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "UN5DB0923",
+      "cardTier": 5,
+      "name": "Gregg Quasshie",
+      "team": "Undead",
+      "element": "Corruption",
+      "position5": "DB"
+    },
+    {
+      "uid": "GO1RB0924",
+      "cardTier": 1,
+      "name": "Karim Nawirum-Ili",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "RB"
+    },
+    {
+      "uid": "GO1OL0925",
+      "cardTier": 1,
+      "name": "Kavi Lugal-Zaggisi",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "GO1OL0926",
+      "cardTier": 1,
+      "name": "Tino Malgum-Liblut",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "GO1OL0927",
+      "cardTier": 1,
+      "name": "George Shubnalu",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "GO1R0928",
+      "cardTier": 1,
+      "name": "Sammy Ibnatum",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "GO1R0929",
+      "cardTier": 1,
+      "name": "Rajesh Nanni",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "GO1S0930",
+      "cardTier": 1,
+      "name": "Harish Zimudar",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "GO1S0931",
+      "cardTier": 1,
+      "name": "Vasin Ilku",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "GO1DL0932",
+      "cardTier": 1,
+      "name": "Sarad Milki-La-El",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "GO1DL0933",
+      "cardTier": 1,
+      "name": "Jeremy Ibal-Pi-El",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "GO1DL0934",
+      "cardTier": 1,
+      "name": "Russell Udul-Kalama",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "GO1DB0935",
+      "cardTier": 1,
+      "name": "Valin Baba",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "GO1DB0936",
+      "cardTier": 1,
+      "name": "Bobo Abdi-Arah",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "GO2RB0937",
+      "cardTier": 2,
+      "name": "Narayana Bakshishum",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "RB"
+    },
+    {
+      "uid": "GO2OL0938",
+      "cardTier": 2,
+      "name": "Richy Iddin-Ninshubur",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "GO2OL0939",
+      "cardTier": 2,
+      "name": "Aalok Kurhitti-Mushtesher",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "GO2OL0940",
+      "cardTier": 2,
+      "name": "Peanut Ilum-Aha",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "GO2R0941",
+      "cardTier": 2,
+      "name": "Jayakrishna Belit-Sheri",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "GO2R0942",
+      "cardTier": 2,
+      "name": "Aatmadeva Ur-Ningin",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "GO2S0943",
+      "cardTier": 2,
+      "name": "Aalok Utu",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "GO2S0944",
+      "cardTier": 2,
+      "name": "Valmiki Nur-Shamash",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "GO2DL0945",
+      "cardTier": 2,
+      "name": "Yuri Shamash-Gamil",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "GO2DL0946",
+      "cardTier": 2,
+      "name": "Elephant Ayar-Ilum",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "GO2DL0947",
+      "cardTier": 2,
+      "name": "Babar Damuzi",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "GO2DB0948",
+      "cardTier": 2,
+      "name": "Nadim Zaninum",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "GO2DB0949",
+      "cardTier": 2,
+      "name": "Pattin Sabum",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "GO3RB0950",
+      "cardTier": 3,
+      "name": "Vihs Lugal-Kitun",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "RB"
+    },
+    {
+      "uid": "GO3OL0951",
+      "cardTier": 3,
+      "name": "Mansoor Qisht-Ea",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "GO3OL0952",
+      "cardTier": 3,
+      "name": "Charlie Awil-Ishtar",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "GO3OL0953",
+      "cardTier": 3,
+      "name": "Aivat Men-Nuna",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "GO3R0954",
+      "cardTier": 3,
+      "name": "Mahesa Silli-Shamash",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "GO3R0955",
+      "cardTier": 3,
+      "name": "Jabbar Yarim-Lim",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "GO3S0956",
+      "cardTier": 3,
+      "name": "Bobo Ur-Gula",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "GO3S0957",
+      "cardTier": 3,
+      "name": "Jake Lipit-Enlil",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "GO3DL0958",
+      "cardTier": 3,
+      "name": "Lavanaa Gimil-Ninurta",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "GO3DL0959",
+      "cardTier": 3,
+      "name": "Saarik Ninurta-Ra'im-Zerim",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "GO3DL0960",
+      "cardTier": 3,
+      "name": "Sarik Abiditan",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "GO3DB0961",
+      "cardTier": 3,
+      "name": "Vatsyayana Puzu",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "GO3DB0962",
+      "cardTier": 3,
+      "name": "Nirvan Puzur-Suen",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "GO1QB0963",
+      "cardTier": 1,
+      "name": "Hawk McKnight",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "QB"
+    },
+    {
+      "uid": "GO4RB0969",
+      "cardTier": 4,
+      "name": "Vatsyayana Sin-Nasir",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "RB"
+    },
+    {
+      "uid": "GO4OL0970",
+      "cardTier": 4,
+      "name": "Chandan Adad",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "GO4OL0971",
+      "cardTier": 4,
+      "name": "Ramnath Pu-Balum",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "GO4OL0972",
+      "cardTier": 4,
+      "name": "Uday En-Shag-Kush-Ana",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "GO4R0973",
+      "cardTier": 4,
+      "name": "Jeffery Amar-Suena",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "GO4R0974",
+      "cardTier": 4,
+      "name": "Raleigh Ur-Ningin",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "GO4S0975",
+      "cardTier": 4,
+      "name": "Jaidev Mesh-Ki-Ang-Nuna",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "GO4S0976",
+      "cardTier": 4,
+      "name": "Damini Sangasu",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "GO4DL0977",
+      "cardTier": 4,
+      "name": "Varun Undalulu",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "GO4DL0978",
+      "cardTier": 4,
+      "name": "Urvil Adda-Kalla",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "GO4DL0979",
+      "cardTier": 4,
+      "name": "Aakav Irrara",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "GO4DB0980",
+      "cardTier": 4,
+      "name": "Leo Awil-Sin",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "GO4DB0981",
+      "cardTier": 4,
+      "name": "Silver Lugulbanda",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "GO5RB0982",
+      "cardTier": 5,
+      "name": "Pattin Wardum",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "RB"
+    },
+    {
+      "uid": "GO5OL0983",
+      "cardTier": 5,
+      "name": "Mahin Sagil-Zimu",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "GO5OL0984",
+      "cardTier": 5,
+      "name": "Jaidev Kurumtum",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "GO5OL0985",
+      "cardTier": 5,
+      "name": "Cameron Warad-Shamash",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "OL"
+    },
+    {
+      "uid": "GO5R0986",
+      "cardTier": 5,
+      "name": "Maharaj Adad",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "GO5R0987",
+      "cardTier": 5,
+      "name": "Jeremy Uta-Misharam",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "R"
+    },
+    {
+      "uid": "GO5S0988",
+      "cardTier": 5,
+      "name": "IIshim Shubnalu",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "GO5S0989",
+      "cardTier": 5,
+      "name": "Wilbur En-Men-Lu-Ana",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "S"
+    },
+    {
+      "uid": "GO5DL0990",
+      "cardTier": 5,
+      "name": "Lavanaa Undalulu",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "GO5DL0991",
+      "cardTier": 5,
+      "name": "Saarik Adda-Kalla",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "GO5DL0992",
+      "cardTier": 5,
+      "name": "Sarik Irrara",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DL"
+    },
+    {
+      "uid": "GO5DB0993",
+      "cardTier": 5,
+      "name": "Vatsyayana Adad",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "GO5DB0994",
+      "cardTier": 5,
+      "name": "Nirvan Lugulbanda",
+      "team": "Golem",
+      "element": "Electrical",
+      "position5": "DB"
+    },
+    {
+      "uid": "DA1RB0995",
+      "cardTier": 1,
+      "name": "Fang Bodocenus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "RB"
+    },
+    {
+      "uid": "DA1OL0996",
+      "cardTier": 1,
+      "name": "Ranger Curcagnus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "DA1OL0997",
+      "cardTier": 1,
+      "name": "Frost Sagillus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "DA1OL0998",
+      "cardTier": 1,
+      "name": "Cloud Sanicios",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "DA1R0999",
+      "cardTier": 1,
+      "name": "Gray Sollouico",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "DA1R1000",
+      "cardTier": 1,
+      "name": "Slate Vindicatus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "DA1S1001",
+      "cardTier": 1,
+      "name": "Fury Virocantus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "DA1S1002",
+      "cardTier": 1,
+      "name": "Thunder Allovico",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "DA1DL1003",
+      "cardTier": 1,
+      "name": "Riptide Brigomaglos",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "DA1DL1004",
+      "cardTier": 1,
+      "name": "Phantom Trenaccatlo",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "DA1DL1005",
+      "cardTier": 1,
+      "name": "Hulk Boruonicus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "DA1DB1006",
+      "cardTier": 1,
+      "name": "Fury Macarius",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "DA1DB1007",
+      "cardTier": 1,
+      "name": "Whisper Taurio",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "DA2RB1008",
+      "cardTier": 2,
+      "name": "Nanook Alluci",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "RB"
+    },
+    {
+      "uid": "DA2OL1009",
+      "cardTier": 2,
+      "name": "Omen Catusius",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "DA2OL1010",
+      "cardTier": 2,
+      "name": "Flash Adebugi",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "DA2OL1011",
+      "cardTier": 2,
+      "name": "Ice Cenicus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "DA2R1012",
+      "cardTier": 2,
+      "name": "Edge Excingomarus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "DA2R1013",
+      "cardTier": 2,
+      "name": "Omega Condercus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "DA2S1014",
+      "cardTier": 2,
+      "name": "Maximus Magurius",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "DA2S1015",
+      "cardTier": 2,
+      "name": "Jeckyll Catuen",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "DA2DL1016",
+      "cardTier": 2,
+      "name": "Prince Rextugeos",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "DA2DL1017",
+      "cardTier": 2,
+      "name": "Pyro Cunegni",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "DA2DL1018",
+      "cardTier": 2,
+      "name": "Apache Cassitalus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "DA2DB1019",
+      "cardTier": 2,
+      "name": "Striker Cobledulitavus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "DA2DB1020",
+      "cardTier": 2,
+      "name": "Bones Itotagi",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "DA3RB1021",
+      "cardTier": 3,
+      "name": "Brutus Borso",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "RB"
+    },
+    {
+      "uid": "DA3OL1022",
+      "cardTier": 3,
+      "name": "Bullet Borvonicus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "DA3OL1023",
+      "cardTier": 3,
+      "name": "Hulk Coro",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "DA3OL1024",
+      "cardTier": 3,
+      "name": "Oak Latauis",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "DA3R1025",
+      "cardTier": 3,
+      "name": "Dagger Cenalus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "DA3R1026",
+      "cardTier": 3,
+      "name": "Colt Drutalus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "DA3S1027",
+      "cardTier": 3,
+      "name": "Rogue Congenno",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "DA3S1028",
+      "cardTier": 3,
+      "name": "Cloud Andegasi",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "DA3DL1029",
+      "cardTier": 3,
+      "name": "Flash Rigalis",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "DA3DL1030",
+      "cardTier": 3,
+      "name": "Razor Exscincious",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "DA3DL1031",
+      "cardTier": 3,
+      "name": "Magnus Ambisauus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "DA3DB1032",
+      "cardTier": 3,
+      "name": "Atlas Catoualos",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "DA3DB1033",
+      "cardTier": 3,
+      "name": "Hawke Toutobocios",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "DA1QB1034",
+      "cardTier": 1,
+      "name": "DeShawshank Jones",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "QB"
+    },
+    {
+      "uid": "DA4RB1040",
+      "cardTier": 4,
+      "name": "Maximus Leucamulo",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "RB"
+    },
+    {
+      "uid": "DA4OL1041",
+      "cardTier": 4,
+      "name": "Avalanche Ientius",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "DA4OL1042",
+      "cardTier": 4,
+      "name": "Ralph Senocarus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "DA4OL1043",
+      "cardTier": 4,
+      "name": "Mayhem Carantacus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "DA4R1044",
+      "cardTier": 4,
+      "name": "Atlas Vlatos",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "DA4R1045",
+      "cardTier": 4,
+      "name": "Dagger Venextos",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "DA4S1046",
+      "cardTier": 4,
+      "name": "Excalibur Cenocantus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "DA4S1047",
+      "cardTier": 4,
+      "name": "Prince Venixamus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "DA4DL1048",
+      "cardTier": 4,
+      "name": "Scout Convictolitavis",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "DA4DL1049",
+      "cardTier": 4,
+      "name": "Goliath Dattovir",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "DA4DL1050",
+      "cardTier": 4,
+      "name": "Beacon Cenno",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "DA4DB1051",
+      "cardTier": 4,
+      "name": "Storm Vennenus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "DA4DB1052",
+      "cardTier": 4,
+      "name": "Blaze Reginus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "DA5RB1053",
+      "cardTier": 5,
+      "name": "Myst Atrectus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "RB"
+    },
+    {
+      "uid": "DA5OL1054",
+      "cardTier": 5,
+      "name": "Kane Licnus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "DA5OL1055",
+      "cardTier": 5,
+      "name": "Ace Andereseni",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "DA5OL1056",
+      "cardTier": 5,
+      "name": "Max Cintu",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "OL"
+    },
+    {
+      "uid": "DA5R1057",
+      "cardTier": 5,
+      "name": "Excalibur Vicixtillus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "DA5R1058",
+      "cardTier": 5,
+      "name": "Fury Bravecci",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "R"
+    },
+    {
+      "uid": "DA5S1059",
+      "cardTier": 5,
+      "name": "Edge Suadinus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "DA5S1060",
+      "cardTier": 5,
+      "name": "Maverick Messillus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "S"
+    },
+    {
+      "uid": "DA5DL1061",
+      "cardTier": 5,
+      "name": "Flash Leucamulo",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "DA5DL1062",
+      "cardTier": 5,
+      "name": "Razor Ientius",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "DA5DL1063",
+      "cardTier": 5,
+      "name": "Magnus Senocarus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DL"
+    },
+    {
+      "uid": "DA5DB1064",
+      "cardTier": 5,
+      "name": "Atlas Carantacus",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "DA5DB1065",
+      "cardTier": 5,
+      "name": "Hawke Vlatos",
+      "team": "DarkElves",
+      "element": "Poison",
+      "position5": "DB"
+    },
+    {
+      "uid": "MO1RB1066",
+      "cardTier": 1,
+      "name": "Rufus Lupakki",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "RB"
+    },
+    {
+      "uid": "MO1OL1067",
+      "cardTier": 1,
+      "name": "Rowan Ambaris",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "MO1OL1068",
+      "cardTier": 1,
+      "name": "Saber Aki-Teshup",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "MO1OL1069",
+      "cardTier": 1,
+      "name": "Taz Tahurwaili",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "MO1R1070",
+      "cardTier": 1,
+      "name": "Striker Kurunta",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "MO1R1071",
+      "cardTier": 1,
+      "name": "Pound Sausga",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "MO1S1072",
+      "cardTier": 1,
+      "name": "Rack Tarhunnas",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "MO1S1073",
+      "cardTier": 1,
+      "name": "Rufus Muwatalis",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "MO1DL1074",
+      "cardTier": 1,
+      "name": "Bambam Khalpasulupi",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "MO1DL1075",
+      "cardTier": 1,
+      "name": "Smooch Wassurme",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "MO1DL1076",
+      "cardTier": 1,
+      "name": "Thunder Ualli",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "MO1DB1077",
+      "cardTier": 1,
+      "name": "Dodger Labarnas",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "MO1DB1078",
+      "cardTier": 1,
+      "name": "Nebula Walli",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "MO2RB1079",
+      "cardTier": 2,
+      "name": "Mercury Aki-Teshub",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "RB"
+    },
+    {
+      "uid": "MO2OL1080",
+      "cardTier": 2,
+      "name": "Sawyer Abbi-Teshup",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "MO2OL1081",
+      "cardTier": 2,
+      "name": "Soots Tarhundaraba",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "MO2OL1082",
+      "cardTier": 2,
+      "name": "Basil Muwatallis",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "MO2R1083",
+      "cardTier": 2,
+      "name": "Sawyer Hupasiya",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "MO2R1084",
+      "cardTier": 2,
+      "name": "Skooter Gilia",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "MO2S1085",
+      "cardTier": 2,
+      "name": "Dodge Khalpasulubi",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "MO2S1086",
+      "cardTier": 2,
+      "name": "Cloud Mursilis",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "MO2DL1087",
+      "cardTier": 2,
+      "name": "Sean Akia",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "MO2DL1088",
+      "cardTier": 2,
+      "name": "Duke Hulli",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "MO2DL1089",
+      "cardTier": 2,
+      "name": "Buster Wasusarmas",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "MO2DB1090",
+      "cardTier": 2,
+      "name": "Monty Biyassili",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "MO2DB1091",
+      "cardTier": 2,
+      "name": "Slam Huzziya",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "MO3RB1092",
+      "cardTier": 3,
+      "name": "Soots Tutkhaliya",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "RB"
+    },
+    {
+      "uid": "MO3OL1093",
+      "cardTier": 3,
+      "name": "Onyx Arnuwandas",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "MO3OL1094",
+      "cardTier": 3,
+      "name": "Rambo Ambaris",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "MO3OL1095",
+      "cardTier": 3,
+      "name": "Woolsley Te-Teshup",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "MO3R1096",
+      "cardTier": 3,
+      "name": "Sawyer Sin-Teshupash",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "MO3R1097",
+      "cardTier": 3,
+      "name": "Rock Piyamaradus",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "MO3S1098",
+      "cardTier": 3,
+      "name": "Ruff Mursilis",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "MO3S1099",
+      "cardTier": 3,
+      "name": "Ace Ammihatna",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "MO3DL1100",
+      "cardTier": 3,
+      "name": "Wellington Halpasulupi",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "MO3DL1101",
+      "cardTier": 3,
+      "name": "Pillo Hulli",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "MO3DL1102",
+      "cardTier": 3,
+      "name": "Vanilla Gil-Teshub",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "MO3DB1103",
+      "cardTier": 3,
+      "name": "Pitch Himuili",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "MO3DB1104",
+      "cardTier": 3,
+      "name": "Babbit Teshup",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "MO1QB1105",
+      "cardTier": 1,
+      "name": "Cleave Crippleback",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "QB"
+    },
+    {
+      "uid": "MO4RB1111",
+      "cardTier": 4,
+      "name": "Chops Teshup",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "RB"
+    },
+    {
+      "uid": "MO4OL1112",
+      "cardTier": 4,
+      "name": "Ogre Biyassili",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "MO4OL1113",
+      "cardTier": 4,
+      "name": "Rack Lupakki",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "MO4OL1114",
+      "cardTier": 4,
+      "name": "Shelby Gilia",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "MO4R1115",
+      "cardTier": 4,
+      "name": "Coffee Te-Teshup",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "MO4R1116",
+      "cardTier": 4,
+      "name": "Bambam Labarna",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "MO4S1117",
+      "cardTier": 4,
+      "name": "Snowflake Halpasulubi",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "MO4S1118",
+      "cardTier": 4,
+      "name": "Hammer Takkuri",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "MO4DL1119",
+      "cardTier": 4,
+      "name": "Nibler Happi",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "MO4DL1120",
+      "cardTier": 4,
+      "name": "Vanilla Alluwamna",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "MO4DL1121",
+      "cardTier": 4,
+      "name": "Snow Tudkhalias",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "MO4DB1122",
+      "cardTier": 4,
+      "name": "Sponge Nenatta",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "MO4DB1123",
+      "cardTier": 4,
+      "name": "Ruff Hutena",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "MO5RB1124",
+      "cardTier": 5,
+      "name": "Smokey Ambaris",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "RB"
+    },
+    {
+      "uid": "MO5OL1125",
+      "cardTier": 5,
+      "name": "Jax Urhiteshub",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "MO5OL1126",
+      "cardTier": 5,
+      "name": "Ramone Sausga",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "MO5OL1127",
+      "cardTier": 5,
+      "name": "Sawyer Anittas",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "OL"
+    },
+    {
+      "uid": "MO5R1128",
+      "cardTier": 5,
+      "name": "Midnight Hulli",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "MO5R1129",
+      "cardTier": 5,
+      "name": "Impact Tudkhaliya",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "R"
+    },
+    {
+      "uid": "MO5S1130",
+      "cardTier": 5,
+      "name": "Truffle Te-Teshup",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "MO5S1131",
+      "cardTier": 5,
+      "name": "Comet Urhiteshub",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "S"
+    },
+    {
+      "uid": "MO5DL1132",
+      "cardTier": 5,
+      "name": "Wellington Teshup",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "MO5DL1133",
+      "cardTier": 5,
+      "name": "Pillo Biyassili",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "MO5DL1134",
+      "cardTier": 5,
+      "name": "Vanilla Lupakki",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DL"
+    },
+    {
+      "uid": "MO5DB1135",
+      "cardTier": 5,
+      "name": "Pitch Takkuri",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DB"
+    },
+    {
+      "uid": "MO5DB1136",
+      "cardTier": 5,
+      "name": "Babbit Labarna",
+      "team": "Monster",
+      "element": "Ice",
+      "position5": "DB"
+    }
+  ]
+}

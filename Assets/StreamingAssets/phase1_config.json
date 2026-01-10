@@ -1,0 +1,104 @@
+{
+  "schema_version": "ccas.p1_part2.v1",
+  "methodology": "normalized_quality_scoring_with_dynamics",
+  "phase_1_configuration": {
+    "tracked_emotions": ["frustration", "satisfaction"],
+    "emotion_parameters": {
+      "S_max": 3.0,
+      "F_max": 2.0,
+      "S_cap": 100.0,
+      "F_cap": 100.0
+    },
+    "session_persistence": "reset_at_session_start"
+  },
+  "emotion_dynamics": {
+    "quality_reset": {
+      "enabled": true,
+      "R_S": 1.5,
+      "R_F": 1.5,
+      "good_threshold": 0.5,
+      "bad_threshold": 0.3,
+      "description": "Great pulls reduce frustration; bad pulls get less punishment"
+    },
+    "neutral_band": {
+      "enabled": true,
+      "min": 0.38,
+      "max": 0.62,
+      "recovery": 0.35,
+      "description": "Average pulls calm both emotions"
+    },
+    "oppositional": {
+      "enabled": true,
+      "k": 0.25,
+      "description": "Strong rise in one emotion trims the other (reduced impact in code)"
+    },
+    "streak": {
+      "enabled": true,
+      "window": 5,
+      "alpha": 1.0,
+      "beta": 1.0,
+      "threshold": 0.1,
+      "description": "Recent history (last N pulls) amplifies current emotions (balanced in code)"
+    }
+  },
+  "duplicate_xp": {
+    "common_duplicate_xp": 5,
+    "uncommon_duplicate_xp": 10,
+    "rare_duplicate_xp": 25,
+    "epic_duplicate_xp": 50,
+    "legendary_duplicate_xp": 100
+  },
+  "rarity_values": {
+    "common": { "numeric_value": 1, "display_name": "Common" },
+    "uncommon": { "numeric_value": 2, "display_name": "Uncommon" },
+    "rare": { "numeric_value": 3, "display_name": "Rare" },
+    "epic": { "numeric_value": 4, "display_name": "Epic" },
+    "legendary": { "numeric_value": 5, "display_name": "Legendary" }
+  },
+  "pack_types": {
+    "bronze_pack": {
+      "name": "Bronze Pack",
+      "cost": 1000,
+      "guaranteed_cards": 3,
+      "drop_rates": { "common": 0.75, "uncommon": 0.15, "rare": 0.1 },
+      "score_range": { "min_score": 3, "max_score": 7 }
+    },
+    "silver_pack": {
+      "name": "Silver Pack",
+      "cost": 1500,
+      "guaranteed_cards": 3,
+      "drop_rates": {
+        "uncommon": 0.65,
+        "rare": 0.2,
+        "epic": 0.1,
+        "legendary": 0.05
+      },
+      "score_range": { "min_score": 6, "max_score": 12 }
+    },
+    "gold_pack": {
+      "name": "Gold Pack",
+      "cost": 2000,
+      "guaranteed_cards": 3,
+      "drop_rates": {
+        "rare": 0.6,
+        "epic": 0.3,
+        "legendary": 0.1
+      },
+      "score_range": { "min_score": 9, "max_score": 13 }
+    }
+  },
+  "calculation_order": {
+    "step_1": "Calculate raw quality score from card rarities",
+    "step_2": "Normalize to [0,1] range using pack score bounds",
+    "step_3": "Apply pack-type bias curve (bronze/silver/gold)",
+    "step_4": "Calculate base deltas with asymmetric curves (satisfaction easier, frustration harder)",
+    "step_5": "Apply rare card boost (50% satisfaction boost for rare/epic/legendary)",
+    "step_6": "Quality-driven reduction (good pulls reduce frustration, bad pulls get less punishment)",
+    "step_7": "Neutral-band recovery (if quality in middle band)",
+    "step_8": "Oppositional dampening (reduced impact, 70% reduction)",
+    "step_9": "Streak multiplier (balanced, asymmetric for hot/cold streaks)",
+    "step_10": "Apply decay BEFORE adding deltas (allows satisfaction to accumulate)",
+    "step_11": "Add deltas to state and clamp to ranges",
+    "step_12": "Update rolling window for streak calculations"
+  }
+}
