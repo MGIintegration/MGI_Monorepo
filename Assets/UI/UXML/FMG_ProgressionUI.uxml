@@ -1,0 +1,69 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:engine="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/USS/FMG_ProgressionStyle.uss?fileID=7433441132597879392&amp;guid=fb6bb51e49b26463bacbbc6e19499e8d&amp;type=3#FMG_ProgressionStyle" />
+    <!-- <ui:VisualElement name="Root" style="flex-grow: 1;"> -->
+    <ui:VisualElement name="Root" style="flex-grow: 1; width: 100%; height: 100%;">
+        <ui:VisualElement name="Screen_Hub" class="screen-container">
+            <ui:Label text="🏈 FMG - SEASON PROGRESSION HUB" class="title" />
+            <ui:VisualElement class="info-box">
+                <ui:Label name="Hub_Label_Week" text="📅 Week: 1 / 10" />
+                <ui:Label name="Hub_Label_Standing" text="🏆 Standing: ?th Place" />
+                <ui:Label name="Hub_Label_Matches" text="🔁 Remaining Matches: 10" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Hub_XP_Container" class="info-box">
+                <ui:Label name="Hub_Label_XP" text="⭐ XP: 0 / 1000" />
+                <ui:VisualElement name="XP_ProgressBar_Background">
+                    <ui:VisualElement name="XP_ProgressBar_Fill" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Button name="Button_SimulateWeek" text="🔁 SIMULATE NEXT WEEK" class="button button-primary" />
+            <ui:VisualElement class="info-box">
+                <ui:Label text="🧾 Current Goals:" class="sub-title" />
+                <ui:Label text="• Reach playoffs (Top 4)" />
+                <ui:Label text="• Earn 1000 XP this season" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="Screen_Bracket" class="screen-container hidden">
+            <ui:Label text="📅 CURRENT BRACKET" class="title" />
+            <ui:Label name="Bracket_Label_Week" text="WEEK 1 RESULTS" class="sub-title" />
+            <ui:VisualElement name="Bracket_Table" class="table">
+                <ui:VisualElement class="table-header">
+                    <ui:Label text="Rank" style="flex-grow: 1;" />
+                    <ui:Label text="Team" style="flex-grow: 3;" />
+                    <ui:Label text="W-L" style="flex-grow: 2;" />
+                    <ui:Label text="XP" style="flex-grow: 2;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Label name="Bracket_Label_Info" text="🏆 Top 4 teams make playoffs" />
+        </ui:VisualElement>
+        <ui:VisualElement name="Screen_XP" class="screen-container hidden">
+            <ui:Label text="⭐ XP &amp; REWARD PROGRESSION" class="title" />
+            <ui:VisualElement class="info-box">
+                <ui:Label name="XP_Label_Current" text="Current XP: 0 / 1000 (Bronze Tier)" />
+                <ui:VisualElement name="XP_Screen_ProgressBar_Background">
+                    <ui:VisualElement name="XP_Screen_ProgressBar_Fill" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Label text="🎯 XP Sources This Season:" class="sub-title" />
+            <ui:ScrollView name="XP_History_ScrollView" class="scroll-view" />
+            <ui:VisualElement class="info-box">
+                <ui:Label text="🎁 Next Tier (Silver): 1000 XP" class="sub-title" />
+                <ui:Label text="🪙 Reward: +5% team bonus next season" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="Screen_SimFeedback" class="screen-container hidden">
+            <ui:Label name="Sim_Label_Title" text="🎮 MATCH SIMULATION RESULT - WEEK 1" class="title" />
+            <ui:VisualElement class="info-box">
+                <ui:Label name="Sim_Label_Result" text="🏆 Result: WIN!" />
+                <ui:Label name="Sim_Label_Opponent" text="🆚 Opponent: Jets" />
+                <ui:Label name="Sim_Label_XPGain" text="📈 XP Earned: +120 XP" class="xp-gain-text" />
+            </ui:VisualElement>
+            <ui:Label text="🏅 Reward Progress: Bronze ➝ Silver (Unlocked!)" name="Sim_Label_Reward" />
+            <ui:Button name="Button_ContinueToHub" text="⬅ CONTINUE" class="button" />
+        </ui:VisualElement>
+        <ui:VisualElement name="NavBar" class="nav-bar">
+            <ui:Button name="Nav_Button_Hub" text="HUB" class="nav-button" />
+            <ui:Button name="Nav_Button_Bracket" text="BRACKET" class="nav-button" />
+            <ui:Button name="Nav_Button_XP" text="XP" class="nav-button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

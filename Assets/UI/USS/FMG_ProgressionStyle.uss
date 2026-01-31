@@ -1,0 +1,130 @@
+/* VisualElement {} */
+
+/* Assets/UI/USS/FMG_ProgressionStyle.uss */
+.screen-container {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: rgb(30, 30, 45);
+    flex-direction: column;
+}
+
+.hidden {
+    display: none;
+}
+
+.title {
+    font-size: 24px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    margin-bottom: 15px;
+    -unity-text-align: middle-left;
+}
+
+.sub-title {
+    font-size: 18px;
+    -unity-font-style: bold;
+    color: rgb(200, 200, 200);
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.info-box {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+Label {
+    font-size: 16px;
+    color: rgb(220, 220, 220);
+}
+
+/* --- Buttons --- */
+.button {
+    min-height: 60px; /* Mobile touch target size */
+    font-size: 18px;
+    -unity-font-style: bold;
+    border-radius: 8px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.button-primary {
+    background-color: rgb(0, 150, 255);
+    color: white;
+}
+
+/* --- XP Bar --- */
+#XP_ProgressBar_Background, #XP_Screen_ProgressBar_Background {
+    height: 20px;
+    background-color: rgb(50, 50, 50);
+    border-radius: 10px;
+    margin-top: 5px;
+}
+
+#XP_ProgressBar_Fill, #XP_Screen_ProgressBar_Fill {
+    height: 100%;
+    width: 0%; /* Will be set by script */
+    background-color: rgb(255, 180, 0);
+    border-radius: 10px;
+    transition: width 0.5s ease-out; /* XP bar animation */
+}
+
+.xp-gain-text {
+    font-size: 22px;
+    color: rgb(100, 255, 100);
+    -unity-font-style: bold;
+}
+
+/* --- Bracket Table --- */
+.table {
+    margin-top: 10px;
+}
+.table-header, .table-row {
+    flex-direction: row;
+    padding: 8px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(80, 80, 80);
+}
+.table-header Label {
+    -unity-font-style: bold;
+}
+.player-row {
+    background-color: rgba(0, 150, 255, 0.3);
+    border-left-width: 4px;
+    border-left-color: rgb(0, 150, 255);
+}
+
+/* --- XP History Scroll --- */
+.scroll-view {
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    border-radius: 8px;
+    min-height: 100px;
+}
+.xp-history-entry {
+    padding: 5px;
+    color: rgb(200, 200, 200);
+}
+
+/* --- Navigation Bar --- */
+.nav-bar {
+    height: 65px;
+    flex-direction: row;
+    background-color: rgb(20, 20, 30);
+    border-top-width: 2px;
+    border-top-color: rgb(60, 60, 80);
+}
+.nav-button {
+    flex-grow: 1;
+    min-height: 60px;
+    border-radius: 0;
+    margin: 0;
+    background-color: transparent;
+    color: rgb(220, 220, 220);
+}
+.nav-button:hover {
+    background-color: rgba(0, 150, 255, 0.3);
+}
