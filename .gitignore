@@ -65,3 +65,7 @@ crashlytics-build.properties
 
 # Mono auto generated files
 mono_crash.*.json
+
+# .NET build output (EconomyApi)
+EconomyApi/bin/
+EconomyApi/obj/
