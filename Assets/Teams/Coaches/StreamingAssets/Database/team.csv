@@ -1,0 +1,16 @@
+team_id,team_name,team_type,league,description,offence_coach,defence_coach,speacial_teams_coach,qb,rb,ol1,ol2,ol3,r1,r2,s1,s2,dl1,dl2,dl3,db1,db2,budget,offence_rating,defence_rating,special_teams_rating,overall_rating
+22dda48d-9e4d-469d-8e17-eb48dd5a58d7,Buffalo Bills,,NFL,High-octane offense with passionate fanbase,,,,,,,,,,,,,,,,,,50.0,1.0,1.0,1.0,1.0
+15fe2682-b875-4e9f-8b1d-df460e1edf57,Canton Bulldogs,,NFL-Historic,Birthplace of professional football,,,,,,,,,,,,,,,,,,50.0,1.0,1.0,1.0,1.0
+d6d0b322-6a53-4df9-9ae1-5abb357a05ef,Carolina Panthers,,NFL,Keep Pounding spirit with modern facilities,,,,,,,,,,,,,,,,,,50.0,1.0,1.0,1.0,1.0
+7e907f08-6389-4d4f-b2b1-a4899a80a576,Chicago Bears,,NFL,Monsters of the Midway with defensive tradition,,,,,,,,,,,,,,,,,,50.0,1.0,1.0,1.0,1.0
+13347921-d789-43b4-9433-dd106b2e5f8b,Chicago Cardinals,,NFL-Historic,Oldest franchise with deep football roots,,,,,,,,,,,,,,,,,,50.0,1.0,1.0,1.0,1.0
+e6c4ce63-cbef-4e01-ba5f-804a984024ee,Cincinnati Bengals,,NFL,Who Dey Nation with jungle atmosphere,,,,,,,,,,,,,,,,,,50.0,1.0,1.0,1.0,1.0
+db3ed416-54bc-44d6-86dc-49b6cc79a2ef,Cleveland Browns,,NFL,Dawg Pound loyalty with factory of sadness,,,,,,,,,,,,,,,,,,50.0,1.0,1.0,1.0,1.0
+3d743b76-bc76-4249-b550-d5a09b0e071a,Dallas Cowboys,,NFL,America's Team with star power and resources,,,,,,,,,,,,,,,,,,50.0,1.0,1.0,1.0,1.0
+a866ce30-5869-4188-b93b-d415e1f97a9e,Denver Broncos,,NFL,Mile High magic with strong defensive tradition,,,,,,,,,,,,,,,,,,50.0,1.0,1.0,1.0,1.0
+4379eea3-230b-4c63-8c33-06dacd51a349,New England Patriots,,NFL,Dynasty franchise with championship legacy,,,,,,,,,,,,,,,,,,50.0,1.0,1.0,1.0,1.0
+64336ace-1ead-4eed-a112-3d402edc6d84,New Orleans Saints,,NFL,Who Dat Nation with dome field advantage,,,,,,,,,,,,,,,,,,50.0,1.0,1.0,1.0,1.0
+88e80e3c-3511-403f-9033-332c76820e54,New York Giants,,NFL,Big Blue tradition in the Big Apple,,,,,,,,,,,,,,,,,,50.0,1.0,1.0,1.0,1.0
+466adf39-b0a1-4b20-ba94-f22a82ff92a2,Los Angeles Rams,,NFL,Hollywood glamour with championship experience,,,,,,,,,,,,,,,,,,50.0,1.0,1.0,1.0,1.0
+99d0319f-0fd4-409f-a828-c9aec14caa99,San Diego Chargers,,NFL-Historic,Lightning bolts and perfect weather advantage,,,,,,,,,,,,,,,,,,50.0,1.0,1.0,1.0,1.0
+4d1c8be1-c9f0-4f0f-9e91-b424d8343f86,Oregon Ducks,,NCAA,Duck dynasty with innovative uniforms and offense,,,,,,,,,,,,,,,,,,50.0,1.0,1.0,1.0,1.0
