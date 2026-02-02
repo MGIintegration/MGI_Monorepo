@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 605ef5164640f42238911436467cb538, type: 3}
+  m_Name: UITheme
+  m_EditorClassIdentifier: 
+  ScreenBackground: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 1}
+  BarBackground: {r: 0.24705882, g: 0.18431373, b: 0.18431373, a: 0.39215687}
+  CardBorderColor: {r: 0.92156863, g: 0.94509804, b: 0.60784316, a: 1}
+  CardBackground: {r: 1, g: 1, b: 1, a: 0.39215687}
+  ButtonFill: {r: 1, g: 1, b: 1, a: 1}
+  CardBorderSprite: {fileID: 21300000, guid: 22c77f0957469497980d309b313fa071, type: 2}

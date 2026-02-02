@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d838842119918489f92071ce6daa5580, type: 3}
+  m_Name: TextStyles
+  m_EditorClassIdentifier: 
+  H1:
+    font: {fileID: 11400000, guid: c7dc46113fe74412783aee0ec8c3fc30, type: 2}
+    fontStyle: 1
+    enableAutoSize: 1
+    autoSizeMin: 80
+    autoSizeMax: 80
+  H2:
+    font: {fileID: 11400000, guid: c7dc46113fe74412783aee0ec8c3fc30, type: 2}
+    fontStyle: 1
+    enableAutoSize: 1
+    autoSizeMin: 55
+    autoSizeMax: 55
+  H3:
+    font: {fileID: 11400000, guid: 9e328ad8a79b54c92a6be59361213da5, type: 2}
+    fontStyle: 0
+    enableAutoSize: 1
+    autoSizeMin: 55
+    autoSizeMax: 55
+  Body:
+    font: {fileID: 11400000, guid: 9e328ad8a79b54c92a6be59361213da5, type: 2}
+    fontStyle: 0
+    enableAutoSize: 1
+    autoSizeMin: 40
+    autoSizeMax: 42
+  Label:
+    font: {fileID: 11400000, guid: 9e328ad8a79b54c92a6be59361213da5, type: 2}
+    fontStyle: 0
+    enableAutoSize: 1
+    autoSizeMin: 28
+    autoSizeMax: 32
+  ButtonText:
+    font: {fileID: 11400000, guid: 9e328ad8a79b54c92a6be59361213da5, type: 2}
+    fontStyle: 0
+    enableAutoSize: 1
+    autoSizeMin: 45
+    autoSizeMax: 45
