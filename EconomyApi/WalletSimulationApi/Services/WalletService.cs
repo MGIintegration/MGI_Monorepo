@@ -1,7 +1,7 @@
-using WalletApi.Models;
-using WalletApi.Processors;
+using WalletSimulationApi.Models;
+using WalletSimulationApi.Processors;
 
-namespace WalletApi.Services;
+namespace WalletSimulationApi.Services;
 
 /// <summary>
 /// Service layer for wallet simulation. Orchestrates simulation and risk evaluation.

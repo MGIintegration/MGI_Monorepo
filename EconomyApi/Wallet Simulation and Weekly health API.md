@@ -22,8 +22,8 @@ dotnet run
 **Option B – Run Wallet and Health APIs separately:**
 
 ```bash
-# Terminal 1 – Wallet API (weekly simulation)
-cd EconomyApi/WalletApi
+# Terminal 1 – Wallet Simulation API (weekly simulation)
+cd EconomyApi/WalletSimulationApi
 dotnet run
 
 # Terminal 2 – Weekly Health API
@@ -31,23 +31,23 @@ cd EconomyApi/HealthApi
 dotnet run
 ```
 
-- Wallet API: http://localhost:8001 (Swagger: http://localhost:8001/swagger)  
+- Wallet Simulation API: http://localhost:8001 (Swagger: http://localhost:8001/swagger)  
 - Weekly Health API: http://localhost:8002 (Swagger: http://localhost:8002/swagger)  
 
 ## Project structure
 
 | Project | Port | Description |
 |---------|------|-------------|
-| **WalletApi** | 8001 | Wallet simulation only (POST/GET simulate) |
+| **WalletSimulationApi** | 8001 | Wallet simulation only (POST/GET simulate) |
 | **HealthApi** | 8002 | Economy health monitoring only (health, history, summary) |
 | **EconomyApi** (legacy) | 8000 | Combined API (all endpoints in one app) |
 
 ## Run the separate APIs
 
-### Wallet API – weekly simulation (port 8001)
+### Wallet Simulation API – weekly simulation (port 8001)
 
 ```bash
-cd EconomyApi/WalletApi
+cd EconomyApi/WalletSimulationApi
 dotnet run
 ```
 
@@ -105,7 +105,7 @@ dotnet run
 
 ## Layout
 
-- **WalletApi/** – Wallet simulation: Models, Processors, Services, Controllers, Program.cs  
+- **WalletSimulationApi/** – Wallet simulation: Models, Processors, Services, Controllers, Program.cs  
 - **HealthApi/** – Health monitoring: Models, Processors, Services, Controllers, Program.cs  
 - **EconomyApi/** (root) – Legacy combined app: EconomyController, shared Models/Services/Processors  
 

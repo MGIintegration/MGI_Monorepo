@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace WalletApi.Models;
+namespace WalletSimulationApi.Models;
 
 /// <summary>Current wallet state for simulation.</summary>
 public class WalletState

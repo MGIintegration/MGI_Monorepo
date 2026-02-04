@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using WalletApi.Models;
-using WalletApi.Services;
+using WalletSimulationApi.Models;
+using WalletSimulationApi.Services;
 
-namespace WalletApi.Controllers;
+namespace WalletSimulationApi.Controllers;
 
 [ApiController]
 [Route("api/v1")]

@@ -1,6 +1,6 @@
-using WalletApi.Models;
+using WalletSimulationApi.Models;
 
-namespace WalletApi.Processors;
+namespace WalletSimulationApi.Processors;
 
 /// <summary>
 /// Core logic for simulating wallet transactions over one week:
