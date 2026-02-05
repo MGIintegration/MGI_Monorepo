@@ -3,43 +3,36 @@ using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// Displays real-time emotional state (Frustration & Satisfaction)
-/// with smooth transitions and color intensity based on emotion levels (0–100).
-/// Features bars that grow from center: Frustration (left), Satisfaction (right).
+/// Displays frustration and satisfaction (0–100) with progress bars and optional borders.
+/// Hierarchy: Border → Background → Progress bar (Image). Bars grow from inner edge of border.
 /// </summary>
 public class EmotionDisplayUI : MonoBehaviour
 {
-    [Header("Text References")]
+    [Header("Text")]
     public TextMeshProUGUI frustrationText;
     public TextMeshProUGUI satisfactionText;
 
-    [Header("Bar References")]
-    [Tooltip("Bar that grows from center to left (Frustration)")]
+    [Header("Frustration")]
+    public Image frustrationBorderImage;
     public RectTransform frustrationBar;
-    [Tooltip("Bar that grows from center to right (Satisfaction)")]
+
+    [Header("Satisfaction")]
+    public Image satisfactionBorderImage;
     public RectTransform satisfactionBar;
 
-    [Header("Bar Settings")]
-    [Tooltip("Maximum width for each bar (half of total bar area)")]
-    public float maxBarWidth = 200f;
-    [Tooltip("Bar colors")]
+    [Header("Colors")]
     public Color frustrationColor = Color.red;
     public Color satisfactionColor = Color.green;
 
-    [Header("Border")]
-    [Tooltip("Optional image used as a frame around the emotion bars")]
-    public Image borderImage;
-    [Tooltip("Border color when emotions are low/neutral")]
-    public Color borderLowColor = new Color(0f, 0f, 0f, 0.25f);
-    [Tooltip("Border color when emotions are high")]
-    public Color borderHighColor = Color.black;
-
-    [Header("Animation Settings")]
+    [Header("Animation")]
     [Range(0.1f, 5f)] public float lerpSpeed = 2.5f;
 
-    // Internal smoothed values
-    private float _displayFr;
-    private float _displaySa;
+    const float FallbackBarWidth = 200f;
+
+    float _displayFr;
+    float _displaySa;
+    Image _frustrationImage;
+    Image _satisfactionImage;
 
     void Start()
     {
@@ -49,143 +42,88 @@ public class EmotionDisplayUI : MonoBehaviour
             _displayFr = fr;
             _displaySa = sa;
         }
-        else
-        {
-            _displayFr = _displaySa = 0f;
-        }
 
-        // Initialize bars
-        InitializeBars();
-    }
-
-    void InitializeBars()
-    {
-        // Set up Frustration bar (grows from center to left)
         if (frustrationBar != null)
         {
-            // Anchor to center, pivot at right edge (so bar grows left from center)
-            frustrationBar.anchorMin = new Vector2(0.5f, 0.5f);
-            frustrationBar.anchorMax = new Vector2(0.5f, 0.5f);
-            frustrationBar.pivot = new Vector2(1f, 0.5f); // Right edge pivot
-            
-            // Set initial size
+            var bg = frustrationBar.parent != null ? frustrationBar.parent.GetComponent<Image>() : null;
+            if (bg != null) bg.color = Color.white;
+            frustrationBar.anchorMin = frustrationBar.anchorMax = new Vector2(1f, 0.5f);
+            frustrationBar.pivot = new Vector2(1f, 0.5f);
+            frustrationBar.anchoredPosition = Vector2.zero;
             frustrationBar.sizeDelta = new Vector2(0f, frustrationBar.sizeDelta.y);
-            
-            // Set color if Image component exists
-            var frustrationImage = frustrationBar.GetComponent<Image>();
-            if (frustrationImage != null)
-            {
-                frustrationImage.color = frustrationColor;
-            }
+            _frustrationImage = frustrationBar.GetComponent<Image>();
+            if (_frustrationImage != null) _frustrationImage.color = frustrationColor;
         }
 
-        // Set up Satisfaction bar (grows from center to right)
         if (satisfactionBar != null)
         {
-            // Anchor to center, pivot at left edge (so bar grows right from center)
-            satisfactionBar.anchorMin = new Vector2(0.5f, 0.5f);
-            satisfactionBar.anchorMax = new Vector2(0.5f, 0.5f);
-            satisfactionBar.pivot = new Vector2(0f, 0.5f); // Left edge pivot
-            
-            // Set initial size
+            var bg = satisfactionBar.parent != null ? satisfactionBar.parent.GetComponent<Image>() : null;
+            if (bg != null) bg.color = Color.white;
+            satisfactionBar.anchorMin = satisfactionBar.anchorMax = new Vector2(0f, 0.5f);
+            satisfactionBar.pivot = new Vector2(0f, 0.5f);
+            satisfactionBar.anchoredPosition = Vector2.zero;
             satisfactionBar.sizeDelta = new Vector2(0f, satisfactionBar.sizeDelta.y);
-            
-            // Set color if Image component exists
-            var satisfactionImage = satisfactionBar.GetComponent<Image>();
-            if (satisfactionImage != null)
-            {
-                satisfactionImage.color = satisfactionColor;
-            }
+            _satisfactionImage = satisfactionBar.GetComponent<Image>();
+            if (_satisfactionImage != null) _satisfactionImage.color = satisfactionColor;
         }
     }
 
     void Update()
     {
-        var esm = EmotionalStateManager.Instance;
-        if (esm == null) return;
+        if (EmotionalStateManager.Instance == null) return;
 
-        var (fr, sa) = esm.Snapshot();
-
-        // Smooth interpolation for UI readability
+        var (fr, sa) = EmotionalStateManager.Instance.Snapshot();
         _displayFr = Mathf.Lerp(_displayFr, fr, Time.deltaTime * lerpSpeed);
         _displaySa = Mathf.Lerp(_displaySa, sa, Time.deltaTime * lerpSpeed);
 
-        // Update texts (with null safety)
+        float nFr = Mathf.Clamp01(_displayFr / 100f);
+        float nSa = Mathf.Clamp01(_displaySa / 100f);
+
         if (frustrationText != null)
         {
             frustrationText.text = $"Frustration: {_displayFr:F1}";
-            float intensity = Mathf.InverseLerp(0f, 100f, _displayFr);
-            frustrationText.color = Color.Lerp(Color.white, Color.red, intensity);
-            frustrationText.alpha = Mathf.Clamp01(intensity + 0.3f);
+            float i = Mathf.InverseLerp(0f, 100f, _displayFr);
+            frustrationText.color = Color.Lerp(Color.white, Color.red, i);
+            frustrationText.alpha = Mathf.Clamp01(i + 0.3f);
         }
 
         if (satisfactionText != null)
         {
             satisfactionText.text = $"Satisfaction: {_displaySa:F1}";
-            float intensity = Mathf.InverseLerp(0f, 100f, _displaySa);
-            satisfactionText.color = Color.Lerp(Color.white, Color.green, intensity);
-            satisfactionText.alpha = Mathf.Clamp01(intensity + 0.3f);
+            float i = Mathf.InverseLerp(0f, 100f, _displaySa);
+            satisfactionText.color = Color.Lerp(Color.white, Color.green, i);
+            satisfactionText.alpha = Mathf.Clamp01(i + 0.3f);
         }
 
-        // Update bars
-        UpdateBars();
-    }
+        float maxFr = GetBarMaxWidth(frustrationBar);
+        float maxSa = GetBarMaxWidth(satisfactionBar);
 
-    void UpdateBars()
-    {
-        // Shared normalized values (0–1) for both visual and border use
-        float normalizedFr = Mathf.Clamp01(_displayFr / 100f);
-        float normalizedSa = Mathf.Clamp01(_displaySa / 100f);
-
-        // Update Frustration bar (grows from center to left)
         if (frustrationBar != null)
         {
-            float targetWidth = normalizedFr * maxBarWidth;
-            float currentWidth = frustrationBar.sizeDelta.x;
-            float newWidth = Mathf.Lerp(currentWidth, targetWidth, Time.deltaTime * lerpSpeed);
-            
-            frustrationBar.sizeDelta = new Vector2(newWidth, frustrationBar.sizeDelta.y);
-            
-            // Update color intensity
-            var frustrationImage = frustrationBar.GetComponent<Image>();
-            if (frustrationImage != null)
-            {
-                float intensity = normalizedFr;
-                frustrationImage.color = Color.Lerp(
-                    new Color(frustrationColor.r, frustrationColor.g, frustrationColor.b, 0.3f),
-                    frustrationColor,
-                    intensity
-                );
-            }
+            float w = Mathf.Lerp(frustrationBar.sizeDelta.x, nFr * maxFr, Time.deltaTime * lerpSpeed);
+            frustrationBar.sizeDelta = new Vector2(w, frustrationBar.sizeDelta.y);
+            if (_frustrationImage != null)
+                _frustrationImage.color = Color.Lerp(new Color(frustrationColor.r, frustrationColor.g, frustrationColor.b, 0.3f), frustrationColor, nFr);
         }
 
-        // Update Satisfaction bar (grows from center to right)
         if (satisfactionBar != null)
         {
-            float targetWidth = normalizedSa * maxBarWidth;
-            float currentWidth = satisfactionBar.sizeDelta.x;
-            float newWidth = Mathf.Lerp(currentWidth, targetWidth, Time.deltaTime * lerpSpeed);
-            
-            satisfactionBar.sizeDelta = new Vector2(newWidth, satisfactionBar.sizeDelta.y);
-            
-            // Update color intensity
-            var satisfactionImage = satisfactionBar.GetComponent<Image>();
-            if (satisfactionImage != null)
-            {
-                float intensity = normalizedSa;
-                satisfactionImage.color = Color.Lerp(
-                    new Color(satisfactionColor.r, satisfactionColor.g, satisfactionColor.b, 0.3f),
-                    satisfactionColor,
-                    intensity
-                );
-            }
+            float w = Mathf.Lerp(satisfactionBar.sizeDelta.x, nSa * maxSa, Time.deltaTime * lerpSpeed);
+            satisfactionBar.sizeDelta = new Vector2(w, satisfactionBar.sizeDelta.y);
+            if (_satisfactionImage != null)
+                _satisfactionImage.color = Color.Lerp(new Color(satisfactionColor.r, satisfactionColor.g, satisfactionColor.b, 0.3f), satisfactionColor, nSa);
         }
 
-        // Border reacts to overall emotion intensity so it's easier to notice
-        if (borderImage != null)
-        {
-            float combined = Mathf.Max(normalizedFr, normalizedSa);
-            borderImage.color = Color.Lerp(borderLowColor, borderHighColor, combined);
-        }
+        if (frustrationBorderImage != null)
+            frustrationBorderImage.color = Color.Lerp(new Color(0f, 0f, 0f, 0.25f), Color.black, nFr);
+        if (satisfactionBorderImage != null)
+            satisfactionBorderImage.color = Color.Lerp(new Color(0f, 0f, 0f, 0.25f), Color.black, nSa);
+    }
+
+    static float GetBarMaxWidth(RectTransform bar)
+    {
+        if (bar == null) return FallbackBarWidth;
+        var parent = bar.parent as RectTransform;
+        return parent != null && parent.rect.width > 0 ? parent.rect.width : FallbackBarWidth;
     }
 }
