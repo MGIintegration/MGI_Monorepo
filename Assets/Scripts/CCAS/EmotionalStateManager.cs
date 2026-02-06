@@ -47,7 +47,7 @@ public class EmotionalStateManager : MonoBehaviour
     private readonly Queue<float> _qualityWindow = new();
 
     // Quick accessors for config
-    private Phase1ConfigRoot Cfg => DropConfigManager.Instance?.config;
+    private CCASConfigRoot Cfg => DropConfigManager.Instance?.config;
 
     void Awake()
     {
@@ -211,11 +211,8 @@ public class EmotionalStateManager : MonoBehaviour
         if (p2 != null && (p2.P_max > 0f || p2.N_max > 0f))
             return (Mathf.Max(0.1f, p2.P_max), Mathf.Max(0.1f, p2.N_max));
 
-        // Fallback to legacy Phase 1 params if Phase 2 block missing.
-        var p1 = Cfg?.phase_1_configuration?.emotion_parameters;
-        float p = p1?.S_max ?? P_max_Fallback;
-        float n = p1?.F_max ?? N_max_Fallback;
-        return (p, n);
+        // Phase 2 only: fallback to local inspector values if config missing.
+        return (P_max_Fallback, N_max_Fallback);
     }
 
     private int GetRarityNumericValue(string rarity)

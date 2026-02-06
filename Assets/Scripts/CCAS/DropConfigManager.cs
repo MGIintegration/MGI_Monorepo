@@ -14,7 +14,7 @@ public class DropConfigManager : MonoBehaviour
     public static DropConfigManager Instance;
 
     [Header("Runtime Config (Loaded JSON)")]
-    public Phase1ConfigRoot config;   // maps directly to json
+    public CCASConfigRoot config;   // maps directly to json
 
     void Awake()
     {
@@ -49,7 +49,7 @@ public class DropConfigManager : MonoBehaviour
                 FloatParseHandling = FloatParseHandling.Double
             };
 
-            config = JsonConvert.DeserializeObject<Phase1ConfigRoot>(json, settings);
+            config = JsonConvert.DeserializeObject<CCASConfigRoot>(json, settings);
 
             if (config?.pack_types != null && config.rarity_values != null)
             {
