@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using TMPro;
 using System.Text;
@@ -20,11 +21,13 @@ public class DropHistoryController : MonoBehaviour
     public GameObject resultTemplate;
     public ScrollRect scrollRect;
 
-    [Header("Emotion Templates (Optional - for separate formatting)")]
-    [Tooltip("If set, creates separate entry for positive. If null, uses resultTemplate.")]
-    public GameObject satisfactionTemplate;
-    [Tooltip("If set, creates separate entry for negative. If null, uses resultTemplate.")]
-    public GameObject frustrationTemplate;
+    [Header("Fixed emotion labels (Pos_after / Neg_after in PullResultsScroll)")]
+    [Tooltip("Fixed label for positive_after value; text is updated in place (not instantiated into scroll).")]
+    [FormerlySerializedAs("satisfactionTemplate")]
+    public GameObject posAfterLabel;
+    [Tooltip("Fixed label for negative_after value; text is updated in place (not instantiated into scroll).")]
+    [FormerlySerializedAs("frustrationTemplate")]
+    public GameObject negAfterLabel;
 
     [Header("Display")]
     [Range(1, 20)] public int recentPullsToShow = 3;
@@ -38,11 +41,7 @@ public class DropHistoryController : MonoBehaviour
         if (resultTemplate != null && resultTemplate.activeSelf)
             resultTemplate.SetActive(false);
         
-        if (satisfactionTemplate != null && satisfactionTemplate.activeSelf)
-            satisfactionTemplate.SetActive(false);
-        
-        if (frustrationTemplate != null && frustrationTemplate.activeSelf)
-            frustrationTemplate.SetActive(false);
+        // posAfterLabel / negAfterLabel stay visible; we update their text in place
     }
 
     void Start()
@@ -98,7 +97,7 @@ public class DropHistoryController : MonoBehaviour
         for (int i = contentParent.childCount - 1; i >= 0; i--)
         {
             var child = contentParent.GetChild(i).gameObject;
-            if (child == resultTemplate || child == satisfactionTemplate || child == frustrationTemplate) continue;
+            if (child == resultTemplate) continue;
             Destroy(child);
         }
 
@@ -110,6 +109,10 @@ public class DropHistoryController : MonoBehaviour
             var entry = Instantiate(resultTemplate, contentParent);
             entry.SetActive(true);
             entry.GetComponentInChildren<TextMeshProUGUI>().text = "No pulls yet.";
+            var posT = posAfterLabel != null ? posAfterLabel.GetComponentInChildren<TextMeshProUGUI>() : null;
+            var negT = negAfterLabel != null ? negAfterLabel.GetComponentInChildren<TextMeshProUGUI>() : null;
+            if (posT != null) posT.text = "";
+            if (negT != null) negT.text = "";
             _isPopulating = false;
             yield break;
         }
@@ -171,32 +174,39 @@ public class DropHistoryController : MonoBehaviour
                 }
             }
 
-            // Display emotional state - Phase 2: positive/negative
+            // Keep latest positive/negative for fixed labels (updated after loop)
             float neg = log.negative_after;
             float pos = log.positive_after;
 
-            // Positive entry
-            GameObject satTemplate = satisfactionTemplate != null ? satisfactionTemplate : resultTemplate;
-            var satEntry = Instantiate(satTemplate, contentParent);
-            satEntry.SetActive(true);
-            var satText = satEntry.GetComponentInChildren<TextMeshProUGUI>();
-            if (satText != null)
-            {
-                satText.text = $"Positive: {pos:F2}";
-            }
-
-            // Negative entry
-            GameObject frusTemplate = frustrationTemplate != null ? frustrationTemplate : resultTemplate;
-            var frusEntry = Instantiate(frusTemplate, contentParent);
-            frusEntry.SetActive(true);
-            var frusText = frusEntry.GetComponentInChildren<TextMeshProUGUI>();
-            if (frusText != null)
-            {
-                frusText.text = $"Negative: {neg:F2}";
-            }
-
             Debug.Log($"[History] Rendered pull {log.event_id} ({log.pack_type}) → [{cardNamesLine}] | POS={pos:F1} NEG={neg:F1}");
         }
+
+        // Update fixed Pos_after / Neg_after labels in place (no instantiate = positions stay as in Unity)
+        var latest = logs[logs.Count - 1];
+        float posAfter = latest.positive_after;
+        float negAfter = latest.negative_after;
+        var posText = posAfterLabel != null ? posAfterLabel.GetComponentInChildren<TextMeshProUGUI>() : null;
+        var negText = negAfterLabel != null ? negAfterLabel.GetComponentInChildren<TextMeshProUGUI>() : null;
+
+        const float minLabelWidth = 140f; // Avoid narrow rect causing "one letter per row"
+        if (posText != null)
+        {
+            posText.text = $"Positive: {posAfter:F2}";
+            posText.overflowMode = TMPro.TextOverflowModes.Overflow; // Keep on one line
+            var posRect = posText.rectTransform;
+            if (posRect.sizeDelta.x < minLabelWidth)
+                posRect.sizeDelta = new Vector2(minLabelWidth, posRect.sizeDelta.y);
+        }
+        if (negText != null)
+        {
+            negText.text = $"Negative: {negAfter:F2}";
+            negText.overflowMode = TMPro.TextOverflowModes.Overflow; // Keep on one line
+            var negRect = negText.rectTransform;
+            if (negRect.sizeDelta.x < minLabelWidth)
+                negRect.sizeDelta = new Vector2(minLabelWidth, negRect.sizeDelta.y);
+        }
+        if (posAfterLabel != null && !posAfterLabel.activeSelf) posAfterLabel.SetActive(true);
+        if (negAfterLabel != null && !negAfterLabel.activeSelf) negAfterLabel.SetActive(true);
 
         yield return null;
         LayoutRebuilder.ForceRebuildLayoutImmediate(contentParent as RectTransform);
