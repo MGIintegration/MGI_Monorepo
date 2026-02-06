@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="EconomyApi.csproj" />
+  <Project Path="ForecastApi/ForecastApi.csproj" />
+  <Project Path="HealthApi/HealthApi.csproj" />
+  <Project Path="TransactionApi/TransactionApi.csproj" />
+  <Project Path="WalletApi/WalletApi.csproj" />
+</Solution>

@@ -59,3 +59,4 @@ public class HealthController : ControllerBase
         return Ok(summary);
     }
 }
+

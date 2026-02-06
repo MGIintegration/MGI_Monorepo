@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TransactionApi</name>
+    </assembly>
+    <members>
+        <member name="M:TransactionApi.Controllers.TransactionController.GetTransactions(System.String)">
+            <summary>
+            Get transaction history (GET).
+            </summary>
+        </member>
+        <member name="T:Program">
+            <summary>
+            Auto-generated public partial Program class for top-level statement apps.
+            </summary>
+        </member>
+    </members>
+</doc>

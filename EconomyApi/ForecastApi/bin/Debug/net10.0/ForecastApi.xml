@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ForecastApi</name>
+    </assembly>
+    <members>
+        <member name="M:ForecastApi.Controllers.ForecastController.ForecastWallet(ForecastApi.Models.ForecastRequest)">
+            <summary>
+            Calculate economy forecast based on income and expenses (POST).
+            </summary>
+        </member>
+        <member name="P:ForecastApi.Models.ForecastRequest.PlayerId">
+            <summary>Unique ID of the player.</summary>
+            <example>123e4567-e89b-12d3-a456-426614174000</example>
+        </member>
+        <member name="P:ForecastApi.Models.ForecastRequest.CurrentBalance">
+            <summary>Starting balance for the simulation.</summary>
+            <example>1000</example>
+        </member>
+        <member name="P:ForecastApi.Models.ForecastRequest.Weeks">
+            <summary>Number of weeks to simulate.</summary>
+            <example>4</example>
+        </member>
+        <member name="P:ForecastApi.Models.ForecastRequest.Salary">
+            <summary>Weekly salary for the player.</summary>
+            <example>100</example>
+        </member>
+        <member name="P:ForecastApi.Models.ForecastRequest.Income">
+            <summary>Reference gross income (not used in balance calculation).</summary>
+            <example>200</example>
+        </member>
+        <member name="P:ForecastApi.Models.ForecastRequest.Expenses">
+            <summary>Lookup of weekly expenses by week number.</summary>
+            <example>{"1": 30, "2": 40, "3": 50}</example>
+        </member>
+        <member name="P:ForecastApi.Models.ForecastRequest.Bonuses">
+            <summary>Lookup of weekly bonuses by week number.</summary>
+            <example>{"1": 50, "2": 0}</example>
+        </member>
+        <member name="T:Program">
+            <summary>
+            Auto-generated public partial Program class for top-level statement apps.
+            </summary>
+        </member>
+    </members>
+</doc>
