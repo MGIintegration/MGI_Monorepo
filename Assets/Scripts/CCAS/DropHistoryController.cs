@@ -6,7 +6,7 @@ using TMPro;
 using System.Text;
 
 /// <summary>
-/// Displays recent pack pull results and emotional summaries (Phase-1 telemetry view).
+    /// Displays recent pack pull results and emotional summaries (Phase 2 telemetry view).
 /// </summary>
 public class DropHistoryController : MonoBehaviour
 {
@@ -21,9 +21,9 @@ public class DropHistoryController : MonoBehaviour
     public ScrollRect scrollRect;
 
     [Header("Emotion Templates (Optional - for separate formatting)")]
-    [Tooltip("If set, creates separate entry for satisfaction. If null, uses resultTemplate.")]
+    [Tooltip("If set, creates separate entry for positive. If null, uses resultTemplate.")]
     public GameObject satisfactionTemplate;
-    [Tooltip("If set, creates separate entry for frustration. If null, uses resultTemplate.")]
+    [Tooltip("If set, creates separate entry for negative. If null, uses resultTemplate.")]
     public GameObject frustrationTemplate;
 
     [Header("Display")]
@@ -171,31 +171,31 @@ public class DropHistoryController : MonoBehaviour
                 }
             }
 
-            // Display emotional state - create separate entries for satisfaction and frustration
-            float fr = log.frustration_after;
-            float sa = log.satisfaction_after;
+            // Display emotional state - Phase 2: positive/negative
+            float neg = log.negative_after;
+            float pos = log.positive_after;
 
-            // Satisfaction entry
+            // Positive entry
             GameObject satTemplate = satisfactionTemplate != null ? satisfactionTemplate : resultTemplate;
             var satEntry = Instantiate(satTemplate, contentParent);
             satEntry.SetActive(true);
             var satText = satEntry.GetComponentInChildren<TextMeshProUGUI>();
             if (satText != null)
             {
-                satText.text = $"Satisfaction: {sa:F2}";
+                satText.text = $"Positive: {pos:F2}";
             }
 
-            // Frustration entry
+            // Negative entry
             GameObject frusTemplate = frustrationTemplate != null ? frustrationTemplate : resultTemplate;
             var frusEntry = Instantiate(frusTemplate, contentParent);
             frusEntry.SetActive(true);
             var frusText = frusEntry.GetComponentInChildren<TextMeshProUGUI>();
             if (frusText != null)
             {
-                frusText.text = $"Frustration: {fr:F2}";
+                frusText.text = $"Negative: {neg:F2}";
             }
 
-            Debug.Log($"[History] Rendered pull {log.event_id} ({log.pack_type}) → [{cardNamesLine}] | S={sa:F1} F={fr:F1}");
+            Debug.Log($"[History] Rendered pull {log.event_id} ({log.pack_type}) → [{cardNamesLine}] | POS={pos:F1} NEG={neg:F1}");
         }
 
         yield return null;

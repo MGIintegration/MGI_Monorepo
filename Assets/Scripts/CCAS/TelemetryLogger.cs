@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 /// <summary>
 /// Simplified Telemetry Logger (Phase 1)
 /// Records one log per pack pull with emotional snapshot.
-/// Stores data as JSON and exports frustration/satisfaction deltas to CSV.
+/// Stores data as JSON and exports Phase 2 positive/negative deltas to CSV.
 /// </summary>
 public class TelemetryLogger : MonoBehaviour
 {
@@ -159,12 +159,14 @@ public class TelemetryLogger : MonoBehaviour
             ev.duplicate_count = duplicateCount;
             ev.player_xp_after = newTotalXp;
 
-            // Emotional snapshot (after pull)
+            // Emotional snapshot (after pull) - Phase 2 (negative/positive)
             if (EmotionalStateManager.Instance != null)
             {
-                var (fr, sa) = EmotionalStateManager.Instance.Snapshot();
-                ev.satisfaction_after = sa;
-                ev.frustration_after = fr;
+                var (neg, pos) = EmotionalStateManager.Instance.Snapshot();
+                ev.positive_after = pos;
+                ev.negative_after = neg;
+
+                ev.phase2_breakdown = EmotionalStateManager.Instance.GetLastBreakdown();
             }
 
             // Save to cache
@@ -220,12 +222,14 @@ public class TelemetryLogger : MonoBehaviour
                 pulled_cards = new List<CardData>() // Empty for legacy calls
             };
 
-            // Emotional snapshot (after pull)
+            // Emotional snapshot (after pull) - Phase 2 (negative/positive)
             if (EmotionalStateManager.Instance != null)
             {
-                var (fr, sa) = EmotionalStateManager.Instance.Snapshot();
-                ev.satisfaction_after = sa;
-                ev.frustration_after = fr;
+                var (neg, pos) = EmotionalStateManager.Instance.Snapshot();
+                ev.positive_after = pos;
+                ev.negative_after = neg;
+
+                ev.phase2_breakdown = EmotionalStateManager.Instance.GetLastBreakdown();
             }
 
             // Save to cache
@@ -263,17 +267,21 @@ public class TelemetryLogger : MonoBehaviour
     // -------------------------------------------------------------------------
     private void ExportEmotionalStateCSV(PackPullLog ev)
     {
-        string csvPath = Path.Combine(csvDirPath, "PHASE_1_EMOTIONAL_STATE_LOG.csv");
+        string csvPath = Path.Combine(csvDirPath, "PHASE_2_EMOTIONAL_STATE_LOG.csv");
 
         if (!File.Exists(csvPath))
         {
-            string header = "log_id,timestamp,session_id,player_id,event_type,frustration_after,satisfaction_after,frustration_delta,satisfaction_delta";
+            string header =
+                "log_id,timestamp,session_id,player_id,event_type," +
+                "negative_after,positive_after,negative_delta,positive_delta," +
+                "pos_d_rarity_pack,pos_d_streak,pos_d_economy,neg_d_rarity_pack,neg_d_streak,neg_d_economy";
             File.WriteAllText(csvPath, header + "\n");
         }
 
-        var (frAfter, saAfter) = EmotionalStateManager.Instance?.Snapshot() ?? (0f, 0f);
-        float frDelta = EmotionalStateManager.Instance?.GetLastFrustrationDelta() ?? 0f;
-        float saDelta = EmotionalStateManager.Instance?.GetLastSatisfactionDelta() ?? 0f;
+        var (negAfter, posAfter) = EmotionalStateManager.Instance?.Snapshot() ?? (0f, 0f);
+        float negDelta = EmotionalStateManager.Instance?.GetLastNegativeDelta() ?? 0f;
+        float posDelta = EmotionalStateManager.Instance?.GetLastPositiveDelta() ?? 0f;
+        var b = EmotionalStateManager.Instance?.GetLastBreakdown() ?? default;
 
         var rowValues = new List<string>
         {
@@ -282,10 +290,16 @@ public class TelemetryLogger : MonoBehaviour
             ev.session_id,
             ev.player_id,
             "outcome",
-            frAfter.ToString("F2"),
-            saAfter.ToString("F2"),
-            frDelta.ToString("F2"),
-            saDelta.ToString("F2")
+            negAfter.ToString("F2"),
+            posAfter.ToString("F2"),
+            negDelta.ToString("F2"),
+            posDelta.ToString("F2"),
+            b.pos_d_rarity_pack.ToString("F2"),
+            b.pos_d_streak.ToString("F2"),
+            b.pos_d_economy.ToString("F2"),
+            b.neg_d_rarity_pack.ToString("F2"),
+            b.neg_d_streak.ToString("F2"),
+            b.neg_d_economy.ToString("F2")
         };
 
         File.AppendAllText(csvPath, string.Join(",", rowValues) + "\n");
@@ -413,9 +427,12 @@ public class TelemetryLogger : MonoBehaviour
         public List<string> pull_results; // Backward compatibility - rarity strings
         public List<CardData> pulled_cards; // Full card data
         
-        // Emotional snapshot AFTER pull
-        public float satisfaction_after;
-        public float frustration_after;
+        // Emotional snapshot AFTER pull (Phase 2)
+        public float positive_after;
+        public float negative_after;
+
+        // Exact breakdown for Phase 2 (per-bucket deltas/weights, totals)
+        public Phase2PullBreakdown phase2_breakdown;
 
         // Duplicate conversion summary for this pull
         public int total_xp_gained;
