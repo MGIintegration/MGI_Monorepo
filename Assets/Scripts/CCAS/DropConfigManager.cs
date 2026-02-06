@@ -25,11 +25,13 @@ public class DropConfigManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Loads phase1_config.json from StreamingAssets/CCAS.
+    /// Loads Phase 2 config from StreamingAssets/CCAS.
     /// </summary>
     void LoadConfig()
     {
-        string path = Path.Combine(Application.streamingAssetsPath, "CCAS", "phase1_config.json");
+        // Phase 2: config file renamed (derived from phase1_config.json).
+        // See: Assets/StreamingAssets/CCAS/phase2_config.json
+        string path = Path.Combine(Application.streamingAssetsPath, "CCAS", "phase2_config.json");
 
         if (!File.Exists(path))
         {
@@ -51,11 +53,11 @@ public class DropConfigManager : MonoBehaviour
 
             if (config?.pack_types != null && config.rarity_values != null)
             {
-                Debug.Log($"[DropConfig] ✅ Loaded {config.pack_types.Count} pack types and {config.rarity_values.Count} rarity tiers from phase1_config.json");
+                Debug.Log($"[DropConfig] ✅ Loaded {config.pack_types.Count} pack types and {config.rarity_values.Count} rarity tiers from phase2_config.json");
             }
             else
             {
-                Debug.LogError("[DropConfig] ❌ Missing pack_types or rarity_values in phase1_config.json");
+                Debug.LogError("[DropConfig] ❌ Missing pack_types or rarity_values in phase2_config.json");
             }
         }
         catch (Exception e)

@@ -12,6 +12,7 @@ namespace CCAS.Config
         public string schema_version;
         public string methodology;
         public Phase1Configuration phase_1_configuration;
+        public Phase2Configuration phase_2_configuration;
         public Dictionary<string, RarityValue> rarity_values;
         public Dictionary<string, PackType> pack_types;
 
@@ -35,6 +36,82 @@ namespace CCAS.Config
     {
         public float S_max;
         public float F_max;
+    }
+
+    // -------------------- NEW: Phase 2 – Emotion Families --------------------
+
+    [Serializable]
+    public class Phase2Configuration
+    {
+        public List<string> tracked_emotions;
+        public Phase2EmotionParameters emotion_parameters;
+        public Phase2Families families;
+        public Phase2Routing routing;
+        public Phase2Decay decay;
+        public Phase2Recovery recovery;
+    }
+
+    [Serializable]
+    public class Phase2EmotionParameters
+    {
+        public float P_max;
+        public float N_max;
+        public float P_cap = 100f;
+        public float N_cap = 100f;
+    }
+
+    [Serializable]
+    public class Phase2Families
+    {
+        public Phase2Family positive;
+        public Phase2Family negative;
+    }
+
+    [Serializable]
+    public class Phase2Family
+    {
+        public List<string> buckets;
+        public Dictionary<string, float> weights;
+    }
+
+    [Serializable]
+    public class Phase2Routing
+    {
+        public float quality_good_threshold = 0.62f;
+        public float quality_peak_threshold = 0.85f;
+        public float quality_bad_threshold = 0.38f;
+        public int high_cost_threshold_coins = 1500;
+
+        public int streak_window = 5;
+        public float cold_streak_threshold = 0.40f;
+        public float hot_streak_threshold = 0.60f;
+
+        public float value_score_scale = 1000f;
+        public float value_good_threshold = 2.20f;
+        public float value_bad_threshold = 1.80f;
+    }
+
+    [Serializable]
+    public class Phase2Decay
+    {
+        public Phase2BucketDecay positive;
+        public Phase2BucketDecay negative;
+    }
+
+    [Serializable]
+    public class Phase2BucketDecay
+    {
+        public float rarity_pack = 0.98f;
+        public float streak = 0.92f;
+        public float economy = 0.96f;
+    }
+
+    [Serializable]
+    public class Phase2Recovery
+    {
+        public bool enabled = true;
+        public float good_pull_reduces_negative = 0.5f;
+        public float bad_pull_reduces_positive = 0.5f;
     }
 
     [Serializable]
