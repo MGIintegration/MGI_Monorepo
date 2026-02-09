@@ -17,12 +17,15 @@ public class FacilityDetailsHandler : MonoBehaviour
 
     [Header("Local JSON filenames in Resources (no .json)")]
     public string weightRoomRes = "WeightRoom";
-    public string rehabRes      = "Rehab";
-    public string filmRes       = "Film";
+    public string rehabRes = "Rehab";
+    public string filmRes = "Film";
 
     [Header("Server config")]
     public string apiBaseUrl = "http://localhost:5263/api";  // base URL
     public string statusPath = "/facilitystatus";            // GET ?teamId=...&playerFacilityId=...
+
+    // NEW: endpoint that returns the full config (levels/effects/costs) for a facility
+    public string configPath = "/facilityconfig";            // GET ?facilityType=WeightRoom
 
     [Header("IDs (set in Inspector or via SetIds(...) before calling Show*FromServer)")]
     public string teamId = "1";
@@ -74,25 +77,62 @@ public class FacilityDetailsHandler : MonoBehaviour
 
     // 2) Then call one of these to fetch level from server and show JSON effects:
     public void ShowWeightRoomFromServer() { StartCoroutine(FetchLevelAndShow(FacilityType.WeightRoom)); }
-    public void ShowRehabFromServer()      { StartCoroutine(FetchLevelAndShow(FacilityType.Rehab)); }
-    public void ShowFilmFromServer()       { StartCoroutine(FetchLevelAndShow(FacilityType.Film)); }
+    public void ShowRehabFromServer() { StartCoroutine(FetchLevelAndShow(FacilityType.Rehab)); }
+    public void ShowFilmFromServer() { StartCoroutine(FetchLevelAndShow(FacilityType.Film)); }
 
     // Call after a successful upgrade POST to refresh currently visible facility
-    public void RefreshFromServer()        { StartCoroutine(FetchLevelAndShow(_activeFacility)); }
+    public void RefreshFromServer() { StartCoroutine(FetchLevelAndShow(_activeFacility)); }
 
     // Optional local-only test (no server)
     public void ShowWeightRoom() { SwitchFacility(FacilityType.WeightRoom, currentLevel); }
-    public void ShowRehab()      { SwitchFacility(FacilityType.Rehab,      currentLevel); }
-    public void ShowFilm()       { SwitchFacility(FacilityType.Film,       currentLevel); }
+    public void ShowRehab() { SwitchFacility(FacilityType.Rehab, currentLevel); }
+    public void ShowFilm() { SwitchFacility(FacilityType.Film, currentLevel); }
     public void SetLevelFromButton(int level) { SetCurrentLevel(level); }
 
     // -------------------- Server fetch --------------------
 
+    System.Collections.IEnumerator TryFetchConfigFromServer(FacilityType type)
+    {
+        // already have it? skip
+        if (_configs.ContainsKey(type)) yield break;
+
+        string url = $"{apiBaseUrl.TrimEnd('/')}/{configPath.TrimStart('/')}?facilityType={type}";
+        using (var req = UnityWebRequest.Get(url))
+        {
+            yield return req.SendWebRequest();
+#if UNITY_2020_2_OR_NEWER
+        bool isError = req.result != UnityWebRequest.Result.Success;
+#else
+            bool isError = req.isNetworkError || req.isHttpError;
+#endif
+            if (isError)
+            {
+                Debug.LogWarning($"Config GET failed: {req.responseCode} {req.error} ({url}) — will fall back to Resources.");
+                yield break; // fallback to local JSON
+            }
+
+            FacilityConfigRoot cfg = null;
+            try { cfg = JsonConvert.DeserializeObject<FacilityConfigRoot>(req.downloadHandler.text); }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"Config JSON parse error: {ex.Message} — falling back to Resources.");
+            }
+
+            if (cfg != null && cfg.levels != null && cfg.levels.Count > 0)
+                _configs[type] = cfg;
+        }
+    }
+
+
     System.Collections.IEnumerator FetchLevelAndShow(FacilityType type)
     {
+        // NEW: try to fetch dynamic config from API (non-fatal if it fails)
+        yield return StartCoroutine(TryFetchConfigFromServer(type));
+
+        // Fallback to local JSON if server didn't provide config
         if (!_configs.ContainsKey(type))
         {
-            Debug.LogError($"No local JSON for {type}. Place it in Resources.");
+            Debug.LogError($"No config for {type}. Ensure server /facilityconfig or place JSON in Resources.");
             yield break;
         }
 
@@ -150,14 +190,20 @@ public class FacilityDetailsHandler : MonoBehaviour
         if (_activeConfig == null) return;
 
         int maxLevel = _activeConfig.levels.Max(l => l.level);
-        var cur  = _activeConfig.levels.FirstOrDefault(l => l.level == currentLevel);
+        var cur = _activeConfig.levels.FirstOrDefault(l => l.level == currentLevel);
         var next = _activeConfig.levels.FirstOrDefault(l => l.level == currentLevel + 1);
 
-        if (currentLevelText) currentLevelText.text = $"{_activeFacility} • Level {currentLevel} / Max {maxLevel}";
+        string displayName = _activeFacility.ToString();
+        if (_activeFacility == FacilityType.WeightRoom) displayName = "Weight";
+
+        if (currentLevelText)
+            currentLevelText.text = $"{displayName} • Level {currentLevel} / Max {maxLevel}";
+
+        // if (currentLevelText) currentLevelText.text = $"{_activeFacility} • Level {currentLevel} / Max {maxLevel}";
 
         if (cur != null)
         {
-            if (multiplierText)  multiplierText.text  = FormatMultiplier(cur.effects);
+            if (multiplierText) multiplierText.text = FormatMultiplier(cur.effects);
             if (weeklyBoostText) weeklyBoostText.text = "Weekly Boost: " + FormatWeeklyBoost(cur.effects);
         }
 
@@ -184,8 +230,8 @@ public class FacilityDetailsHandler : MonoBehaviour
     {
         _configs.Clear();
         TryLoad(FacilityType.WeightRoom, weightRoomRes);
-        TryLoad(FacilityType.Rehab,      rehabRes);
-        TryLoad(FacilityType.Film,       filmRes);
+        TryLoad(FacilityType.Rehab, rehabRes);
+        TryLoad(FacilityType.Film, filmRes);
     }
 
     void TryLoad(FacilityType type, string resName)
@@ -216,8 +262,8 @@ public class FacilityDetailsHandler : MonoBehaviour
     {
         if (effects == null || effects.Count == 0) return "-";
         if (effects.TryGetValue("AwarenessMultiplier", out var aware)) return $"Awareness Multiplier: {aware:0.00}x";
-        if (effects.TryGetValue("RecoveryMultiplier", out var rec))    return $"Recovery Multiplier: {rec:0.00}x";
-        if (effects.TryGetValue("PlayerStrengthBoost", out var str))   return $"Strength Boost: {str * 100f:0.#}%";
+        if (effects.TryGetValue("RecoveryMultiplier", out var rec)) return $"Recovery Multiplier: {rec:0.00}x";
+        if (effects.TryGetValue("PlayerStrengthBoost", out var str)) return $"Strength Boost: {str * 100f:0.#}%";
         if (effects.TryGetValue("PlayerConditioningBoost", out var c)) return $"Conditioning Boost: {c * 100f:0.#}%";
 
         var first = effects.First();
@@ -232,9 +278,9 @@ public class FacilityDetailsHandler : MonoBehaviour
             return $"-{weeks:0.#} week{(weeks >= 2 ? "s" : "")} injury time";
 
         var parts = new List<string>();
-        if (effects.TryGetValue("PlayerStrengthBoost", out var str))   parts.Add($"+{str * 100f:0.#}% STR");
+        if (effects.TryGetValue("PlayerStrengthBoost", out var str)) parts.Add($"+{str * 100f:0.#}% STR");
         if (effects.TryGetValue("PlayerConditioningBoost", out var c)) parts.Add($"+{c * 100f:0.#}% conditioning");
-        if (effects.TryGetValue("FatigueResistance", out var fat))     parts.Add($"+{fat * 100f:0.#}% fatigue resist");
+        if (effects.TryGetValue("FatigueResistance", out var fat)) parts.Add($"+{fat * 100f:0.#}% fatigue resist");
 
         foreach (var kv in effects)
         {
@@ -258,24 +304,24 @@ public class FacilityDetailsHandler : MonoBehaviour
         return new string(chars.ToArray());
     }
 
-   string PrettyValue(string key, float v) 
-   {
+    string PrettyValue(string key, float v)
+    {
         // Multipliers like 1.5 -> "1.50x"
         if (key.EndsWith("Multiplier")) return $"{v:0.00}x";
-    
+
         // Percent-style keys:
         bool isPercent =
             key.EndsWith("Boost") ||
             key.Contains("Resistance") ||
             key.Contains("Reduction");
-    
+
         if (isPercent)
         {
             // If value is a fraction (0..1), show as percent; if already in percent points (>1), don't multiply.
             float display = (v <= 1f) ? (v * 100f) : v;
             return $"{display:0.#}%";
         }
-    
+
         // Fallback
         if (key.Contains("Weeks")) return $"{v:0.#} weeks";
         return v.ToString("0.###");
