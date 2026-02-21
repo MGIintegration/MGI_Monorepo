@@ -122,8 +122,8 @@ public class ScreenManager : MonoBehaviour
         }
 
         var prog = ApiClient.Instance?.PlayerProgressionSaveData;
-        
-        xpText.text = $"XP: {seasonManager.PlayerXP}/1000";
+        if (xpText != null)
+         xpText.text = $"XP: {seasonManager.PlayerXP}/1000";
 
         if (weekText != null)
             weekText.text = $"Week: {seasonManager.CurrentWeek}/10";
