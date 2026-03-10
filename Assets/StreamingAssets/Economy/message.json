@@ -1,0 +1,201 @@
+{
+  "player_id": "123e4567-e89b-12d3-a456-426614174000",
+  "simulation_week": 1,
+  "initial_wallet": {
+    "coins": 2000,
+    "gems": 100,
+    "credits": 25
+  },
+  "final_wallet": {
+    "coins": 2900,
+    "gems": 124,
+    "credits": 25
+  },
+  "net_changes": {
+    "coins": 900,
+    "gems": 24,
+    "credits": 0
+  },
+  "transactions": [
+    {
+      "day": 1,
+      "transaction_type": "daily_income",
+      "currency": "coins",
+      "amount": 150,
+      "balance_after": 2150
+    },
+    {
+      "day": 1,
+      "transaction_type": "daily_income",
+      "currency": "gems",
+      "amount": 2,
+      "balance_after": 102
+    },
+    {
+      "day": 1,
+      "transaction_type": "daily_expense",
+      "currency": "coins",
+      "amount": -50,
+      "balance_after": 2100
+    },
+    {
+      "day": 2,
+      "transaction_type": "daily_income",
+      "currency": "coins",
+      "amount": 150,
+      "balance_after": 2250
+    },
+    {
+      "day": 2,
+      "transaction_type": "daily_income",
+      "currency": "gems",
+      "amount": 2,
+      "balance_after": 104
+    },
+    {
+      "day": 2,
+      "transaction_type": "daily_expense",
+      "currency": "coins",
+      "amount": -50,
+      "balance_after": 2200
+    },
+    {
+      "day": 3,
+      "transaction_type": "daily_income",
+      "currency": "coins",
+      "amount": 150,
+      "balance_after": 2350
+    },
+    {
+      "day": 3,
+      "transaction_type": "daily_income",
+      "currency": "gems",
+      "amount": 2,
+      "balance_after": 106
+    },
+    {
+      "day": 3,
+      "transaction_type": "daily_expense",
+      "currency": "coins",
+      "amount": -50,
+      "balance_after": 2300
+    },
+    {
+      "day": 4,
+      "transaction_type": "daily_income",
+      "currency": "coins",
+      "amount": 150,
+      "balance_after": 2450
+    },
+    {
+      "day": 4,
+      "transaction_type": "daily_income",
+      "currency": "gems",
+      "amount": 2,
+      "balance_after": 108
+    },
+    {
+      "day": 4,
+      "transaction_type": "daily_expense",
+      "currency": "coins",
+      "amount": -50,
+      "balance_after": 2400
+    },
+    {
+      "day": 5,
+      "transaction_type": "daily_income",
+      "currency": "coins",
+      "amount": 150,
+      "balance_after": 2550
+    },
+    {
+      "day": 5,
+      "transaction_type": "daily_income",
+      "currency": "gems",
+      "amount": 2,
+      "balance_after": 110
+    },
+    {
+      "day": 5,
+      "transaction_type": "daily_expense",
+      "currency": "coins",
+      "amount": -50,
+      "balance_after": 2500
+    },
+    {
+      "day": 6,
+      "transaction_type": "daily_income",
+      "currency": "coins",
+      "amount": 150,
+      "balance_after": 2650
+    },
+    {
+      "day": 6,
+      "transaction_type": "daily_income",
+      "currency": "gems",
+      "amount": 2,
+      "balance_after": 112
+    },
+    {
+      "day": 6,
+      "transaction_type": "daily_expense",
+      "currency": "coins",
+      "amount": -50,
+      "balance_after": 2600
+    },
+    {
+      "day": 7,
+      "transaction_type": "daily_income",
+      "currency": "coins",
+      "amount": 150,
+      "balance_after": 2750
+    },
+    {
+      "day": 7,
+      "transaction_type": "daily_income",
+      "currency": "gems",
+      "amount": 2,
+      "balance_after": 114
+    },
+    {
+      "day": 7,
+      "transaction_type": "daily_expense",
+      "currency": "coins",
+      "amount": -50,
+      "balance_after": 2700
+    },
+    {
+      "day": 7,
+      "transaction_type": "weekly_bonus",
+      "currency": "coins",
+      "amount": 200,
+      "balance_after": 2900
+    },
+    {
+      "day": 7,
+      "transaction_type": "weekly_bonus",
+      "currency": "gems",
+      "amount": 10,
+      "balance_after": 124
+    }
+  ],
+  "simulation_summary": {
+    "total_transactions": 23,
+    "daily_balances": {
+      "coins": [2000, 2100, 2200, 2300, 2400, 2500, 2600, 2900],
+      "gems": [100, 102, 104, 106, 108, 110, 112, 124],
+      "credits": [25, 25, 25, 25, 25, 25, 25, 25]
+    },
+    "peak_balance": {
+      "coins": 2900,
+      "gems": 124,
+      "credits": 25
+    },
+    "lowest_balance": {
+      "coins": 2000,
+      "gems": 100,
+      "credits": 25
+    }
+  },
+  "alerts": []
+}
