@@ -209,7 +209,7 @@ public class CoachProfilePopulator : MonoBehaviour
     {
         try
         {
-            string jsonPath = Path.Combine(Application.streamingAssetsPath, "Database", "team.json");
+            string jsonPath = Path.Combine(Application.streamingAssetsPath, "Coaches", "Database", "team.json");
             
             if (File.Exists(jsonPath))
             {
@@ -541,7 +541,7 @@ public class CoachProfilePopulator : MonoBehaviour
 
         try
         {
-            string jsonPath = Path.Combine(Application.streamingAssetsPath, "Database", "coach.json");
+            string jsonPath = Path.Combine(Application.streamingAssetsPath, "Coaches", "Database", "coach.json");
             
             if (!File.Exists(jsonPath))
             {
