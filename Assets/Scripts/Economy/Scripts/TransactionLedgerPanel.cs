@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 public class TransactionLedgerPanel : MonoBehaviour
 {
@@ -14,9 +15,39 @@ public class TransactionLedgerPanel : MonoBehaviour
     [Header("Transaction History")]
     private List<Transaction> transactions = new List<Transaction>();
 
+    [Header("Economy Service")]
+    [SerializeField] private string playerId = "local_player";
+    [SerializeField] private int recentTransactionLimit = 100;
+    [SerializeField] private bool loadFromEconomyServiceOnEnable = true;
+    [SerializeField] private bool subscribeToWalletUpdatedEvent = true;
+
+    private EconomyService economyService;
+    private IDisposable walletUpdatedSubscription;
+
     private void OnEnable()
     {
+        if (economyService == null)
+        {
+            economyService = new EconomyService();
+        }
+
+        if (loadFromEconomyServiceOnEnable)
+        {
+            LoadTransactionsFromEconomyService();
+        }
+
+        if (subscribeToWalletUpdatedEvent)
+        {
+            walletUpdatedSubscription = EventBus.Subscribe("wallet_updated", OnWalletUpdatedEventMessage);
+        }
+
         RefreshTransactionList();
+    }
+
+    private void OnDisable()
+    {
+        walletUpdatedSubscription?.Dispose();
+        walletUpdatedSubscription = null;
     }
 
     /// <summary>
@@ -141,7 +172,12 @@ public class TransactionLedgerPanel : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        // Example transactions - remove this in production
+        if (loadFromEconomyServiceOnEnable)
+        {
+            return;
+        }
+
+        // Example transactions - used only when not loading from EconomyService.
         if (transactions.Count == 0)
         {
             AddTransaction(ResourceType.Coins, 120);
@@ -163,5 +199,46 @@ public class TransactionLedgerPanel : MonoBehaviour
     public List<Transaction> GetTransactions()
     {
         return new List<Transaction>(transactions);
+    }
+
+    private void LoadTransactionsFromEconomyService()
+    {
+        if (economyService == null)
+        {
+            return;
+        }
+
+        var recent = economyService.GetRecentTransactions(playerId, Mathf.Max(1, recentTransactionLimit));
+        transactions = recent
+            .Select(MapWalletTransactionToUiTransaction)
+            .ToList();
+    }
+
+    private static Transaction MapWalletTransactionToUiTransaction(WalletTransaction walletTx)
+    {
+        var resourceType = walletTx.currency switch
+        {
+            "coins" => ResourceType.Coins,
+            "gems" => ResourceType.Gems,
+            "coaching_credits" => ResourceType.CoachingCredits,
+            _ => ResourceType.Coins
+        };
+
+        var signedAmount = walletTx.type == "spend"
+            ? -Mathf.Abs(walletTx.amount)
+            : Mathf.Abs(walletTx.amount);
+
+        return new Transaction(resourceType, signedAmount, walletTx.source);
+    }
+
+    private void OnWalletUpdatedEventMessage(EventBus.EventEnvelope evt)
+    {
+        if (evt == null || evt.player_id != playerId)
+        {
+            return;
+        }
+
+        LoadTransactionsFromEconomyService();
+        RefreshTransactionList();
     }
 }

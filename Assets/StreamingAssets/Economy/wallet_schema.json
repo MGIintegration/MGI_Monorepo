@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Wallet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["player_id", "coins", "gems", "coaching_credits", "last_updated"],
+  "properties": {
+    "player_id": {
+      "type": "string",
+      "description": "Canonical player id (string)."
+    },
+    "coins": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "gems": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "coaching_credits": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "last_updated": {
+      "type": "string",
+      "description": "UTC timestamp in ISO-8601 format."
+    }
+  }
+}
+

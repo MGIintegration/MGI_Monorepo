@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 9
+  serializedVersion: 10
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
@@ -42,8 +42,8 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
-  m_GIWorkflowMode: 1
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -66,9 +66,6 @@ LightmapSettings:
     m_LightmapParameters: {fileID: 0}
     m_LightmapsBakeMode: 1
     m_TextureCompression: 1
-    m_FinalGather: 0
-    m_FinalGatherFiltering: 1
-    m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
     m_MixedBakeMode: 2
     m_BakeBackend: 1
@@ -838,6 +835,10 @@ PrefabInstance:
       propertyPath: m_text
       value: 'Gems: '
       objectReference: {fileID: 0}
+    - target: {fileID: 8532144471687148516, guid: 705779cdc8f874e6bb3f989e8c8fdaf8, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1111,6 +1112,10 @@ PrefabInstance:
     - target: {fileID: 8532144471687148516, guid: 705779cdc8f874e6bb3f989e8c8fdaf8, type: 3}
       propertyPath: m_text
       value: 'Coaching Credits: '
+      objectReference: {fileID: 0}
+    - target: {fileID: 8532144471687148516, guid: 705779cdc8f874e6bb3f989e8c8fdaf8, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1714,6 +1719,10 @@ PrefabInstance:
       propertyPath: m_text
       value: Economic Forecast
       objectReference: {fileID: 0}
+    - target: {fileID: 6971659438178424788, guid: 0e033fd15321c4a96b88a9d2d5608e55, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1897,6 +1906,9 @@ MonoBehaviour:
   creditsIcon: {fileID: 0}
   weeklyForecastUI: {fileID: 1504446731}
   transactionLedgerPanel: {fileID: 2026124142}
+  playerId: local_player
+  autoCreateWalletIfMissing: 1
+  refreshOnWalletUpdatedEvent: 1
 --- !u!1001 &858098636
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2074,6 +2086,103 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1118453021}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1148158302
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1148158304}
+  - component: {fileID: 1148158303}
+  m_Layer: 0
+  m_Name: Test_file
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1148158303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1148158302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e746c2690d86641ee946a9fdb2e24c00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EconomyServiceSmokeTestRunner
+  runOnStart: 0
+  playerId: local_player
+  clearExistingPlayerEconomyDataBeforeRun: 1
+--- !u!4 &1148158304
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1148158302}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1178446298
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1178446300}
+  - component: {fileID: 1178446299}
+  m_Layer: 0
+  m_Name: JSON_test
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1178446299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178446298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 185de7308e49a490392ec2b55061a13b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EconomyServiceJsonOperationsTester
+  playerId: local_player
+  addCoins: 500
+  addGems: 10
+  spendCoins: 100
+  spendGems: 5
+  recentTxLimit: 25
+--- !u!4 &1178446300
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178446298}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -2868,6 +2977,10 @@ PrefabInstance:
       propertyPath: m_text
       value: Modifiers
       objectReference: {fileID: 0}
+    - target: {fileID: 6971659438178424788, guid: 0e033fd15321c4a96b88a9d2d5608e55, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3568,6 +3681,10 @@ PrefabInstance:
       propertyPath: m_text
       value: Transaction Ledger
       objectReference: {fileID: 0}
+    - target: {fileID: 6971659438178424788, guid: 0e033fd15321c4a96b88a9d2d5608e55, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3970,6 +4087,10 @@ PrefabInstance:
       propertyPath: m_text
       value: 'Coins:'
       objectReference: {fileID: 0}
+    - target: {fileID: 8532144471687148516, guid: 705779cdc8f874e6bb3f989e8c8fdaf8, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4040,6 +4161,10 @@ MonoBehaviour:
   transactionListParent: {fileID: 317776796}
   transactionEntryPrefab: {fileID: 0}
   emptyStateText: {fileID: 0}
+  playerId: local_player
+  recentTransactionLimit: 100
+  loadFromEconomyServiceOnEnable: 1
+  subscribeToWalletUpdatedEvent: 1
 --- !u!114 &2026124143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4416,3 +4541,5 @@ SceneRoots:
   - {fileID: 392637678}
   - {fileID: 1523514980}
   - {fileID: 1118453024}
+  - {fileID: 1148158304}
+  - {fileID: 1178446300}

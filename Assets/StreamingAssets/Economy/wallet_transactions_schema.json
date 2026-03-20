@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WalletTransactionsLedger",
+  "description": "Array of wallet transaction records (append-only ledger).",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["id", "player_id", "amount", "currency", "type", "timestamp", "source"],
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "GUID string."
+      },
+      "player_id": {
+        "type": "string",
+        "description": "Canonical player id."
+      },
+      "amount": {
+        "type": "integer"
+      },
+      "currency": {
+        "type": "string",
+        "enum": ["coins", "gems", "coaching_credits"]
+      },
+      "type": {
+        "type": "string",
+        "enum": ["earn", "spend"]
+      },
+      "timestamp": {
+        "type": "string",
+        "description": "UTC timestamp in ISO-8601 format."
+      },
+      "source": {
+        "type": "string",
+        "description": "Domain/source identifier (e.g. pack_purchase, coach_hiring, upgrade_facility)."
+      }
+    }
+  }
+}
+
