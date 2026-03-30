@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 public class PackOpeningController : MonoBehaviour
 {
@@ -108,6 +109,9 @@ public class PackOpeningController : MonoBehaviour
             cards  // Pass Card objects instead of just rarities
         );
 
+        // Publish pack_opened event to EventBus
+        PublishPackOpenedEvent(packType, packData.name, packData.cost, cards);
+
         // Visuals - display actual card information
         for (int i = 0; i < _cards.Count; i++)
         {
@@ -126,6 +130,39 @@ public class PackOpeningController : MonoBehaviour
 
         if (cardParent is RectTransform rt)
             LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
+    }
+
+    void PublishPackOpenedEvent(string packTypeKey, string packName, int costCoins, List<Card> cards)
+    {
+        string playerId = PlayerPrefs.GetString("player_id", SystemInfo.deviceUniqueIdentifier);
+
+        var payload = new PackOpenedPayload
+        {
+            pack_type    = packTypeKey,
+            pack_name    = packName,
+            cost_coins   = costCoins,
+            card_uids    = cards.Select(c => c?.uid ?? "").ToList(),
+            card_rarities = cards.Select(c => c?.GetRarityString() ?? "common").ToList(),
+            total_cards  = cards.Count
+        };
+
+        EventBus.Publish(new EventBus.EventEnvelope
+        {
+            event_type  = "pack_opened",
+            player_id   = playerId,
+            payloadJson = JsonUtility.ToJson(payload)
+        });
+    }
+
+    [System.Serializable]
+    private class PackOpenedPayload
+    {
+        public string       pack_type;
+        public string       pack_name;
+        public int          cost_coins;
+        public List<string> card_uids;
+        public List<string> card_rarities;
+        public int          total_cards;
     }
 
     void BuildOrReuseCards(int needed)
