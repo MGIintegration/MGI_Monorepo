@@ -34,7 +34,17 @@ public class AcquisitionHubController : MonoBehaviour
             goToMarketButton.onClick.AddListener(ShowMarket);
 
         if (myPacksButton != null)
+        {
+            myPacksButton.interactable = false;
             myPacksButton.onClick.AddListener(ShowMyPacks);
+        }
+
+        // Enable My Packs button if the player already has pull history
+        RefreshMyPacksButton();
+
+        // Stay informed when new packs are opened
+        if (TelemetryLogger.Instance != null)
+            TelemetryLogger.Instance.OnPullLogged += _ => RefreshMyPacksButton();
 
         ShowHub();
     }
@@ -70,6 +80,17 @@ public class AcquisitionHubController : MonoBehaviour
         dropHistoryPanel?.SetActive(active == dropHistoryPanel);
         if (myPacksPanel != null)
             myPacksPanel.SetActive(active == myPacksPanel);
+    }
+
+    /// <summary>
+    /// Enables the My Packs button only when there is at least one pack in history.
+    /// Called on Start and each time a new pack is opened.
+    /// </summary>
+    private void RefreshMyPacksButton()
+    {
+        if (myPacksButton == null) return;
+        var history = TelemetryLogger.Instance?.GetRecent(1);
+        myPacksButton.interactable = history != null && history.Count > 0;
     }
 
     /// <summary>
