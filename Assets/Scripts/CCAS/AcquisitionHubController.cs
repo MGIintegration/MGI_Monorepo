@@ -54,6 +54,7 @@ public class AcquisitionHubController : MonoBehaviour
     {
         SetActivePanel(hubPanel);
         UpdateXPDisplay();
+        RefreshMyPacksButton();
     }
     public void ShowMarket() => SetActivePanel(marketPanel);
     public void ShowMyPacks() => SetActivePanel(myPacksPanel);
