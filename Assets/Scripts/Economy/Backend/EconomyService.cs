@@ -8,6 +8,7 @@ using UnityEngine;
 /// <summary>
 /// Single entry point for all wallet operations for a player.
 /// Persists wallet and transaction state under FilePathResolver economy paths.
+/// Automatically migrates legacy editor/test files when canonical files are missing.
 /// </summary>
 public class EconomyService
 {
@@ -24,13 +25,14 @@ public class EconomyService
 
     private const string WalletFileName = "wallet.json";
     private const string TransactionsFileName = "wallet_transactions.json";
-    private const string EconomyFolderName = "Economy";
-    private const string StreamingAssetsFolderName = "StreamingAssets";
+    private const string LegacyUppercaseEconomyFolderName = "Economy";
+    private const string LegacyStreamingAssetsFolderName = "StreamingAssets";
 
     /// <summary>
-    /// When true, reads/writes wallet JSON under:
-    /// Assets/StreamingAssets/Economy/{wallet.json,wallet_transactions.json}
-    /// This is intended for editor-only testing since StreamingAssets may be treated as read-only in builds.
+    /// Retained for backward compatibility with older callers and editor tools.
+    /// Economy files are now always read and written via FilePathResolver.
+    /// In the Unity Editor, the legacy StreamingAssets files are also mirrored
+    /// for debugging so developers can inspect a stable, known location.
     /// </summary>
     public bool UseStreamingAssetsForEconomyFiles { get; set; } = true;
 
@@ -47,32 +49,18 @@ public class EconomyService
             return null;
         }
 
-        var walletPath = GetEconomyFilePath(playerId, WalletFileName, UseStreamingAssetsForEconomyFiles);
-        if (File.Exists(walletPath))
+        var walletPath = GetCanonicalEconomyFilePath(playerId, WalletFileName);
+        var wallet = ReadWalletForPlayer(walletPath, playerId);
+        if (wallet != null)
         {
-            var wallet = ReadJsonFile<Wallet>(walletPath);
-            if (wallet != null)
-            {
-                // Keep canonical player id aligned with request context.
-                wallet.player_id = playerId;
-                return wallet;
-            }
+            MirrorEditorDebugWallet(wallet);
+            return wallet;
         }
 
-        // Backward compatibility with previous persistence layout (persistent data path, lowercase "economy").
-        if (!UseStreamingAssetsForEconomyFiles)
+        if (TryMigrateLegacyWallet(playerId, walletPath, out var migratedWallet))
         {
-            var legacyWalletPath = FilePathResolver.GetEconomyPath(playerId, WalletFileName);
-            if (File.Exists(legacyWalletPath))
-            {
-                var legacyWallet = ReadJsonFile<Wallet>(legacyWalletPath);
-                if (legacyWallet != null)
-                {
-                    legacyWallet.player_id = playerId;
-                    WriteJsonAtomic(walletPath, legacyWallet);
-                    return legacyWallet;
-                }
-            }
+            EnsureTransactionsFile(playerId);
+            return migratedWallet;
         }
 
         if (!createIfMissing)
@@ -82,6 +70,7 @@ public class EconomyService
 
         var created = CreateDefaultWallet(playerId);
         WriteJsonAtomic(walletPath, created);
+        MirrorEditorDebugWallet(created);
         EnsureTransactionsFile(playerId);
         return created;
     }
@@ -175,30 +164,7 @@ public class EconomyService
             return Enumerable.Empty<WalletTransaction>();
         }
 
-        var transactionsPath = GetEconomyFilePath(playerId, TransactionsFileName, UseStreamingAssetsForEconomyFiles);
-        if (!File.Exists(transactionsPath))
-        {
-            if (!UseStreamingAssetsForEconomyFiles)
-            {
-                var legacyPath = FilePathResolver.GetEconomyPath(playerId, TransactionsFileName);
-                if (File.Exists(legacyPath))
-                {
-                    var legacyTransactions =
-                        ReadJsonFile<List<WalletTransaction>>(legacyPath) ?? new List<WalletTransaction>();
-                    WriteJsonAtomic(transactionsPath, legacyTransactions);
-
-                    return legacyTransactions
-                        .Where(t => t != null && t.player_id == playerId)
-                        .OrderByDescending(t => ParseTimestampOrMin(t.timestamp))
-                        .Take(limit)
-                        .ToList();
-                }
-            }
-
-            return Enumerable.Empty<WalletTransaction>();
-        }
-
-        var allTransactions = ReadJsonFile<List<WalletTransaction>>(transactionsPath) ?? new List<WalletTransaction>();
+        var allTransactions = LoadTransactions(playerId);
 
         return allTransactions
             .Where(t => t != null && t.player_id == playerId)
@@ -221,25 +187,39 @@ public class EconomyService
 
     private void EnsureTransactionsFile(string playerId)
     {
-        var path = GetEconomyFilePath(playerId, TransactionsFileName, UseStreamingAssetsForEconomyFiles);
+        var path = GetCanonicalEconomyFilePath(playerId, TransactionsFileName);
         if (File.Exists(path))
+        {
+            var existingTransactions = ReadTransactionsForPlayer(path, playerId);
+            if (existingTransactions != null)
+            {
+                MirrorEditorDebugTransactions(existingTransactions);
+            }
+            return;
+        }
+
+        if (TryMigrateLegacyTransactions(playerId, path, out _))
         {
             return;
         }
 
-        WriteJsonAtomic(path, new List<WalletTransaction>());
+        var emptyTransactions = new List<WalletTransaction>();
+        WriteJsonAtomic(path, emptyTransactions);
+        MirrorEditorDebugTransactions(emptyTransactions);
     }
 
     private void PersistWalletAndTransactions(string playerId, Wallet wallet, List<WalletTransaction> newEntries)
     {
-        var walletPath = GetEconomyFilePath(playerId, WalletFileName, UseStreamingAssetsForEconomyFiles);
-        var transactionsPath = GetEconomyFilePath(playerId, TransactionsFileName, UseStreamingAssetsForEconomyFiles);
+        var walletPath = GetCanonicalEconomyFilePath(playerId, WalletFileName);
+        var transactionsPath = GetCanonicalEconomyFilePath(playerId, TransactionsFileName);
 
-        var existingTransactions = ReadJsonFile<List<WalletTransaction>>(transactionsPath) ?? new List<WalletTransaction>();
+        var existingTransactions = LoadTransactions(playerId);
         existingTransactions.AddRange(newEntries);
 
         WriteJsonAtomic(walletPath, wallet);
         WriteJsonAtomic(transactionsPath, existingTransactions);
+        MirrorEditorDebugWallet(wallet);
+        MirrorEditorDebugTransactions(existingTransactions);
     }
 
     private List<WalletTransaction> BuildTransactions(
@@ -299,6 +279,238 @@ public class EconomyService
         return list;
     }
 
+    private List<WalletTransaction> LoadTransactions(string playerId)
+    {
+        var transactionsPath = GetCanonicalEconomyFilePath(playerId, TransactionsFileName);
+        var transactions = ReadTransactionsForPlayer(transactionsPath, playerId);
+        if (transactions != null)
+        {
+            MirrorEditorDebugTransactions(transactions);
+            return transactions;
+        }
+
+        if (TryMigrateLegacyTransactions(playerId, transactionsPath, out var migratedTransactions))
+        {
+            return migratedTransactions;
+        }
+
+        var emptyTransactions = new List<WalletTransaction>();
+        MirrorEditorDebugTransactions(emptyTransactions);
+        return emptyTransactions;
+    }
+
+    private bool TryMigrateLegacyWallet(string playerId, string destinationPath, out Wallet migratedWallet)
+    {
+        foreach (var legacyPath in GetLegacyEconomyFilePaths(playerId, WalletFileName))
+        {
+            if (!File.Exists(legacyPath))
+            {
+                continue;
+            }
+
+            var legacyWallet = ReadJsonFile<Wallet>(legacyPath);
+            if (legacyWallet == null)
+            {
+                continue;
+            }
+
+            if (IsLegacySharedStreamingPath(legacyPath) && !CanMigrateSharedWallet(legacyWallet, playerId))
+            {
+                Debug.LogWarning(
+                    $"[EconomyService] Skipping shared legacy wallet at '{legacyPath}' because it belongs to '{legacyWallet.player_id}', not '{playerId}'.");
+                continue;
+            }
+
+            migratedWallet = NormalizeWallet(playerId, legacyWallet);
+            WriteJsonAtomic(destinationPath, migratedWallet);
+            MirrorEditorDebugWallet(migratedWallet);
+            Debug.Log($"[EconomyService] Migrated wallet for '{playerId}' from '{legacyPath}'.");
+            return true;
+        }
+
+        migratedWallet = null;
+        return false;
+    }
+
+    private bool TryMigrateLegacyTransactions(
+        string playerId,
+        string destinationPath,
+        out List<WalletTransaction> migratedTransactions)
+    {
+        foreach (var legacyPath in GetLegacyEconomyFilePaths(playerId, TransactionsFileName))
+        {
+            if (!File.Exists(legacyPath))
+            {
+                continue;
+            }
+
+            var legacyTransactions = ReadTransactionsForPlayer(legacyPath, playerId);
+            if (legacyTransactions == null)
+            {
+                continue;
+            }
+
+            migratedTransactions = legacyTransactions;
+            WriteJsonAtomic(destinationPath, migratedTransactions);
+            MirrorEditorDebugTransactions(migratedTransactions);
+            Debug.Log($"[EconomyService] Migrated wallet transactions for '{playerId}' from '{legacyPath}'.");
+            return true;
+        }
+
+        migratedTransactions = new List<WalletTransaction>();
+        return false;
+    }
+
+    private static Wallet ReadWalletForPlayer(string path, string playerId)
+    {
+        var wallet = ReadJsonFile<Wallet>(path);
+        return NormalizeWallet(playerId, wallet);
+    }
+
+    private static List<WalletTransaction> ReadTransactionsForPlayer(string path, string playerId)
+    {
+        var transactions = ReadJsonFile<List<WalletTransaction>>(path);
+        if (transactions == null)
+        {
+            return null;
+        }
+
+        return NormalizeTransactions(playerId, transactions);
+    }
+
+    private static Wallet NormalizeWallet(string playerId, Wallet wallet)
+    {
+        if (wallet == null)
+        {
+            return null;
+        }
+
+        wallet.player_id = playerId;
+        if (string.IsNullOrWhiteSpace(wallet.last_updated))
+        {
+            wallet.last_updated = UtcNowIso();
+        }
+
+        return wallet;
+    }
+
+    private static List<WalletTransaction> NormalizeTransactions(
+        string playerId,
+        IEnumerable<WalletTransaction> transactions)
+    {
+        var normalized = new List<WalletTransaction>();
+        if (transactions == null)
+        {
+            return normalized;
+        }
+
+        foreach (var transaction in transactions)
+        {
+            if (transaction == null)
+            {
+                continue;
+            }
+
+            if (!string.IsNullOrWhiteSpace(transaction.player_id) &&
+                !string.Equals(transaction.player_id, playerId, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            normalized.Add(NormalizeTransaction(playerId, transaction));
+        }
+
+        return normalized;
+    }
+
+    private static WalletTransaction NormalizeTransaction(string playerId, WalletTransaction transaction)
+    {
+        return new WalletTransaction
+        {
+            id = string.IsNullOrWhiteSpace(transaction.id) ? Guid.NewGuid().ToString() : transaction.id,
+            player_id = string.IsNullOrWhiteSpace(transaction.player_id) ? playerId : transaction.player_id,
+            amount = transaction.amount,
+            currency = transaction.currency,
+            type = transaction.type,
+            timestamp = string.IsNullOrWhiteSpace(transaction.timestamp) ? UtcNowIso() : transaction.timestamp,
+            source = string.IsNullOrWhiteSpace(transaction.source) ? "unknown_source" : transaction.source
+        };
+    }
+
+    private static bool CanMigrateSharedWallet(Wallet wallet, string playerId)
+    {
+        return string.IsNullOrWhiteSpace(wallet.player_id) ||
+               string.Equals(wallet.player_id, playerId, StringComparison.Ordinal);
+    }
+
+    private static bool IsLegacySharedStreamingPath(string path)
+    {
+        return string.Equals(
+            Path.GetFullPath(path),
+            Path.GetFullPath(GetLegacyStreamingEconomyPath(Path.GetFileName(path))),
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string GetCanonicalEconomyFilePath(string playerId, string fileName)
+    {
+        return FilePathResolver.GetEconomyPath(playerId, fileName);
+    }
+
+    private static IEnumerable<string> GetLegacyEconomyFilePaths(string playerId, string fileName)
+    {
+        yield return GetLegacyUppercaseEconomyPath(playerId, fileName);
+        yield return GetLegacyStreamingEconomyPath(fileName);
+    }
+
+    private static string GetLegacyUppercaseEconomyPath(string playerId, string fileName)
+    {
+        var playerRoot = FilePathResolver.GetPlayerDataRoot(playerId);
+        var dir = Path.Combine(playerRoot, LegacyUppercaseEconomyFolderName);
+        return Path.Combine(dir, fileName);
+    }
+
+    private static string GetLegacyStreamingEconomyPath(string fileName)
+    {
+        var dir = Path.Combine(Application.dataPath, LegacyStreamingAssetsFolderName, LegacyUppercaseEconomyFolderName);
+        return Path.Combine(dir, fileName);
+    }
+
+    private static void MirrorEditorDebugWallet(Wallet wallet)
+    {
+#if UNITY_EDITOR
+        if (wallet == null)
+        {
+            return;
+        }
+
+        TryMirrorEditorDebugFile(WalletFileName, wallet);
+#endif
+    }
+
+    private static void MirrorEditorDebugTransactions(IEnumerable<WalletTransaction> transactions)
+    {
+#if UNITY_EDITOR
+        TryMirrorEditorDebugFile(
+            TransactionsFileName,
+            transactions?.ToList() ?? new List<WalletTransaction>());
+#endif
+    }
+
+#if UNITY_EDITOR
+    private static void TryMirrorEditorDebugFile<T>(string fileName, T data)
+    {
+        try
+        {
+            WriteJsonAtomic(GetLegacyStreamingEconomyPath(fileName), data);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning(
+                $"[EconomyService] Failed to mirror '{fileName}' to StreamingAssets for editor debugging: {ex.Message}");
+        }
+    }
+#endif
+
     private void PublishWalletUpdated(string playerId, string source, Wallet wallet)
     {
         if (!PublishWalletUpdatedEvents)
@@ -328,6 +540,11 @@ public class EconomyService
     {
         try
         {
+            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+            {
+                return default;
+            }
+
             var json = File.ReadAllText(path);
             if (string.IsNullOrWhiteSpace(json))
             {
@@ -376,20 +593,5 @@ public class EconomyService
     private static DateTime ParseTimestampOrMin(string timestamp)
     {
         return DateTime.TryParse(timestamp, out var parsed) ? parsed : DateTime.MinValue;
-    }
-
-    private static string GetEconomyFilePath(string playerId, string fileName, bool useStreamingAssets)
-    {
-        if (useStreamingAssets)
-        {
-            var economyDir = Path.Combine(Application.dataPath, StreamingAssetsFolderName, EconomyFolderName);
-            Directory.CreateDirectory(economyDir);
-            return Path.Combine(economyDir, fileName);
-        }
-
-        var playerRoot = FilePathResolver.GetPlayerDataRoot(playerId);
-        var persistentEconomyDir = Path.Combine(playerRoot, EconomyFolderName);
-        Directory.CreateDirectory(persistentEconomyDir);
-        return Path.Combine(persistentEconomyDir, fileName);
     }
 }

@@ -48,7 +48,6 @@ public class EconomyServiceSmokeTestRunner : MonoBehaviour
 
         var service = new EconomyService();
         service.PublishWalletUpdatedEvents = true;
-        service.UseStreamingAssetsForEconomyFiles = true;
 
         using var subscription = EventBus.Subscribe("wallet_updated", OnWalletUpdatedEvent);
 
@@ -57,8 +56,8 @@ public class EconomyServiceSmokeTestRunner : MonoBehaviour
         AssertCondition(wallet != null, "GetWallet returned non-null.");
         AssertCondition(wallet != null && wallet.player_id == playerId, "GetWallet player_id is correct.");
 
-        var walletPath = GetStreamingEconomyPath("wallet.json");
-        var transactionsPath = GetStreamingEconomyPath("wallet_transactions.json");
+        var walletPath = GetEconomyPath(playerId, "wallet.json");
+        var transactionsPath = GetEconomyPath(playerId, "wallet_transactions.json");
 
         AssertCondition(File.Exists(walletPath), "wallet.json was created.");
         AssertCondition(File.Exists(transactionsPath), "wallet_transactions.json was created.");
@@ -149,29 +148,35 @@ public class EconomyServiceSmokeTestRunner : MonoBehaviour
 
     private static void DeleteEconomyFilesForPlayer(string pid)
     {
-        var walletPath = GetStreamingEconomyPathStatic("wallet.json");
-        var txPath = GetStreamingEconomyPathStatic("wallet_transactions.json");
+        DeleteIfExists(GetEconomyPath(pid, "wallet.json"));
+        DeleteIfExists(GetEconomyPath(pid, "wallet_transactions.json"));
+        DeleteIfExists(GetLegacyUppercaseEconomyPath(pid, "wallet.json"));
+        DeleteIfExists(GetLegacyUppercaseEconomyPath(pid, "wallet_transactions.json"));
+        DeleteIfExists(GetLegacyStreamingEconomyPath("wallet.json"));
+        DeleteIfExists(GetLegacyStreamingEconomyPath("wallet_transactions.json"));
+    }
 
-        if (File.Exists(walletPath))
+    private static void DeleteIfExists(string path)
+    {
+        if (File.Exists(path))
         {
-            File.Delete(walletPath);
-        }
-
-        if (File.Exists(txPath))
-        {
-            File.Delete(txPath);
+            File.Delete(path);
         }
     }
 
-    private static string GetStreamingEconomyPathStatic(string fileName)
+    private static string GetEconomyPath(string pid, string fileName)
     {
-        var dir = Path.Combine(Application.dataPath, "StreamingAssets", "Economy");
-        return Path.Combine(dir, fileName);
+        return FilePathResolver.GetEconomyPath(pid, fileName);
     }
 
-    private string GetStreamingEconomyPath(string fileName)
+    private static string GetLegacyUppercaseEconomyPath(string pid, string fileName)
     {
-        return GetStreamingEconomyPathStatic(fileName);
+        return Path.Combine(FilePathResolver.GetPlayerDataRoot(pid), "Economy", fileName);
+    }
+
+    private static string GetLegacyStreamingEconomyPath(string fileName)
+    {
+        return Path.Combine(Application.dataPath, "StreamingAssets", "Economy", fileName);
     }
 
     private static void AssertCondition(bool condition, string message)

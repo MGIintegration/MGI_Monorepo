@@ -3,8 +3,8 @@ using UnityEngine;
 
 /// <summary>
 /// Manual test harness: multiple operations that update wallet.json and
-/// wallet_transactions.json via EconomyService. Use component gear menu
-/// (or assign buttons to these public methods).
+/// wallet_transactions.json via EconomyService using FilePathResolver
+/// economy paths. Use component gear menu (or assign buttons to these public methods).
 /// </summary>
 public class EconomyServiceJsonOperationsTester : MonoBehaviour
 {
@@ -29,9 +29,19 @@ public class EconomyServiceJsonOperationsTester : MonoBehaviour
         Debug.Log($"[EconomyJsonTest] === {title} === playerId={playerId}");
     }
 
-    private static string GetStreamingEconomyDir()
+    private string GetEconomyFilePath(string fileName)
     {
-        return Path.Combine(Application.dataPath, "StreamingAssets", "Economy");
+        return FilePathResolver.GetEconomyPath(playerId, fileName);
+    }
+
+    private string GetLegacyUppercaseEconomyPath(string fileName)
+    {
+        return Path.Combine(FilePathResolver.GetPlayerDataRoot(playerId), "Economy", fileName);
+    }
+
+    private static string GetLegacyStreamingEconomyPath(string fileName)
+    {
+        return Path.Combine(Application.dataPath, "StreamingAssets", "Economy", fileName);
     }
 
     // --- Paths (no JSON write) ---
@@ -41,10 +51,12 @@ public class EconomyServiceJsonOperationsTester : MonoBehaviour
     {
         LogHeader("Paths");
         Debug.Log($"[EconomyJsonTest] persistentDataPath: {Application.persistentDataPath}");
-        var economyDir = GetStreamingEconomyDir();
-        Debug.Log($"[EconomyJsonTest] StreamingAssets Economy dir: {economyDir}");
-        Debug.Log($"[EconomyJsonTest] wallet: {Path.Combine(economyDir, "wallet.json")}");
-        Debug.Log($"[EconomyJsonTest] tx: {Path.Combine(economyDir, "wallet_transactions.json")}");
+        Debug.Log($"[EconomyJsonTest] canonical wallet: {GetEconomyFilePath("wallet.json")}");
+        Debug.Log($"[EconomyJsonTest] canonical tx: {GetEconomyFilePath("wallet_transactions.json")}");
+        Debug.Log($"[EconomyJsonTest] legacy uppercase wallet: {GetLegacyUppercaseEconomyPath("wallet.json")}");
+        Debug.Log($"[EconomyJsonTest] legacy uppercase tx: {GetLegacyUppercaseEconomyPath("wallet_transactions.json")}");
+        Debug.Log($"[EconomyJsonTest] legacy StreamingAssets wallet: {GetLegacyStreamingEconomyPath("wallet.json")}");
+        Debug.Log($"[EconomyJsonTest] legacy StreamingAssets tx: {GetLegacyStreamingEconomyPath("wallet_transactions.json")}");
     }
 
     // --- Read via service (loads JSON) ---
@@ -84,7 +96,7 @@ public class EconomyServiceJsonOperationsTester : MonoBehaviour
     public void TestReadRawWalletJson()
     {
         LogHeader("RawWalletJson");
-        var path = Path.Combine(GetStreamingEconomyDir(), "wallet.json");
+        var path = GetEconomyFilePath("wallet.json");
         if (!File.Exists(path))
         {
             Debug.LogWarning($"[EconomyJsonTest] Missing: {path}");
@@ -98,7 +110,7 @@ public class EconomyServiceJsonOperationsTester : MonoBehaviour
     public void TestReadRawTransactionsJson()
     {
         LogHeader("RawTransactionsJson");
-        var path = Path.Combine(GetStreamingEconomyDir(), "wallet_transactions.json");
+        var path = GetEconomyFilePath("wallet_transactions.json");
         if (!File.Exists(path))
         {
             Debug.LogWarning($"[EconomyJsonTest] Missing: {path}");
@@ -239,32 +251,23 @@ public class EconomyServiceJsonOperationsTester : MonoBehaviour
     public void TestDeleteEconomyJsonFiles()
     {
         LogHeader("DELETE Economy JSON");
-        var dir = GetStreamingEconomyDir();
-        var w = Path.Combine(dir, "wallet.json");
-        var t = Path.Combine(dir, "wallet_transactions.json");
-        if (File.Exists(w))
+        DeleteIfExists(GetEconomyFilePath("wallet.json"));
+        DeleteIfExists(GetEconomyFilePath("wallet_transactions.json"));
+        DeleteIfExists(GetLegacyUppercaseEconomyPath("wallet.json"));
+        DeleteIfExists(GetLegacyUppercaseEconomyPath("wallet_transactions.json"));
+        DeleteIfExists(GetLegacyStreamingEconomyPath("wallet.json"));
+        DeleteIfExists(GetLegacyStreamingEconomyPath("wallet_transactions.json"));
+    }
+
+    private static void DeleteIfExists(string path)
+    {
+        if (!File.Exists(path))
         {
-            File.Delete(w);
-            Debug.Log($"[EconomyJsonTest] Deleted {w}");
+            return;
         }
 
-        if (File.Exists(t))
-        {
-            File.Delete(t);
-            Debug.Log($"[EconomyJsonTest] Deleted {t}");
-        }
-
-        // Legacy lowercase folder
-        var legacyDir = Path.Combine(FilePathResolver.GetPlayerDataRoot(playerId), "economy");
-        foreach (var name in new[] { "wallet.json", "wallet_transactions.json" })
-        {
-            var p = Path.Combine(legacyDir, name);
-            if (File.Exists(p))
-            {
-                File.Delete(p);
-                Debug.Log($"[EconomyJsonTest] Deleted legacy {p}");
-            }
-        }
+        File.Delete(path);
+        Debug.Log($"[EconomyJsonTest] Deleted {path}");
     }
 
     // --- Optional: call from UI Button ---
