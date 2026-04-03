@@ -1,0 +1,7 @@
+{
+  "id": "string",
+  "player_id": "string",
+  "timestamp": "datetime",
+  "xp_gained": "number",
+  "source": "string"
+}
