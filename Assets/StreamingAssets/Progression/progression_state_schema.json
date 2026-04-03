@@ -1,0 +1,14 @@
+{
+  "player_id": "string",
+  "current_xp": "number",
+  "current_tier": "number",
+  "xp_history": [
+    {
+      "id": "string",
+      "player_id": "string",
+      "timestamp": "datetime",
+      "xp_gained": "number",
+      "source": "string"
+    }
+  ]
+}
