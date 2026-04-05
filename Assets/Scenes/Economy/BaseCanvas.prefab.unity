@@ -3309,7 +3309,7 @@ GameObject:
   - component: {fileID: 1169076081}
   - component: {fileID: 1169076080}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: TestObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3330,8 +3330,10 @@ MonoBehaviour:
   playerId: local_player
   addCoins: 500
   addGems: 10
+  addCoachingCredits: 5
   spendCoins: 100
   spendGems: 5
+  spendCoachingCredits: 2
   recentTxLimit: 25
 --- !u!4 &1169076081
 Transform:

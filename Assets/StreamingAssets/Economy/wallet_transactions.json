@@ -1,56 +1,92 @@
 [
   {
-    "id": "98f30557-ecf4-43b0-a825-33d2efb51155",
-    "player_id": "local_player",
-    "amount": 500,
-    "currency": "coins",
-    "type": "earn",
-    "timestamp": "2026-03-28T22:26:20.9648950Z",
-    "source": "json_test_add_both"
-  },
-  {
-    "id": "ece5287b-1a72-46ea-897c-279364bf4317",
+    "id": "a9ee56f5-c0c0-496c-809c-04f8056ed41d",
     "player_id": "local_player",
     "amount": 10,
     "currency": "gems",
     "type": "earn",
-    "timestamp": "2026-03-28T22:26:20.9648950Z",
+    "timestamp": "2026-04-05T22:38:57.5889540Z",
+    "source": "json_test_add_gems"
+  },
+  {
+    "id": "85a8795b-68da-44b6-9d01-314561b60dfc",
+    "player_id": "local_player",
+    "amount": 500,
+    "currency": "coins",
+    "type": "earn",
+    "timestamp": "2026-04-05T22:39:00.0681953Z",
+    "source": "json_test_add_coins"
+  },
+  {
+    "id": "fee3bf3e-e849-4b50-ba6a-7c4a8eb69e35",
+    "player_id": "local_player",
+    "amount": 500,
+    "currency": "coins",
+    "type": "earn",
+    "timestamp": "2026-04-05T22:39:02.7401723Z",
     "source": "json_test_add_both"
   },
   {
-    "id": "1f4507d2-3e48-4bbc-8c82-41d64a6ed58b",
+    "id": "623876b2-d8bb-48c4-b0f6-8a1312862356",
+    "player_id": "local_player",
+    "amount": 10,
+    "currency": "gems",
+    "type": "earn",
+    "timestamp": "2026-04-05T22:39:02.7401723Z",
+    "source": "json_test_add_both"
+  },
+  {
+    "id": "8a90107a-b400-44c3-a39e-2e2dd81e4412",
+    "player_id": "local_player",
+    "amount": 5,
+    "currency": "gems",
+    "type": "spend",
+    "timestamp": "2026-04-05T22:39:06.1968956Z",
+    "source": "json_test_spend_gems"
+  },
+  {
+    "id": "3339fa6c-7908-4c8d-9a43-a2fca64378f7",
+    "player_id": "local_player",
+    "amount": 100,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-04-05T22:39:08.9471603Z",
+    "source": "json_test_spend_both"
+  },
+  {
+    "id": "2fdab18f-ca4b-404f-ae70-d3bcdac1e85d",
+    "player_id": "local_player",
+    "amount": 5,
+    "currency": "gems",
+    "type": "spend",
+    "timestamp": "2026-04-05T22:39:08.9471603Z",
+    "source": "json_test_spend_both"
+  },
+  {
+    "id": "ed2ee987-d3d3-485e-bd85-60718c82224a",
+    "player_id": "local_player",
+    "amount": 100,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-04-05T22:39:13.0009144Z",
+    "source": "json_test_spend_coins"
+  },
+  {
+    "id": "2eaf9cb0-936c-48bd-8550-5c6ed383fe52",
     "player_id": "local_player",
     "amount": 5,
     "currency": "coaching_credits",
     "type": "earn",
-    "timestamp": "2026-03-28T22:26:26.3977380Z",
+    "timestamp": "2026-04-05T22:39:19.8392311Z",
     "source": "json_test_add_coaching_credits"
   },
   {
-    "id": "e4d7d37a-f877-451c-9478-d26657f7cbd8",
+    "id": "8256719c-a6e9-4f31-a507-dec6e7b99f73",
     "player_id": "local_player",
     "amount": 2,
     "currency": "coaching_credits",
     "type": "spend",
-    "timestamp": "2026-03-28T22:26:37.3085250Z",
+    "timestamp": "2026-04-05T22:39:23.2224770Z",
     "source": "json_test_spend_coaching_credits"
-  },
-  {
-    "id": "6c5de9c7-e66d-4a63-89e0-45f2f5595232",
-    "player_id": "local_player",
-    "amount": 500,
-    "currency": "coins",
-    "type": "earn",
-    "timestamp": "2026-03-28T22:34:00.3290230Z",
-    "source": "json_test_add_both"
-  },
-  {
-    "id": "4b6282cf-a438-4b40-918f-e098e900f4fc",
-    "player_id": "local_player",
-    "amount": 10,
-    "currency": "gems",
-    "type": "earn",
-    "timestamp": "2026-03-28T22:34:00.3290230Z",
-    "source": "json_test_add_both"
   }
 ]
