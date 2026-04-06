@@ -7,7 +7,7 @@ public class FacilityUpgradeHandler : MonoBehaviour
     public string teamId;
     public string playerFacilityId;
     public string action; // "start", "confirm", "rollback"
-    public Button upgradeButton;   // optional: to disable/enable during request
+    public Button upgradeButton;
 
     private FacilitiesService facilitiesService;
 
@@ -34,8 +34,8 @@ public class FacilityUpgradeHandler : MonoBehaviour
             if (detailsHandler != null)
             {
                 detailsHandler.SetIds(teamId, playerFacilityId);
-                detailsHandler.RefreshFromServer();
-                Debug.Log("FacilityDetailsHandler refreshed after upgrade.");
+                detailsHandler.RefreshFromLocalState();
+                Debug.Log("FacilityDetailsHandler refreshed from local state after upgrade.");
             }
             else
             {
