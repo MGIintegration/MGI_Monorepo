@@ -1,0 +1,8 @@
+{
+  "player_id": "1",
+  "transaction_id": "7af34e08-3f3f-4cce-b557-c5b2e1361ff5",
+  "currency": "coins",
+  "new_balance": 90,
+  "status": "success",
+  "message": "10 coins spent on coach_hiring"
+}

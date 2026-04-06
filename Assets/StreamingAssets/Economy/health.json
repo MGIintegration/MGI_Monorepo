@@ -1,0 +1,49 @@
+{
+  "player_id": "123e4567-e89b-12d3-a456-426614174000",
+  "analysis_timestamp": "2025-10-29T14:56:01.437847",
+  "health_status": "healthy",
+  "economic_metrics": {
+    "inflation_rate": 0.0213,
+    "resource_scarcity": 0.138,
+    "balance_trend": "stable",
+    "transaction_velocity": 4.21,
+    "risk_score": 26.8925710898095
+  },
+  "failure_predictions": [
+    {
+      "next_failure_week": 7,
+      "failure_probability": 0.22,
+      "failure_type": "balance_depletion",
+      "failure_reason": "Long-term monitoring suggests potential future risks"
+    }
+  ],
+  "mitigation_suggestions": [
+    {
+      "suggestion_id": "preventive_monitoring_001",
+      "category": "monitoring",
+      "priority": "medium",
+      "description": "Implement enhanced monitoring to detect early warning signs",
+      "expected_impact": "Early detection of potential issues",
+      "implementation_difficulty": "low"
+    },
+    {
+      "suggestion_id": "optimization_001",
+      "category": "income",
+      "priority": "low",
+      "description": "Optimize existing income streams for better efficiency",
+      "expected_impact": "Improve income efficiency by 10-15%",
+      "implementation_difficulty": "low"
+    },
+    {
+      "suggestion_id": "balance_protection_001",
+      "category": "balance",
+      "priority": "high",
+      "description": "Implement balance protection measures",
+      "expected_impact": "Prevent balance depletion",
+      "implementation_difficulty": "medium"
+    }
+  ],
+  "analysis_period_weeks": 4,
+  "confidence_score": 0.95,
+  "next_analysis_due": "2025-11-26T14:56:01.437847"
+}

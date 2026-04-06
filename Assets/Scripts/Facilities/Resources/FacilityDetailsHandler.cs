@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine.Networking; // GET from backend
 using Newtonsoft.Json;        // com.unity.nuget.newtonsoft-json
+using System.IO;
 
 public enum FacilityType { WeightRoom, Rehab, Film }
 
@@ -34,6 +35,9 @@ public class FacilityDetailsHandler : MonoBehaviour
     [Header("Defaults for local-only testing")]
     public FacilityType defaultFacility = FacilityType.WeightRoom;
     [Range(1, 99)] public int currentLevel = 1;
+
+    [Header("Local state file")]
+    public string localStateFileName = "facilityStatus.json";
 
     // Internal state
     readonly Dictionary<FacilityType, FacilityConfigRoot> _configs = new();
@@ -327,6 +331,62 @@ public class FacilityDetailsHandler : MonoBehaviour
         return v.ToString("0.###");
     }
 
+
+    public void RefreshFromLocalState()
+    {
+        LoadAllFromResources();
+
+        if (!_configs.ContainsKey(_activeFacility))
+        {
+            Debug.LogError($"RefreshFromLocalState: no config loaded for {_activeFacility}.");
+            return;
+        }
+
+        var localState = LoadLocalFacilityState();
+        if (localState == null)
+        {
+            Debug.LogWarning("RefreshFromLocalState: local facility state not found. Falling back to current level.");
+            SwitchFacility(_activeFacility, currentLevel);
+            return;
+        }
+
+        int localLevel = currentLevel;
+
+        if (localState.TeamId == teamId && localState.PlayerFacilityId == playerFacilityId && localState.CurrentLevel > 0)
+        {
+            localLevel = localState.CurrentLevel;
+        }
+        else
+        {
+            Debug.LogWarning("RefreshFromLocalState: local state did not match current team/facility. Falling back to current level.");
+        }
+
+        SwitchFacility(_activeFacility, localLevel);
+    }
+
+    LocalFacilityStateDto LoadLocalFacilityState()
+    {
+        string path = Path.Combine(Application.persistentDataPath, localStateFileName);
+
+        if (!File.Exists(path))
+        {
+            Debug.LogWarning($"RefreshFromLocalState: file not found at {path}");
+            return null;
+        }
+
+        try
+        {
+            string json = File.ReadAllText(path);
+            return JsonConvert.DeserializeObject<LocalFacilityStateDto>(json);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"RefreshFromLocalState: failed to read local JSON. {ex.Message}");
+            return null;
+        }
+    }
+
+
     // -------------------- DTOs / Models --------------------
 
     [System.Serializable]
@@ -356,5 +416,13 @@ public class FacilityDetailsHandler : MonoBehaviour
         public int minCost;
         public int maxCost;
         public Dictionary<string, float> effectCaps;
+    }
+
+    [System.Serializable]
+    public class LocalFacilityStateDto
+    {
+        public string TeamId;
+        public string PlayerFacilityId;
+        public int CurrentLevel;
     }
 }

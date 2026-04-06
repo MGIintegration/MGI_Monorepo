@@ -1,0 +1,120 @@
+{
+  "xp_progression": {
+    "TeamID": "team_001",
+    "TeamName": "Alpha Warriors",
+    "XP": 85,
+    "Tier": "Pro",
+    "Players": [
+      {
+        "PlayerID": "player_101",
+        "PlayerName": "John Doe"
+      }
+    ],
+    "MatchHistory": [
+      {
+        "Week": 1,
+        "Result": "win",
+        "XPEarned": 15
+      },
+      {
+        "Week": 2,
+        "Result": "loss",
+        "XPEarned": 7
+      },
+      {
+        "Week": 3,
+        "Result": "win",
+        "XPEarned": 15
+      }
+    ],
+    "XPHistory": [
+      {
+        "Amount": 15,
+        "Source": "match_win",
+        "PlayerID": "player_101",
+        "Timestamp": "2025-07-01T12:00:00Z",
+        "Details": {
+          "BaseXP": 5,
+          "ResultBonus": 10,
+          "FacilityBonus": 0,
+          "CoachingBonus": 0
+        }
+      },
+      {
+        "Amount": 7,
+        "Source": "match_loss",
+        "PlayerID": "player_101",
+        "Timestamp": "2025-07-08T12:00:00Z",
+        "Details": {
+          "BaseXP": 5,
+          "ResultBonus": 2,
+          "FacilityBonus": 2,
+          "CoachingBonus": 0
+        }
+      }
+    ],
+    "schema_version": "1.1"
+  },
+  "standings": {
+    "Season": 1,
+    "Teams": [
+      {
+        "TeamID": "team_001",
+        "TeamName": "Alpha Warriors",
+        "Wins": 2,
+        "Losses": 1,
+        "PointsFor": 65,
+        "PointsAgainst": 50
+      },
+      {
+        "TeamID": "team_002",
+        "TeamName": "Beta Crushers",
+        "Wins": 1,
+        "Losses": 2,
+        "PointsFor": 48,
+        "PointsAgainst": 55
+      },
+      {
+        "TeamID": "team_003",
+        "TeamName": "Gamma Titans",
+        "Wins": 3,
+        "Losses": 0,
+        "PointsFor": 72,
+        "PointsAgainst": 40
+      }
+    ]
+  },
+  "playoff_bracket": {
+    "Season": 1,
+    "Rounds": [
+      {
+        "Round": "Quarterfinals",
+        "Matches": [
+          {
+            "MatchID": "QF1",
+            "TeamA": "Gamma Titans",
+            "TeamB": "Beta Crushers",
+            "Winner": "Gamma Titans"
+          },
+          {
+            "MatchID": "QF2",
+            "TeamA": "Alpha Warriors",
+            "TeamB": "Delta Raiders",
+            "Winner": "Alpha Warriors"
+          }
+        ]
+      },
+      {
+        "Round": "Semifinals",
+        "Matches": [
+          {
+            "MatchID": "SF1",
+            "TeamA": "Gamma Titans",
+            "TeamB": "Alpha Warriors",
+            "Winner": "TBD"
+          }
+        ]
+      }
+    ]
+  }
+}
