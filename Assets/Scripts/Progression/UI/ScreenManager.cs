@@ -121,8 +121,7 @@ public class ScreenManager : MonoBehaviour
             return;
         }
 
-        var prog = ApiClient.Instance?.PlayerProgressionSaveData;
-        
+        // Update XP display
         xpText.text = $"XP: {seasonManager.PlayerXP}/1000";
 
         if (weekText != null)
@@ -187,21 +186,10 @@ public class ScreenManager : MonoBehaviour
             resultText.color = playerWon ? Color.green : Color.red;
         }
 
-        var prog = ApiClient.Instance?.PlayerProgressionSaveData;
-        int xp_earned = 0;
-        if (prog.xp_history != null)
-        {
-            foreach (var entry in prog.xp_history)
-            {
-                xp_earned = entry.xp_gained; // Assuming XPHistoryEntry has xp_gained field
-            }
-        }
+        int xp_earned = seasonManager.LastXpGained;
         if (xpEarnedText != null)
         {
-            if (prog != null)
-                xpEarnedText.SetText($"XP Gained: {xp_earned}");
-            else
-                xpEarnedText.SetText("XP Gained: -");
+            xpEarnedText.SetText($"XP Gained: {xp_earned}");
         }
 
         if (offenseText != null)
