@@ -27,8 +27,17 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button modifiersButton;
     [SerializeField] private Button walletButton;
 
+    private void Awake()
+    {
+        ResolveMissingReferences();
+        HideAllPanels();
+        HideAllTopBars();
+    }
+
     private void Start()
     {
+        ResolveMissingReferences();
+
         // Optional: Setup top bar buttons (if they exist)
         if (topBarTransactionLedgerButton != null)
         {
@@ -156,8 +165,7 @@ public class UIManager : MonoBehaviour
         var forecastService = new EconomyForecastService();
         if (!forecastService.TryGetSnapshot(out var snapshot))
         {
-            Debug.LogWarning("[UIManager] Unable to refresh modifier panel because economy_forecast.json could not be read.");
-            return;
+            snapshot = EconomyForecastService.CreateZeroSnapshot();
         }
 
         UpdateModifierRowEffect("Row_Contract", $"-{snapshot.salary:N0} Coins");
@@ -214,6 +222,46 @@ public class UIManager : MonoBehaviour
             if (result != null)
             {
                 return result;
+            }
+        }
+
+        return null;
+    }
+
+    private void ResolveMissingReferences()
+    {
+        if (topBarEconomy == null)
+        {
+            topBarEconomy = FindSceneObjectByName("TopBar_Economy");
+        }
+
+        if (topBarTransactionLedger == null)
+        {
+            topBarTransactionLedger = FindSceneObjectByName("TopBar_TransactionLedger");
+        }
+
+        if (topBarWallet == null)
+        {
+            topBarWallet = FindSceneObjectByName("TopBar_Wallet");
+        }
+
+        if (topBarModifiers == null)
+        {
+            topBarModifiers =
+                FindSceneObjectByName("TopBar_Modifiers") ??
+                FindSceneObjectByName("TopBar_Modifier") ??
+                FindSceneObjectByName("TopBar_ Modifier");
+        }
+    }
+
+    private GameObject FindSceneObjectByName(string objectName)
+    {
+        var rootTransforms = transform.root.GetComponentsInChildren<Transform>(true);
+        foreach (var candidate in rootTransforms)
+        {
+            if (candidate != null && candidate.name == objectName)
+            {
+                return candidate.gameObject;
             }
         }
 

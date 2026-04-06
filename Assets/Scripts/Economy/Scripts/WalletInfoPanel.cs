@@ -25,29 +25,41 @@ public class WalletInfoPanel : MonoBehaviour
     [SerializeField] private string playerId = "local_player";
     [SerializeField] private bool autoCreateWalletIfMissing = true;
     [SerializeField] private bool refreshOnWalletUpdatedEvent = true;
+    [SerializeField] private int fallbackWeeklyForecast = 0;
 
     public static event Action OnWalletUpdated;
 
     private EconomyService economyService;
+    private readonly EconomyForecastService forecastService = new EconomyForecastService();
     private IDisposable walletUpdatedSubscription;
 
     private int coins;
     private int gems;
     private int coachingCredits;
-    private int weeklyForecast = -200;
+
+    private void OnEnable()
+    {
+        if (economyService == null)
+        {
+            economyService = new EconomyService();
+        }
+
+        LoadWalletFromStorage();
+        UpdateWalletDisplay();
+        UpdateForecast();
+    }
 
     private void Start()
     {
-        economyService = new EconomyService();
-        LoadWalletFromStorage();
+        if (economyService == null)
+        {
+            economyService = new EconomyService();
+        }
 
         if (refreshOnWalletUpdatedEvent)
         {
             walletUpdatedSubscription = EventBus.Subscribe("wallet_updated", OnWalletUpdatedEventMessage);
         }
-
-        UpdateWalletDisplay();
-        UpdateForecast();
     }
 
     private void OnDestroy()
@@ -82,6 +94,7 @@ public class WalletInfoPanel : MonoBehaviour
 
         LoadWalletFromStorage();
         UpdateWalletDisplay();
+        UpdateForecast();
     }
 
     private void UpdateWalletDisplay()
@@ -101,8 +114,18 @@ public class WalletInfoPanel : MonoBehaviour
 
     private void UpdateForecast()
     {
-        if (weeklyForecastUI != null)
-            weeklyForecastUI.SetForecast(weeklyForecast);
+        if (weeklyForecastUI == null)
+        {
+            return;
+        }
+
+        if (forecastService.TryGetSnapshot(playerId, out var snapshot))
+        {
+            weeklyForecastUI.SetForecast(snapshot.netDelta);
+            return;
+        }
+
+        weeklyForecastUI.SetForecast(fallbackWeeklyForecast);
     }
 
     public void AddCoins(int amount)
@@ -163,6 +186,10 @@ public class WalletInfoPanel : MonoBehaviour
 
         LoadWalletFromStorage();
         UpdateWalletDisplay();
+        if (!refreshOnWalletUpdatedEvent)
+        {
+            UpdateForecast();
+        }
 
         if (transactionLedgerPanel != null)
             transactionLedgerPanel.ReloadTransactionsFromStorage();
@@ -170,7 +197,7 @@ public class WalletInfoPanel : MonoBehaviour
 
     public void SetWeeklyForecast(int amount)
     {
-        weeklyForecast = amount;
+        fallbackWeeklyForecast = amount;
         UpdateForecast();
     }
 

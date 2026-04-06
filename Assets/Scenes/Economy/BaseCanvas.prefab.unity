@@ -927,6 +927,10 @@ MonoBehaviour:
   earningsText: {fileID: 1762394048}
   expensesText: {fileID: 1797585761}
   netDeltaText: {fileID: 1048210454}
+  playerId: local_player
+  refreshOnWalletUpdatedEvent: 1
+  refreshWhenFilesChange: 1
+  fileRefreshIntervalSeconds: 0.5
   weeklyForecastUI: {fileID: 19814938}
 --- !u!114 &239055336
 MonoBehaviour:
@@ -2835,6 +2839,7 @@ MonoBehaviour:
   playerId: local_player
   autoCreateWalletIfMissing: 1
   refreshOnWalletUpdatedEvent: 1
+  fallbackWeeklyForecast: -200
 --- !u!1001 &858098636
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3335,6 +3340,9 @@ MonoBehaviour:
   spendGems: 5
   spendCoachingCredits: 2
   recentTxLimit: 25
+  addPreset: 2
+  spendPreset: 0
+  rawFileTarget: 0
 --- !u!4 &1169076081
 Transform:
   m_ObjectHideFlags: 0
@@ -4039,6 +4047,10 @@ MonoBehaviour:
   earningsText: {fileID: 1999776665}
   expensesText: {fileID: 300354128}
   netDeltaText: {fileID: 326633385}
+  playerId: local_player
+  refreshOnWalletUpdatedEvent: 1
+  refreshWhenFilesChange: 1
+  fileRefreshIntervalSeconds: 0.5
   weeklyForecastUI: {fileID: 19814938}
 --- !u!114 &1373947606
 MonoBehaviour:

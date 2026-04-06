@@ -2,23 +2,42 @@ using System.IO;
 using UnityEngine;
 
 /// <summary>
-/// Manual test harness: multiple operations that update wallet.json and
-/// wallet_transactions.json via EconomyService using FilePathResolver
-/// economy paths. Use component gear menu (or assign buttons to these public methods).
+/// Small manual test harness for EconomyService JSON operations.
+/// Configure the presets in the Inspector, then run the matching context menu item.
 /// </summary>
 public class EconomyServiceJsonOperationsTester : MonoBehaviour
 {
+    private enum AddPreset
+    {
+        CoinsOnly,
+        GemsOnly,
+        CoinsAndGems,
+        CoachingCreditsOnly
+    }
+
+    private enum SpendPreset
+    {
+        CoinsOnly,
+        GemsOnly,
+        CoinsAndGems,
+        CoachingCreditsOnly,
+        CoachHiringCoinsOnly
+    }
+
     [Header("Target")]
     [SerializeField] private string playerId = "local_player";
 
-    [Header("Default amounts for menu actions")]
+    [Header("Default amounts")]
     [SerializeField] private int addCoins = 500;
     [SerializeField] private int addGems = 10;
     [SerializeField] private int addCoachingCredits = 5;
     [SerializeField] private int spendCoins = 100;
     [SerializeField] private int spendGems = 5;
     [SerializeField] private int spendCoachingCredits = 2;
-    [SerializeField] private int recentTxLimit = 25;
+
+    [Header("Configured actions")]
+    [SerializeField] private AddPreset addPreset = AddPreset.CoinsOnly;
+    [SerializeField] private SpendPreset spendPreset = SpendPreset.CoinsOnly;
 
     private EconomyService _service;
 
@@ -27,6 +46,23 @@ public class EconomyServiceJsonOperationsTester : MonoBehaviour
     private void LogHeader(string title)
     {
         Debug.Log($"[EconomyJsonTest] === {title} === playerId={playerId}");
+    }
+
+    private void LogWallet(Wallet wallet)
+    {
+        if (wallet == null)
+        {
+            Debug.LogWarning("[EconomyJsonTest] No wallet yet (file missing). Use Ensure Wallet or Add configured currency.");
+            return;
+        }
+
+        Debug.Log(
+            $"[EconomyJsonTest] coins={wallet.coins} gems={wallet.gems} coaching_credits={wallet.coaching_credits} last_updated={wallet.last_updated}");
+    }
+
+    private void LogSpendFailure()
+    {
+        Debug.Log("[EconomyJsonTest] FAILED (insufficient or error)");
     }
 
     private string GetEconomyFilePath(string fileName)
@@ -44,7 +80,38 @@ public class EconomyServiceJsonOperationsTester : MonoBehaviour
         return Path.Combine(Application.dataPath, "StreamingAssets", "Economy", fileName);
     }
 
-    // --- Paths (no JSON write) ---
+    private void AddCurrencyAndLog(string label, int coins, int gems, int coachingCredits, string source)
+    {
+        LogHeader(label);
+        Service.AddCurrency(playerId, coins, gems, coachingCredits, source);
+        LogWallet(Service.GetWallet(playerId, createIfMissing: false));
+    }
+
+    private void SpendCurrencyAndLog(string label, int coins, int gems, int coachingCredits, string source)
+    {
+        LogHeader(label);
+        var ok = Service.TrySpend(playerId, coins, gems, coachingCredits, source, out var wallet);
+        if (!ok)
+        {
+            LogSpendFailure();
+            return;
+        }
+
+        LogWallet(wallet);
+    }
+
+    private void SpendCurrencyAndLogWithoutWallet(string label, int coins, int gems, string source)
+    {
+        LogHeader(label);
+        var ok = Service.TrySpend(playerId, coins, gems, source);
+        if (!ok)
+        {
+            LogSpendFailure();
+            return;
+        }
+
+        LogWallet(Service.GetWallet(playerId, createIfMissing: false));
+    }
 
     [ContextMenu("Paths: Log persistent + Economy folder")]
     public void LogEconomyPaths()
@@ -59,192 +126,78 @@ public class EconomyServiceJsonOperationsTester : MonoBehaviour
         Debug.Log($"[EconomyJsonTest] legacy StreamingAssets tx: {GetLegacyStreamingEconomyPath("wallet_transactions.json")}");
     }
 
-    // --- Read via service (loads JSON) ---
-
-    [ContextMenu("Read: GetWallet + log")]
-    public void TestReadWallet()
-    {
-        LogHeader("ReadWallet");
-        var w = Service.GetWallet(playerId, createIfMissing: false);
-        if (w == null)
-        {
-            Debug.LogWarning("[EconomyJsonTest] No wallet yet (file missing). Use CreateIfMissing or AddCurrency.");
-            return;
-        }
-
-        Debug.Log(
-            $"[EconomyJsonTest] coins={w.coins} gems={w.gems} coaching_credits={w.coaching_credits} last_updated={w.last_updated}");
-    }
-
-    [ContextMenu("Read: GetRecentTransactions + log")]
-    public void TestReadRecentTransactions()
-    {
-        LogHeader("RecentTransactions");
-        var list = Service.GetRecentTransactions(playerId, recentTxLimit);
-        var i = 0;
-        foreach (var t in list)
-        {
-            i++;
-            Debug.Log(
-                $"[EconomyJsonTest] #{i} id={t.id} type={t.type} currency={t.currency} amount={t.amount} source={t.source} ts={t.timestamp}");
-        }
-
-        Debug.Log($"[EconomyJsonTest] Count: {i}");
-    }
-
-    [ContextMenu("Read: Raw wallet.json from disk")]
-    public void TestReadRawWalletJson()
-    {
-        LogHeader("RawWalletJson");
-        var path = GetEconomyFilePath("wallet.json");
-        if (!File.Exists(path))
-        {
-            Debug.LogWarning($"[EconomyJsonTest] Missing: {path}");
-            return;
-        }
-
-        Debug.Log($"[EconomyJsonTest] {File.ReadAllText(path)}");
-    }
-
-    [ContextMenu("Read: Raw wallet_transactions.json from disk")]
-    public void TestReadRawTransactionsJson()
-    {
-        LogHeader("RawTransactionsJson");
-        var path = GetEconomyFilePath("wallet_transactions.json");
-        if (!File.Exists(path))
-        {
-            Debug.LogWarning($"[EconomyJsonTest] Missing: {path}");
-            return;
-        }
-
-        Debug.Log($"[EconomyJsonTest] {File.ReadAllText(path)}");
-    }
-
-    // --- Writes via service (updates JSON atomically) ---
-
-    [ContextMenu("Write: Ensure wallet exists (GetWallet create)")]
+    [ContextMenu("Write: Ensure wallet exists")]
     public void TestEnsureWallet()
     {
         LogHeader("EnsureWallet");
-        var w = Service.GetWallet(playerId, createIfMissing: true);
-        Debug.Log(w != null
-            ? $"[EconomyJsonTest] OK coins={w.coins} gems={w.gems} coaching_credits={w.coaching_credits}"
-            : "[EconomyJsonTest] Failed");
+        LogWallet(Service.GetWallet(playerId, createIfMissing: true));
     }
 
-    [ContextMenu("Write: AddCurrency (coins only)")]
-    public void TestAddCoins()
+    [ContextMenu("Write: Add configured currency")]
+    public void TestAddConfiguredCurrency()
     {
-        LogHeader($"AddCoins +{addCoins}");
-        Service.AddCurrency(playerId, addCoins, 0, "json_test_add_coins");
-        TestReadWallet();
-    }
-
-    [ContextMenu("Write: AddCurrency (gems only)")]
-    public void TestAddGems()
-    {
-        LogHeader($"AddGems +{addGems}");
-        Service.AddCurrency(playerId, 0, addGems, "json_test_add_gems");
-        TestReadWallet();
-    }
-
-    [ContextMenu("Write: AddCurrency (coins + gems)")]
-    public void TestAddCoinsAndGems()
-    {
-        LogHeader($"AddBoth coins+{addCoins} gems+{addGems}");
-        Service.AddCurrency(playerId, addCoins, addGems, "json_test_add_both");
-        TestReadWallet();
-    }
-
-    [ContextMenu("Write: AddCurrency (coaching credits only)")]
-    public void TestAddCoachingCredits()
-    {
-        LogHeader($"AddCoachingCredits +{addCoachingCredits}");
-        Service.AddCurrency(playerId, 0, 0, addCoachingCredits, "json_test_add_coaching_credits");
-        TestReadWallet();
-    }
-
-    [ContextMenu("Write: TrySpend (coins only)")]
-    public void TestSpendCoins()
-    {
-        LogHeader($"TrySpend coins {spendCoins}");
-        var ok = Service.TrySpend(playerId, spendCoins, 0, "json_test_spend_coins", out var w);
-        Debug.Log(ok
-            ? $"[EconomyJsonTest] SUCCESS coins={w.coins} gems={w.gems}"
-            : "[EconomyJsonTest] FAILED (insufficient or error)");
-    }
-
-    [ContextMenu("Write: TrySpend (gems only)")]
-    public void TestSpendGems()
-    {
-        LogHeader($"TrySpend gems {spendGems}");
-        var ok = Service.TrySpend(playerId, 0, spendGems, "json_test_spend_gems", out var w);
-        Debug.Log(ok
-            ? $"[EconomyJsonTest] SUCCESS coins={w.coins} gems={w.gems}"
-            : "[EconomyJsonTest] FAILED (insufficient or error)");
-    }
-
-    [ContextMenu("Write: TrySpend (coins + gems)")]
-    public void TestSpendCoinsAndGems()
-    {
-        LogHeader($"TrySpend coins {spendCoins} gems {spendGems}");
-        var ok = Service.TrySpend(playerId, spendCoins, spendGems, "json_test_spend_both", out var w);
-        Debug.Log(ok
-            ? $"[EconomyJsonTest] SUCCESS coins={w.coins} gems={w.gems}"
-            : "[EconomyJsonTest] FAILED (insufficient or error)");
-    }
-
-    [ContextMenu("Write: TrySpend (coaching credits only)")]
-    public void TestSpendCoachingCredits()
-    {
-        LogHeader($"TrySpend coaching credits {spendCoachingCredits}");
-        var ok = Service.TrySpend(
-            playerId,
-            0,
-            0,
-            spendCoachingCredits,
-            "json_test_spend_coaching_credits",
-            out var w);
-        Debug.Log(ok
-            ? $"[EconomyJsonTest] SUCCESS coins={w.coins} gems={w.gems} coaching_credits={w.coaching_credits}"
-            : "[EconomyJsonTest] FAILED (insufficient or error)");
-    }
-
-    [ContextMenu("Write: TrySpend FAIL (huge amount, should not change JSON)")]
-    public void TestSpendInsufficient()
-    {
-        LogHeader("TrySpendInsufficient");
-        var before = Service.GetWallet(playerId, false);
-        var beforeCoins = before?.coins ?? -1;
-        var beforeGems = before?.gems ?? -1;
-        var beforeCoachingCredits = before?.coaching_credits ?? -1;
-
-        var ok = Service.TrySpend(playerId, 9_999_999, 9_999_999, 9_999_999, "json_test_should_fail", out _);
-        Debug.Log($"[EconomyJsonTest] TrySpend returned: {ok} (expected False)");
-
-        var after = Service.GetWallet(playerId, false);
-        if (before != null && after != null)
+        switch (addPreset)
         {
-            var unchanged =
-                after.coins == beforeCoins &&
-                after.gems == beforeGems &&
-                after.coaching_credits == beforeCoachingCredits;
-            Debug.Log(unchanged
-                ? "[EconomyJsonTest] PASS balances unchanged"
-                : "[EconomyJsonTest] FAIL balances changed");
+            case AddPreset.CoinsOnly:
+                AddCurrencyAndLog($"Add coins +{addCoins}", addCoins, 0, 0, "json_test_add_coins");
+                break;
+            case AddPreset.GemsOnly:
+                AddCurrencyAndLog($"Add gems +{addGems}", 0, addGems, 0, "json_test_add_gems");
+                break;
+            case AddPreset.CoinsAndGems:
+                AddCurrencyAndLog(
+                    $"Add coins +{addCoins}, gems +{addGems}",
+                    addCoins,
+                    addGems,
+                    0,
+                    "json_test_add_both");
+                break;
+            case AddPreset.CoachingCreditsOnly:
+                AddCurrencyAndLog(
+                    $"Add coaching credits +{addCoachingCredits}",
+                    0,
+                    0,
+                    addCoachingCredits,
+                    "json_test_add_coaching_credits");
+                break;
         }
     }
 
-    [ContextMenu("Write: Batch (add → spend → add)")]
-    public void TestBatchSequence()
+    [ContextMenu("Write: Spend configured currency")]
+    public void TestSpendConfiguredCurrency()
     {
-        LogHeader("BatchSequence");
-        Service.AddCurrency(playerId, 300, 20, "json_test_batch_1");
-        Service.AddCurrency(playerId, 0, 0, addCoachingCredits, "json_test_batch_add_credits");
-        Service.TrySpend(playerId, 50, 5, spendCoachingCredits, "json_test_batch_2", out _);
-        Service.AddCurrency(playerId, 100, 0, "json_test_batch_3");
-        TestReadWallet();
-        TestReadRecentTransactions();
+        switch (spendPreset)
+        {
+            case SpendPreset.CoinsOnly:
+                SpendCurrencyAndLog($"TrySpend coins {spendCoins}", spendCoins, 0, 0, "json_test_spend_coins");
+                break;
+            case SpendPreset.GemsOnly:
+                SpendCurrencyAndLog($"TrySpend gems {spendGems}", 0, spendGems, 0, "json_test_spend_gems");
+                break;
+            case SpendPreset.CoinsAndGems:
+                SpendCurrencyAndLog(
+                    $"TrySpend coins {spendCoins}, gems {spendGems}",
+                    spendCoins,
+                    spendGems,
+                    0,
+                    "json_test_spend_both");
+                break;
+            case SpendPreset.CoachingCreditsOnly:
+                SpendCurrencyAndLog(
+                    $"TrySpend coaching credits {spendCoachingCredits}",
+                    0,
+                    0,
+                    spendCoachingCredits,
+                    "json_test_spend_coaching_credits");
+                break;
+            case SpendPreset.CoachHiringCoinsOnly:
+                SpendCurrencyAndLogWithoutWallet(
+                    $"TrySpend coach_hiring coins {spendCoins}",
+                    spendCoins,
+                    0,
+                    "coach_hiring");
+                break;
+        }
     }
 
     [ContextMenu("Danger: Delete Economy JSON files for playerId")]
@@ -270,32 +223,13 @@ public class EconomyServiceJsonOperationsTester : MonoBehaviour
         Debug.Log($"[EconomyJsonTest] Deleted {path}");
     }
 
-    // --- Optional: call from UI Button ---
-
-    public void Ui_AddCoins()
+    public void Ui_RunConfiguredAdd()
     {
-        TestAddCoins();
+        TestAddConfiguredCurrency();
     }
 
-    public void Ui_SpendCoins()
+    public void Ui_RunConfiguredSpend()
     {
-        TestSpendCoins();
-    }
-
-    public void Ui_AddCredits()
-    {
-        TestAddCoachingCredits();
-    }
-
-    public void Ui_SpendCredits()
-    {
-        TestSpendCoachingCredits();
-    }
-
-    public void Ui_RefreshLogAll()
-    {
-        LogEconomyPaths();
-        TestReadWallet();
-        TestReadRecentTransactions();
+        TestSpendConfiguredCurrency();
     }
 }

@@ -73,12 +73,23 @@ public class EconomyService
         WriteJsonAtomic(walletPath, created);
         MirrorEditorDebugWallet(created);
         EnsureTransactionsFile(playerId);
+        TrySynchronizeForecast(playerId);
         return created;
+    }
+
+    public bool TrySpend(string playerId, int coins, int gems, string source)
+    {
+        return TrySpend(playerId, coins, gems, source, out _);
     }
 
     public bool TrySpend(string playerId, int coins, int gems, string source, out Wallet updatedWallet)
     {
         return TrySpend(playerId, coins, gems, 0, source, out updatedWallet);
+    }
+
+    public bool TrySpend(string playerId, int coins, int gems, int coachingCredits, string source)
+    {
+        return TrySpend(playerId, coins, gems, coachingCredits, source, out _);
     }
 
     public bool TrySpend(string playerId, int coins, int gems, int coachingCredits, string source, out Wallet updatedWallet)
@@ -222,6 +233,7 @@ public class EconomyService
         WriteJsonAtomic(transactionsPath, existingTransactions);
         MirrorEditorDebugWallet(wallet);
         MirrorEditorDebugTransactions(existingTransactions);
+        TrySynchronizeForecast(playerId);
     }
 
     private List<WalletTransaction> BuildTransactions(
@@ -536,6 +548,18 @@ public class EconomyService
             player_id = playerId,
             payloadJson = JsonConvert.SerializeObject(payload)
         });
+    }
+
+    private static void TrySynchronizeForecast(string playerId)
+    {
+        try
+        {
+            new EconomyForecastService().TrySynchronizeForecastFile(playerId);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"[EconomyService] Failed to synchronize economy_forecast.json: {ex.Message}");
+        }
     }
 
     private static T ReadJsonFile<T>(string path)

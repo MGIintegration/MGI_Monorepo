@@ -96,15 +96,24 @@ public class EconomyServiceSmokeTestRunner : MonoBehaviour
             "Insufficient TrySpend does not mutate wallet.");
         AssertCondition(walletAfterFail != null, "Out wallet from failed TrySpend is still provided.");
 
-        // 6) GetRecentTransactions("local_player", 10)
+        // 6) Coach-hiring style spend should work without requiring an out wallet.
+        var coachHireSpendOk = service.TrySpend(playerId, 25, 0, source: "coach_hiring");
+        AssertCondition(coachHireSpendOk, "TrySpend overload without out wallet succeeds for coach_hiring.");
+
+        var walletAfterCoachHireSpend = service.GetWallet(playerId);
+        AssertCondition(walletAfterCoachHireSpend != null && walletAfterCoachHireSpend.coins == 775,
+            "Coins after coach_hiring TrySpend == 775.");
+
+        // 7) GetRecentTransactions("local_player", 10)
         var recent = service.GetRecentTransactions(playerId, 10).ToList();
-        AssertCondition(recent.Count >= 6, "Recent transactions returned expected entries (>= 6).");
+        AssertCondition(recent.Count >= 7, "Recent transactions returned expected entries (>= 7).");
 
         // Validate transaction content
         ValidateTransactions(recent);
 
-        // Validate event count (AddCurrency success + TrySpend success)
-        AssertCondition(_walletUpdatedEventCount >= 3, "wallet_updated event fired for coin/gem add, coaching credit add, and successful TrySpend.");
+        // Validate event count (AddCurrency success + TrySpend success + coach_hiring spend)
+        AssertCondition(_walletUpdatedEventCount >= 4,
+            "wallet_updated event fired for coin/gem add, coaching credit add, standard TrySpend, and coach_hiring TrySpend.");
 
         // Additional guard: ensure failed TrySpend did not create bad transaction.
         var hasFailedSpendSource = recent.Any(t => t != null && t.source == "test_spend_fail");
@@ -134,6 +143,8 @@ public class EconomyServiceSmokeTestRunner : MonoBehaviour
             "Earn coaching credits transaction matches expected amount/source.");
         AssertCondition(spendTx.Any(t => t.currency == "coins" && t.amount == 200 && t.source == "test_spend"),
             "Spend coins transaction matches expected amount/source.");
+        AssertCondition(spendTx.Any(t => t.currency == "coins" && t.amount == 25 && t.source == "coach_hiring"),
+            "Spend coins transaction matches expected coach_hiring amount/source.");
         AssertCondition(spendTx.Any(t => t.currency == "gems" && t.amount == 10 && t.source == "test_spend"),
             "Spend gems transaction matches expected amount/source.");
         AssertCondition(spendTx.Any(t => t.currency == "coaching_credits" && t.amount == 5 && t.source == "test_spend"),
