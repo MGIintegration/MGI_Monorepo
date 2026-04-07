@@ -279,6 +279,67 @@ public class ProgressionService : MonoBehaviour
         }
     }
 
+    public void ResetAllPlayerXp()
+    {
+        if (_progressionCache == null || _progressionCache.Count == 0)
+        {
+            Debug.Log("[ProgressionService] No player progression states to reset.");
+            return;
+        }
+
+        foreach (var kvp in _progressionCache)
+        {
+            var state = kvp.Value;
+            if (state != null)
+            {
+                state.current_xp = 0;
+                state.current_tier = "rookie"; // reset to starting tier
+                state.xp_history.Clear();
+
+                // Save the cleared state to disk
+                SaveProgressionStateToDisk(state);
+            }
+        }
+
+        Debug.Log("[ProgressionService] All player XP has been reset for this session.");
+    }
+
+    /// <summary>
+    /// Clears all player progression data from both cache and disk
+    /// Called at the start of a new session to ensure no old data persists
+    /// </summary>
+    public void ClearAllPlayerProgression()
+    {
+        try
+        {
+            // Clear the cache
+            _progressionCache.Clear();
+
+            // Delete all progression files from disk
+            var progressionRootDir = Path.Combine(Application.streamingAssetsPath, "Progression");
+            if (Directory.Exists(progressionRootDir))
+            {
+                // Find and delete all player progression files
+                var playerDirs = Directory.GetDirectories(progressionRootDir);
+                foreach (var playerDir in playerDirs)
+                {
+                    var progressionStateFile = Path.Combine(playerDir, "progression_state.json");
+                    if (File.Exists(progressionStateFile))
+                    {
+                        File.Delete(progressionStateFile);
+                        Debug.Log($"[ProgressionService] Deleted old progression file: {progressionStateFile}");
+                    }
+                }
+            }
+
+            Debug.Log("[ProgressionService] All player progression data cleared for new session.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[ProgressionService] Failed to clear player progression data: {ex}");
+        }
+    }
+
    
 
     private class ProgressionConfig
@@ -334,5 +395,12 @@ public class ProgressionService : MonoBehaviour
         {
             return _tiers;
         }
+       
+    }
+
+    public Dictionary<string, PlayerProgressionState> GetAllStates()
+    {
+        // Return a shallow copy to avoid external modification
+        return new Dictionary<string, PlayerProgressionState>(_progressionCache);
     }
 }

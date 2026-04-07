@@ -5,7 +5,6 @@ using System.Linq;
 using UnityEngine;
 using SimpleJSON;
 
-
 public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
 {
     private static LocalSeasonBackend _instance;
@@ -29,6 +28,14 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
     private ProgressionService _progressionService;
     private string _currentSeasonPath;
 
+    // XP Reward Rules
+    private static readonly int XP_MATCH_PLAYED = 5;
+    private static readonly int XP_WIN = 10;
+    private static readonly int XP_LOSS = 2;
+    private static readonly int XP_1ST_PLACE = 50;
+    private static readonly int XP_2ND_PLACE = 30;
+    private static readonly int XP_3RD_PLACE = 15;
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -42,15 +49,24 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
     }
 
     private void Start()
+{
+    _progressionService = ProgressionService.Instance;
+    if (_progressionService == null)
     {
-        _progressionService = ProgressionService.Instance;
-        if (_progressionService == null)
-        {
-            Debug.LogError("[LocalSeasonBackend] ProgressionService not found!");
-        }
+        Debug.LogError("[LocalSeasonBackend] ProgressionService not found!");
+    }
+    else
+    {
+        // Clear all old player progression data to start fresh session
+        _progressionService.ClearAllPlayerProgression();
     }
 
-    
+    // Generate database schemas
+    GenerateDatabaseSchemas();
+}
+
+    #region ISeasonBackend Implementations
+
     public void CreateSeason(List<string> teamNames, string playerTeamName, Action<SeasonSaveData> onSuccess, Action<string> onError = null)
     {
         try
@@ -58,19 +74,19 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
             var seasonData = new SeasonSaveData
             {
                 season_id = Guid.NewGuid().ToString(),
-                current_week = 1,
-                total_weeks = 18,
+                current_week = 0,
+                total_weeks = 10,
                 teams = new List<TeamSaveData>()
             };
 
-            // Create AI team data
-            for (int i = 0; i < teamNames.Count; i++)
+            // Add AI teams
+            foreach (var teamName in teamNames)
             {
                 var team = new TeamSaveData
                 {
                     team_id = Guid.NewGuid().ToString(),
                     player_id = Guid.NewGuid().ToString(),
-                    team_name = teamNames[i],
+                    team_name = teamName,
                     rating = 1000,
                     is_player_team = false,
                     rank = 0,
@@ -92,7 +108,7 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
                 seasonData.teams.Add(team);
             }
 
-            // Create player team
+            // Add player team
             var playerTeam = new TeamSaveData
             {
                 team_id = Guid.NewGuid().ToString(),
@@ -118,160 +134,125 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
             };
             seasonData.teams.Add(playerTeam);
 
-            // Save season data
+            // Save season
             SaveSeasonData(seasonData);
 
-            // Initialize progression for player team
-            var progressionState = _progressionService?.GetState(playerTeam.player_id, createIfMissing: true);
-            if (progressionState != null)
-            {
-                Debug.Log($"[LocalSeasonBackend] Initialized progression for player: {playerTeam.player_id}");
-            }
+            // Initialize progression for player
+            _progressionService?.GetState(playerTeam.player_id, createIfMissing: true);
 
-            Debug.Log($"[LocalSeasonBackend] Season created: {seasonData.season_id} with {seasonData.teams.Count} teams");
+            Debug.Log($"[LocalSeasonBackend] Season created: {seasonData.season_id}");
             onSuccess?.Invoke(seasonData);
         }
         catch (Exception ex)
         {
-            var error = $"[LocalSeasonBackend] CreateSeason failed: {ex.Message}";
-            Debug.LogError(error);
-            onError?.Invoke(error);
+            Debug.LogError($"[LocalSeasonBackend] CreateSeason failed: {ex}");
+            onError?.Invoke(ex.Message);
         }
     }
-
 
     public void SimulateWeek(SeasonSaveData currentSeason, Action<SeasonSaveData> onSuccess, Action<string> onError = null)
     {
         try
         {
-            if (currentSeason == null)
-            {
-                throw new ArgumentNullException(nameof(currentSeason));
-            }
+            if (currentSeason == null || currentSeason.teams == null)
+                throw new ArgumentNullException("currentSeason or currentSeason.teams is null");
 
-            if (currentSeason.teams == null)
-            {
-                throw new ArgumentException("currentSeason.teams is null");
-            }
-
-            // Advance to next week
             currentSeason.current_week++;
 
-            // Stub: Simulate basic match results (randomly assign wins/losses)
             var random = new System.Random();
+            var playerTeam = currentSeason.teams.FirstOrDefault(t => t.is_player_team);
+            bool playerWonThisWeek = false;
+
+            // Simulate matches for all teams
             foreach (var team in currentSeason.teams)
             {
-                if (team == null)
-                {
-                    Debug.LogWarning("[LocalSeasonBackend] Found null team in teams list");
-                    continue;
-                }
-
-                if (team.stats == null)
-                {
-                    Debug.LogWarning($"[LocalSeasonBackend] team.stats is null for team {team.team_name}");
-                    continue;
-                }
+                if (team == null || team.stats == null) continue;
 
                 if (!team.is_player_team)
                 {
-                    // Random match outcome
-                    if (random.NextDouble() > 0.5)
+                    if (random.NextDouble() > 0.5) team.stats.wins++;
+                    else team.stats.losses++;
+                    team.stats.total_matches++;
+                    team.stats.points = team.stats.wins * 2;
+                }
+                else
+                {
+                    // Player team match
+                    bool playerWins = random.NextDouble() > 0.5;
+                    if (playerWins)
                     {
                         team.stats.wins++;
+                        playerWonThisWeek = true;
                     }
                     else
                     {
                         team.stats.losses++;
                     }
                     team.stats.total_matches++;
-                    team.stats.points = team.stats.wins * 2; // Simple points calculation
+                    team.stats.points = team.stats.wins * 2;
                 }
             }
 
-            // Award XP to player team (stub implementation)
-            if (currentSeason.teams.FirstOrDefault(t => t != null && t.is_player_team) is TeamSaveData playerTeam)
+            // Award XP to player team based on match outcome
+            if (playerTeam != null && playerTeam.player_id != null)
             {
-                if (string.IsNullOrEmpty(playerTeam.player_id))
+                int xpReward = XP_MATCH_PLAYED; // Base XP for playing
+                string source = "match_played";
+                
+                if (playerWonThisWeek)
                 {
-                    Debug.LogWarning("[LocalSeasonBackend] Player team has null/empty player_id");
+                    xpReward += XP_WIN; // Bonus for winning
+                    source = "win";
                 }
                 else
                 {
-                    int baseXp = random.Next(5, 20); // 5-20 XP per week
-                    _progressionService?.AddXp(playerTeam.player_id, baseXp, "match_played");
+                    xpReward += XP_LOSS; // Consolation XP for losing
+                    source = "loss";
                 }
-            }
-            else
-            {
-                Debug.LogWarning("[LocalSeasonBackend] No player team found in season");
+
+                _progressionService?.AddXp(playerTeam.player_id, xpReward, source);
             }
 
-            // Save updated season
             SaveSeasonData(currentSeason);
-
             Debug.Log($"[LocalSeasonBackend] Week {currentSeason.current_week} simulated");
             onSuccess?.Invoke(currentSeason);
         }
         catch (Exception ex)
         {
-            var error = $"[LocalSeasonBackend] SimulateWeek failed: {ex.Message}";
-            Debug.LogError(ex);
+            Debug.LogError($"[LocalSeasonBackend] SimulateWeek failed: {ex}");
             onError?.Invoke(ex.Message);
         }
     }
 
-  
     public void GetPlayerProgression(string playerId, Action<PlayerProgressionSaveData> onSuccess, Action<string> onError = null)
     {
         try
         {
-            if (string.IsNullOrEmpty(playerId))
-            {
-                throw new ArgumentException("playerId is null or empty");
-            }
-
             var state = _progressionService?.GetState(playerId, createIfMissing: false);
-            if (state == null)
-            {
-                throw new Exception($"Progression state not found for player: {playerId}");
-            }
+            if (state == null) throw new Exception($"No progression found for {playerId}");
 
-            // Convert to legacy format
-            var legacyData = ConvertToLegacyFormat(state);
-            onSuccess?.Invoke(legacyData);
+            var legacy = ConvertToLegacyFormat(state);
+            onSuccess?.Invoke(legacy);
         }
         catch (Exception ex)
         {
-            var error = $"[LocalSeasonBackend] GetPlayerProgression failed: {ex.Message}";
-            Debug.LogError(error);
-            onError?.Invoke(error);
+            Debug.LogError($"[LocalSeasonBackend] GetPlayerProgression failed: {ex}");
+            onError?.Invoke(ex.Message);
         }
     }
-
 
     public void GetLocalProgression(string playerId, Action<PlayerProgressionState> onSuccess, Action<string> onError = null)
     {
         try
         {
-            if (string.IsNullOrEmpty(playerId))
-            {
-                throw new ArgumentException("playerId is null or empty");
-            }
-
             var state = _progressionService?.GetState(playerId, createIfMissing: false);
-            if (state == null)
-            {
-                throw new Exception($"Progression state not found for player: {playerId}");
-            }
-
+            if (state == null) throw new Exception($"No progression found for {playerId}");
             onSuccess?.Invoke(state);
         }
         catch (Exception ex)
         {
-            var error = $"[LocalSeasonBackend] GetLocalProgression failed: {ex.Message}";
-            Debug.LogError(error);
-            onError?.Invoke(error);
+            Debug.LogError($"[LocalSeasonBackend] GetLocalProgression failed: {ex}");
+            onError?.Invoke(ex.Message);
         }
     }
 
@@ -279,64 +260,115 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
     {
         try
         {
-            if (string.IsNullOrEmpty(playerId))
-            {
-                throw new ArgumentException("playerId is null or empty");
-            }
-
-            if (xpAmount <= 0)
-            {
-                throw new ArgumentException("xpAmount must be positive");
-            }
-
             _progressionService?.AddXp(playerId, xpAmount, source);
             var state = _progressionService?.GetState(playerId, createIfMissing: false);
-
-            if (state != null)
-            {
-                onSuccess?.Invoke(state);
-            }
-            else
-            {
-                throw new Exception("Failed to retrieve updated progression state");
-            }
+            onSuccess?.Invoke(state);
         }
         catch (Exception ex)
         {
-            var error = $"[LocalSeasonBackend] AddPlayerXp failed: {ex.Message}";
-            Debug.LogError(error);
-            onError?.Invoke(error);
+            Debug.LogError($"[LocalSeasonBackend] AddPlayerXp failed: {ex}");
+            onError?.Invoke(ex.Message);
         }
     }
 
-
-    private PlayerProgressionSaveData ConvertToLegacyFormat(PlayerProgressionState newState)
+    /// <summary>
+    /// Awards season-end XP rewards based on final standings
+    /// Provides bonus XP for 1st (50), 2nd (30), 3rd (15) place finishes
+    /// </summary>
+    public void AwardSeasonRewards(SeasonSaveData seasonData, Action<string> onSuccess, Action<string> onError = null)
     {
-        var legacyData = new PlayerProgressionSaveData
+        try
         {
-            player_id = newState.player_id,
-            current_xp = newState.current_xp,
-            current_tier = newState.current_tier,
+            if (seasonData == null || seasonData.teams == null || seasonData.teams.Count == 0)
+            {
+                throw new ArgumentException("Invalid season data");
+            }
+
+            // Sort teams by points (ranking)
+            var rankedTeams = seasonData.teams
+                .Where(t => t != null && t.is_player_team)
+                .OrderByDescending(t => t.stats.points)
+                .ToList();
+
+            if (rankedTeams.Count == 0)
+            {
+                throw new Exception("No player team found in season data");
+            }
+
+            var playerTeam = rankedTeams.First();
+            int placement = 1;
+            int xpReward = 0;
+
+            // Determine placement and reward
+            // This is simplified - in a real scenario, you'd rank all teams
+            var allTeamsByPoints = seasonData.teams
+                .Where(t => t != null && t.stats != null)
+                .OrderByDescending(t => t.stats.points)
+                .ToList();
+
+            placement = allTeamsByPoints.FindIndex(t => t.team_id == playerTeam.team_id) + 1;
+
+            if (placement == 1)
+            {
+                xpReward = XP_1ST_PLACE;
+            }
+            else if (placement == 2)
+            {
+                xpReward = XP_2ND_PLACE;
+            }
+            else if (placement == 3)
+            {
+                xpReward = XP_3RD_PLACE;
+            }
+            else
+            {
+                // No reward for 4th place or lower
+                Debug.Log($"[LocalSeasonBackend] Player team finished {placement}th - no season reward");
+                onSuccess?.Invoke("No reward for this placement");
+                return;
+            }
+
+            // Award the XP
+            _progressionService?.AddXp(playerTeam.player_id, xpReward, "season_reward");
+            
+            Debug.Log($"[LocalSeasonBackend] Season reward awarded: {xpReward} XP for {placement} place finish");
+            onSuccess?.Invoke($"Awarded {xpReward} XP for {placement} place finish");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[LocalSeasonBackend] AwardSeasonRewards failed: {ex}");
+            onError?.Invoke(ex.Message);
+        }
+    }
+
+    #endregion
+
+    #region Helper Methods
+
+    private PlayerProgressionSaveData ConvertToLegacyFormat(PlayerProgressionState state)
+    {
+        var legacy = new PlayerProgressionSaveData
+        {
+            player_id = state.player_id,
+            current_xp = state.current_xp,
+            current_tier = state.current_tier,
             tier_progression = _progressionService?.GetAllTiers() ?? new Dictionary<string, TierData>(),
             xp_history = new List<XPHistoryEntry>()
         };
 
-        foreach (var entry in newState.xp_history)
+        foreach (var entry in state.xp_history)
         {
-            legacyData.xp_history.Add(new XPHistoryEntry
+            legacy.xp_history.Add(new XPHistoryEntry
             {
                 timestamp = entry.timestamp,
                 xp_gained = entry.xp_gained,
-                source = entry.source,
-                facility_multiplier = 1.0f,
-                coaching_bonus = 0.0f
+                source = entry.source
             });
         }
 
-        return legacyData;
+        return legacy;
     }
 
-  
     private void SaveSeasonData(SeasonSaveData seasonData)
     {
         try
@@ -354,78 +386,208 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
             var teamsArray = new JSONArray();
             foreach (var team in seasonData.teams)
             {
-                var teamJson = new JSONObject();
-                teamJson["team_id"] = team.team_id;
-                teamJson["player_id"] = team.player_id;
-                teamJson["team_name"] = team.team_name;
-                teamJson["rating"] = team.rating;
-                teamJson["is_player_team"] = team.is_player_team;
-                teamJson["wins"] = team.stats.wins;
-                teamJson["losses"] = team.stats.losses;
-                teamJson["points"] = team.stats.points;
+                var teamJson = new JSONObject
+                {
+                    ["team_id"] = team.team_id,
+                    ["player_id"] = team.player_id,
+                    ["team_name"] = team.team_name,
+                    ["rating"] = team.rating,
+                    ["is_player_team"] = team.is_player_team,
+                    ["wins"] = team.stats.wins,
+                    ["losses"] = team.stats.losses,
+                    ["points"] = team.stats.points
+                };
                 teamsArray.Add(teamJson);
             }
             json["teams"] = teamsArray;
 
             File.WriteAllText(seasonPath, json.ToString(2));
             _currentSeasonPath = seasonPath;
-            Debug.Log($"[LocalSeasonBackend] Season saved to {seasonPath}");
         }
         catch (Exception ex)
         {
-            Debug.LogError($"[LocalSeasonBackend] Failed to save season data: {ex}");
+            Debug.LogError($"[LocalSeasonBackend] Failed to save season: {ex}");
         }
     }
 
-    private SeasonSaveData LoadSeasonData(string seasonId)
+    private void GenerateDatabaseSchemas()
+{
+    try
     {
-        try
+        var dir = Path.Combine(Application.streamingAssetsPath, "Progression");
+        if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+        // Safely get all progression states as a List
+        var allStates = _progressionService?.GetAllStates()?.Values.ToList() 
+                ?? new List<PlayerProgressionState>();
+
+        // XP history file
+        var xpPath = Path.Combine(dir, "xp_history_schema.json");
+        var xpArray = new JSONArray();
+
+        foreach (var state in allStates)
         {
-            var seasonDir = Path.Combine(FilePathResolver.GetRoot(), "seasons");
-            var seasonPath = Path.Combine(seasonDir, $"{seasonId}.json");
-
-            if (!File.Exists(seasonPath))
+            foreach (var entry in state.xp_history)
             {
-                return null;
+                var e = new JSONObject
+                {
+                    ["id"] = entry.id,
+                    ["player_id"] = entry.player_id,
+                    ["timestamp"] = entry.timestamp,
+                    ["xp_gained"] = entry.xp_gained,
+                    ["source"] = entry.source
+                };
+                xpArray.Add(e);
             }
+        }
 
-            var json = JSONNode.Parse(File.ReadAllText(seasonPath));
-            var seasonData = new SeasonSaveData
+        File.WriteAllText(xpPath, xpArray.ToString(2));
+
+        // Progression state file
+        var progPath = Path.Combine(dir, "progression_state_schema.json");
+        var progArray = new JSONArray();
+
+        foreach (var state in allStates)
+        {
+            var s = new JSONObject
             {
-                season_id = json["season_id"].Value,
-                current_week = json["current_week"].AsInt,
-                total_weeks = json["total_weeks"].AsInt,
-                teams = new List<TeamSaveData>()
+                ["player_id"] = state.player_id,
+                ["current_xp"] = state.current_xp,
+                ["current_tier"] = state.current_tier
             };
 
-            foreach (KeyValuePair<string, JSONNode> kvp in json["teams"])
+            var xpArr = new JSONArray();
+            foreach (var entry in state.xp_history)
             {
-                var teamNode = kvp.Value;
-                var team = new TeamSaveData
+                var e = new JSONObject
                 {
-                    team_id = teamNode["team_id"].Value,
-                    player_id = teamNode["player_id"].Value,
-                    team_name = teamNode["team_name"].Value,
-                    rating = teamNode["rating"].AsInt,
-                    is_player_team = teamNode["is_player_team"].AsBool,
-                    stats = new TeamStatsSaveData
-                    {
-                        wins = teamNode["wins"].AsInt,
-                        losses = teamNode["losses"].AsInt,
-                        points = teamNode["points"].AsInt,
-                        total_matches = teamNode["wins"].AsInt + teamNode["losses"].AsInt
-                    },
-                    progression = new TeamProgressionSaveData()
+                    ["id"] = entry.id,
+                    ["player_id"] = entry.player_id,
+                    ["timestamp"] = entry.timestamp,
+                    ["xp_gained"] = entry.xp_gained,
+                    ["source"] = entry.source
                 };
-                seasonData.teams.Add(team);
+                xpArr.Add(e);
             }
+            s["xp_history"] = xpArr;
+            progArray.Add(s);
+        }
 
-            return seasonData;
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"[LocalSeasonBackend] Failed to load season data: {ex}");
-            return null;
-        }
+        File.WriteAllText(progPath, progArray.ToString(2));
+
+        Debug.Log("[LocalSeasonBackend] Database schemas generated.");
     }
+    catch (Exception ex)
+    {
+        Debug.LogError($"[LocalSeasonBackend] Failed to generate database schemas: {ex}");
+    }
+}
+
+    /// <summary>
+    /// Calculates the player tier based on current XP using the tier progression structure
+    /// Tier progression:
+    /// - rookie: 0-50 XP
+    /// - pro: 51-100 XP
+    /// - all_star: 101-150 XP
+    /// - legend: 151-1000 XP
+    /// </summary>
+    private string CalculateTierFromXp(int currentXp)
+    {
+        if (currentXp >= 0 && currentXp <= 50)
+            return "rookie";
+        else if (currentXp >= 51 && currentXp <= 100)
+            return "pro";
+        else if (currentXp >= 101 && currentXp <= 150)
+            return "all_star";
+        else if (currentXp >= 151 && currentXp <= 1000)
+            return "legend";
+        
+        // Default fallback
+        return "rookie";
+    }
+
+    /// <summary>
+    /// Gets the tier data for a given tier name
+    /// Returns the tier configuration including min/max XP and unlock features
+    /// </summary>
+    private TierData GetTierDataByName(string tierName)
+    {
+        return tierName switch
+        {
+            "rookie" => new TierData
+            {
+                min_xp = 0,
+                max_xp = 50,
+                display_name = "Rookie",
+                unlock_features = new List<string> { "Basic Arena Access", "Starter Pack" }
+            },
+            "pro" => new TierData
+            {
+                min_xp = 51,
+                max_xp = 100,
+                display_name = "Pro",
+                unlock_features = new List<string> { "Elite Arena", "Pro Training Facility" }
+            },
+            "all_star" => new TierData
+            {
+                min_xp = 101,
+                max_xp = 150,
+                display_name = "All-Star",
+                unlock_features = new List<string> { "Star Arena", "Star Training Facility" }
+            },
+            "legend" => new TierData
+            {
+                min_xp = 151,
+                max_xp = 1000,
+                display_name = "Legend",
+                unlock_features = new List<string> { "Legendary Arena", "Hall of Fame Access" }
+            },
+            _ => new TierData
+            {
+                min_xp = 0,
+                max_xp = 50,
+                display_name = "Rookie",
+                unlock_features = new List<string> { "Basic Arena Access", "Starter Pack" }
+            }
+        };
+    }
+
+    /// <summary>
+    /// Gets the full tier progression dictionary for the player progression system
+    /// </summary>
+    private Dictionary<string, TierData> GetTierProgressionData()
+    {
+        return new Dictionary<string, TierData>
+        {
+            ["rookie"] = new TierData
+            {
+                min_xp = 0,
+                max_xp = 50,
+                display_name = "Rookie",
+                unlock_features = new List<string> { "Basic Arena Access", "Starter Pack" }
+            },
+            ["pro"] = new TierData
+            {
+                min_xp = 51,
+                max_xp = 100,
+                display_name = "Pro",
+                unlock_features = new List<string> { "Elite Arena", "Pro Training Facility" }
+            },
+            ["all_star"] = new TierData
+            {
+                min_xp = 101,
+                max_xp = 150,
+                display_name = "All-Star",
+                unlock_features = new List<string> { "Star Arena", "Star Training Facility" }
+            },
+            ["legend"] = new TierData
+            {
+                min_xp = 151,
+                max_xp = 1000,
+                display_name = "Legend",
+                unlock_features = new List<string> { "Legendary Arena", "Hall of Fame Access" }
+            }
+        };
+    }
+    #endregion
 }
