@@ -92,7 +92,7 @@ public class ProgressionService : MonoBehaviour
     }
 
    
-    public void AddXp(string playerId, int xp, string source)
+    public void AddXp(string playerId, int baseXp, string source, string eventId, float multiplier = 1f)
     {
         if (string.IsNullOrEmpty(playerId))
         {
@@ -100,9 +100,9 @@ public class ProgressionService : MonoBehaviour
             return;
         }
 
-        if (xp <= 0)
+        if (baseXp <= 0)
         {
-            Debug.LogWarning($"[ProgressionService] AddXp called with non-positive amount: {xp}");
+            Debug.LogWarning($"[ProgressionService] AddXp called with non-positive amount: {baseXp}");
             return;
         }
 
@@ -113,26 +113,41 @@ public class ProgressionService : MonoBehaviour
             return;
         }
 
-        var historyEntry = new XpHistoryEntry(playerId, xp, source);
+        //DUPLICATE DETECTION
+        bool isDuplicate = state.xp_history.Exists(e => e.id == eventId);
+        if (isDuplicate)
+        {
+            Debug.Log($"[ProgressionService] Duplicate XP ignored: {eventId}");
+            return;
+        }
+
+        // APPLY MULTIPLIER
+        int finalXp = Mathf.RoundToInt(baseXp * multiplier);
+
+        // STORE EVENT
+        var historyEntry = new XpHistoryEntry(playerId, finalXp, source)
+        {
+            id = eventId
+        };
+
         state.xp_history.Add(historyEntry);
 
-        // Update total XP
+        // Update XP
         int oldXp = state.current_xp;
-        state.current_xp += xp;
+        state.current_xp += finalXp;
 
         // Recalculate tier
         string oldTier = state.current_tier;
         state.current_tier = CalculateTierForXp(state.current_xp);
 
-        // Persist changes
+        // Save
         SaveProgressionStateToDisk(state);
 
         // Publish event
         PublishXpUpdatedEvent(playerId, oldXp, state.current_xp, oldTier, state.current_tier);
 
-        Debug.Log($"[ProgressionService] Added {xp} XP to {playerId} (source: {source}). Total: {state.current_xp}, Tier: {state.current_tier}");
+        Debug.Log($"[ProgressionService] Added {finalXp} XP to {playerId}");
     }
-
 
     public TierData GetCurrentTier(string playerId)
     {

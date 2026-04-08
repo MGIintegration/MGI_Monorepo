@@ -199,7 +199,7 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
                 else
                 {
                     int baseXp = random.Next(5, 20); // 5-20 XP per week
-                    _progressionService?.AddXp(playerTeam.player_id, baseXp, "match_played");
+                    _progressionService?.AddXp(playerTeam.player_id, baseXp, "match_played", Guid.NewGuid().ToString(), 1f);
                 }
             }
             else
@@ -289,7 +289,7 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
                 throw new ArgumentException("xpAmount must be positive");
             }
 
-            _progressionService?.AddXp(playerId, xpAmount, source);
+            _progressionService?.AddXp(playerId, xpAmount, source, Guid.NewGuid().ToString(), 1f);
             var state = _progressionService?.GetState(playerId, createIfMissing: false);
 
             if (state != null)
