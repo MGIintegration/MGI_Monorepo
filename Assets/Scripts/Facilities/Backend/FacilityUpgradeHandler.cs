@@ -4,9 +4,8 @@ using UnityEngine.UI;
 public class FacilityUpgradeHandler : MonoBehaviour
 {
     [Header("Set these in Inspector")]
-    public string teamId;
-    public string playerFacilityId;
-    public string action; // "start", "confirm", "rollback"
+    public string playerId = FacilitiesService.DefaultPlayerId;
+    public string facilityTypeId; // weight_room, rehab_center, film_room
     public Button upgradeButton;
 
     private FacilitiesService facilitiesService;
@@ -16,24 +15,24 @@ public class FacilityUpgradeHandler : MonoBehaviour
         facilitiesService = new FacilitiesService();
     }
 
-    // Hook this in the Button's OnClick()
     public void OnUpgradeButtonClick()
     {
-        Debug.Log($"Upgrade button clicked! Action: {action}");
+        Debug.Log($"Upgrade button clicked for facilityTypeId: {facilityTypeId}");
 
         if (upgradeButton != null)
             upgradeButton.interactable = false;
 
-        var result = facilitiesService.TryUpgradeFacility(teamId, playerFacilityId, action);
+        bool success = facilitiesService.TryUpgradeFacility(playerId, facilityTypeId, out var newState);
 
-        if (result.Success)
+        if (success)
         {
-            Debug.Log("Upgrade Successful: " + result.Message);
+            Debug.Log($"Upgrade Successful: {facilityTypeId} is now level {newState.level}");
 
-            var detailsHandler = FindObjectOfType<FacilityDetailsHandler>();
+            var detailsHandler = FindFirstObjectByType<FacilityDetailsHandler>();
+
             if (detailsHandler != null)
             {
-                detailsHandler.SetIds(teamId, playerFacilityId);
+                detailsHandler.SetIds(playerId, facilityTypeId);
                 detailsHandler.RefreshFromLocalState();
                 Debug.Log("FacilityDetailsHandler refreshed from local state after upgrade.");
             }
@@ -44,7 +43,7 @@ public class FacilityUpgradeHandler : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Upgrade Failed: " + result.Message);
+            Debug.LogError($"Upgrade Failed for facilityTypeId: {facilityTypeId}");
         }
 
         if (upgradeButton != null)

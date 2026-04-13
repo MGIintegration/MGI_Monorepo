@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,149 +7,301 @@ using Newtonsoft.Json;
 
 public class FacilitiesService
 {
-    private const string DefaultFacilityResourceName = "WeightRoom";
-    private const string LocalStateFileName = "facilityStatus.json";
+    public const string DefaultPlayerId = "local_player";
+    private const string PlayerFacilitiesFileName = "player_facilities.json";
 
-    public FacilityUpgradeResult TryUpgradeFacility(string teamId, string playerFacilityId, string action)
+    // facility_type_id -> Resources file name
+    private readonly Dictionary<string, string> _facilityResourceMap = new()
     {
-        // ---------------- INPUT VALIDATION ----------------
-        if (string.IsNullOrWhiteSpace(teamId))
-            return Fail("TeamId is required.");
+        { "weight_room", "WeightRoom" },
+        { "rehab_center", "Rehab" },
+        { "film_room", "Film" }
+    };
 
-        if (string.IsNullOrWhiteSpace(playerFacilityId))
-            return Fail("PlayerFacilityId is required.");
+    /// <summary>
+    /// Upgrades a facility by one level for the given player.
+    /// Returns the updated PlayerFacilityProgress in newState.
+    /// Economy/EventBus integration can be added later before SavePlayerFacilityState().
+    /// </summary>
+    public bool TryUpgradeFacility(string playerId, string facilityTypeId, out PlayerFacilityProgress newState)
+    {
+        newState = null;
 
-        if (string.IsNullOrWhiteSpace(action))
-            return Fail("Action is required.");
-
-        if (action != "start" && action != "confirm" && action != "rollback")
-            return Fail($"Unsupported action: {action}");
-
-        // For now, only "confirm" will actually perform an upgrade.
-        // "start" and "rollback" are accepted but not yet implemented with separate behavior.
-        if (action != "confirm")
+        if (string.IsNullOrWhiteSpace(playerId))
         {
-            return new FacilityUpgradeResult
-            {
-                Success = true,
-                Message = $"Action '{action}' accepted, but no local state change was applied."
-            };
+            Debug.LogError("FacilitiesService.TryUpgradeFacility: playerId is required.");
+            return false;
         }
 
-        // ---------------- LOAD FACILITY CONFIG ----------------
-        TextAsset configJson = Resources.Load<TextAsset>(DefaultFacilityResourceName);
-        if (configJson == null)
-            return Fail($"Facility config '{DefaultFacilityResourceName}.json' not found in Resources.");
-
-        FacilityConfigRoot config;
-        try
+        if (!IsValidFacilityType(facilityTypeId))
         {
-            config = JsonConvert.DeserializeObject<FacilityConfigRoot>(configJson.text);
-        }
-        catch (System.Exception ex)
-        {
-            return Fail($"Failed to parse facility config JSON. {ex.Message}");
+            Debug.LogError($"FacilitiesService.TryUpgradeFacility: invalid facilityTypeId '{facilityTypeId}'.");
+            return false;
         }
 
+        var config = LoadFacilityConfig(facilityTypeId);
         if (config == null || config.levels == null || config.levels.Count == 0)
-            return Fail("Invalid facility config: no levels found.");
-
-        // ---------------- LOAD OR CREATE LOCAL PLAYER STATE ----------------
-        string path = Path.Combine(Application.persistentDataPath, LocalStateFileName);
-        FacilityState state = null;
-
-        if (File.Exists(path))
         {
-            try
-            {
-                string json = File.ReadAllText(path);
-                state = JsonConvert.DeserializeObject<FacilityState>(json);
-            }
-            catch (System.Exception ex)
-            {
-                return Fail($"Failed to read local facility state. {ex.Message}");
-            }
+            Debug.LogError($"FacilitiesService.TryUpgradeFacility: failed to load config for '{facilityTypeId}'.");
+            return false;
         }
 
-        if (state == null)
-        {
-            state = new FacilityState
-            {
-                TeamId = teamId,
-                PlayerFacilityId = playerFacilityId,
-                CurrentLevel = 1
-            };
-        }
+        var playerState = GetPlayerFacilityState(playerId);
+        var progress = GetOrCreateFacilityProgress(playerState, facilityTypeId);
 
-        // If the saved state belongs to another team/facility, reset it for the current request.
-        if (state.TeamId != teamId || state.PlayerFacilityId != playerFacilityId)
-        {
-            state.TeamId = teamId;
-            state.PlayerFacilityId = playerFacilityId;
-            state.CurrentLevel = Mathf.Max(1, state.CurrentLevel);
-        }
-
-        // ---------------- UPGRADE LOGIC ----------------
         int maxLevel = config.levels.Max(l => l.level);
+        if (progress.level >= maxLevel)
+        {
+            Debug.LogWarning($"FacilitiesService.TryUpgradeFacility: '{facilityTypeId}' already at max level.");
+            newState = progress;
+            return false;
+        }
 
-        if (state.CurrentLevel >= maxLevel)
-            return Fail("Already at max level.");
+        int nextLevel = progress.level + 1;
+        var nextLevelConfig = config.levels.FirstOrDefault(l => l.level == nextLevel);
+        if (nextLevelConfig == null)
+        {
+            Debug.LogError($"FacilitiesService.TryUpgradeFacility: no config found for '{facilityTypeId}' level {nextLevel}.");
+            return false;
+        }
 
-        int nextLevel = state.CurrentLevel + 1;
-        FacilityLevel nextLevelData = config.levels.FirstOrDefault(l => l.level == nextLevel);
+        // TODO: Add EconomyService.TrySpend(playerId, nextLevelConfig.upgradeCost, 0, "upgrade_facility", out ...)
+        // before applying the level-up.
 
-        if (nextLevelData == null)
-            return Fail($"Next level configuration for level {nextLevel} was not found.");
+        progress.level = nextLevel;
+        SavePlayerFacilityState(playerState);
 
-        // Add EconomyService.TrySpend(...) here before applying the upgrade.
+        newState = progress;
+        return true;
+    }
 
-        state.CurrentLevel = nextLevel;
+    /// <summary>
+    /// Returns the full PlayerFacilityState for Progression or any other read-only consumer.
+    /// Creates a default file if none exists yet.
+    /// </summary>
+    public PlayerFacilityState GetPlayerFacilityState(string playerId)
+    {
+        if (string.IsNullOrWhiteSpace(playerId))
+        {
+            playerId = DefaultPlayerId;
+        }
 
-        // ---------------- SAVE UPDATED STATE ----------------
+        string path = FilePathResolver.GetFacilitiesPath(playerId, PlayerFacilitiesFileName);
+
+        if (!File.Exists(path))
+        {
+            var newState = CreateDefaultPlayerFacilityState(playerId);
+            SavePlayerFacilityState(newState);
+            return newState;
+        }
+
         try
         {
-            string updatedJson = JsonConvert.SerializeObject(state, Formatting.Indented);
-            File.WriteAllText(path, updatedJson);
+            string json = File.ReadAllText(path);
+            var state = JsonConvert.DeserializeObject<PlayerFacilityState>(json);
+
+            if (state == null)
+            {
+                var fallback = CreateDefaultPlayerFacilityState(playerId);
+                SavePlayerFacilityState(fallback);
+                return fallback;
+            }
+
+            state.player_id = string.IsNullOrWhiteSpace(state.player_id) ? playerId : state.player_id;
+            state.facilities ??= new Dictionary<string, PlayerFacilityProgress>();
+
+            return state;
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
-            return Fail($"Failed to save updated facility state. {ex.Message}");
+            Debug.LogError($"FacilitiesService.GetPlayerFacilityState: failed to read state. {ex.Message}");
+            var fallback = CreateDefaultPlayerFacilityState(playerId);
+            SavePlayerFacilityState(fallback);
+            return fallback;
+        }
+    }
+
+    /// <summary>
+    /// Returns a single facility progress record for the requested facility type.
+    /// If the player has no saved state for that facility yet, a default level-1 progress record is returned/created.
+    /// </summary>
+    public PlayerFacilityProgress GetFacilityProgress(string playerId, string facilityTypeId)
+    {
+        if (!IsValidFacilityType(facilityTypeId))
+        {
+            Debug.LogWarning($"FacilitiesService.GetFacilityProgress: invalid facilityTypeId '{facilityTypeId}'.");
+            return null;
         }
 
-        return new FacilityUpgradeResult
+        var state = GetPlayerFacilityState(playerId);
+        return GetOrCreateFacilityProgress(state, facilityTypeId);
+    }
+
+    /// <summary>
+    /// Returns the active effects for the player's current level of the given facility.
+    /// This is useful for Progression when applying XP multipliers.
+    /// </summary>
+    public Dictionary<string, float> GetFacilityEffects(string playerId, string facilityTypeId)
+    {
+        if (!IsValidFacilityType(facilityTypeId))
         {
-            Success = true,
-            Message = $"Facility upgraded successfully to level {nextLevel}."
+            Debug.LogWarning($"FacilitiesService.GetFacilityEffects: invalid facilityTypeId '{facilityTypeId}'.");
+            return new Dictionary<string, float>();
+        }
+
+        var config = LoadFacilityConfig(facilityTypeId);
+        if (config == null || config.levels == null || config.levels.Count == 0)
+        {
+            return new Dictionary<string, float>();
+        }
+
+        var progress = GetFacilityProgress(playerId, facilityTypeId);
+        if (progress == null)
+        {
+            return new Dictionary<string, float>();
+        }
+
+        var levelData = config.levels.FirstOrDefault(l => l.level == progress.level);
+        return levelData?.effects ?? new Dictionary<string, float>();
+    }
+
+    /// <summary>
+    /// Returns all current facility effects keyed by facility_type_id.
+    /// This is convenient if Progression wants one call instead of three separate calls.
+    /// </summary>
+    public Dictionary<string, Dictionary<string, float>> GetAllFacilityEffects(string playerId)
+    {
+        var result = new Dictionary<string, Dictionary<string, float>>();
+
+        foreach (var facilityTypeId in _facilityResourceMap.Keys)
+        {
+            result[facilityTypeId] = GetFacilityEffects(playerId, facilityTypeId);
+        }
+
+        return result;
+    }
+
+    public bool IsValidFacilityType(string facilityTypeId)
+    {
+        return !string.IsNullOrWhiteSpace(facilityTypeId) && _facilityResourceMap.ContainsKey(facilityTypeId);
+    }
+
+    private FacilityConfigRoot LoadFacilityConfig(string facilityTypeId)
+    {
+        if (!IsValidFacilityType(facilityTypeId))
+        {
+            return null;
+        }
+
+        string resourceName = _facilityResourceMap[facilityTypeId];
+        TextAsset configAsset = Resources.Load<TextAsset>(resourceName);
+
+        if (configAsset == null)
+        {
+            Debug.LogError($"FacilitiesService.LoadFacilityConfig: Resources file '{resourceName}' not found.");
+            return null;
+        }
+
+        try
+        {
+            return JsonConvert.DeserializeObject<FacilityConfigRoot>(configAsset.text);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"FacilitiesService.LoadFacilityConfig: failed to parse '{resourceName}'. {ex.Message}");
+            return null;
+        }
+    }
+
+    private void SavePlayerFacilityState(PlayerFacilityState state)
+    {
+        if (state == null || string.IsNullOrWhiteSpace(state.player_id))
+        {
+            Debug.LogError("FacilitiesService.SavePlayerFacilityState: invalid state.");
+            return;
+        }
+
+        state.facilities ??= new Dictionary<string, PlayerFacilityProgress>();
+
+        string path = FilePathResolver.GetFacilitiesPath(state.player_id, PlayerFacilitiesFileName);
+
+        try
+        {
+            string json = JsonConvert.SerializeObject(state, Formatting.Indented);
+            File.WriteAllText(path, json);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"FacilitiesService.SavePlayerFacilityState: failed to save state. {ex.Message}");
+        }
+    }
+
+    private PlayerFacilityState CreateDefaultPlayerFacilityState(string playerId)
+    {
+        return new PlayerFacilityState
+        {
+            player_id = playerId,
+            facilities = new Dictionary<string, PlayerFacilityProgress>()
         };
     }
 
-    private FacilityUpgradeResult Fail(string message)
+    private PlayerFacilityProgress GetOrCreateFacilityProgress(PlayerFacilityState state, string facilityTypeId)
     {
-        return new FacilityUpgradeResult
+        state.facilities ??= new Dictionary<string, PlayerFacilityProgress>();
+
+        if (!state.facilities.TryGetValue(facilityTypeId, out var progress) || progress == null)
         {
-            Success = false,
-            Message = message
-        };
-    }
+            progress = new PlayerFacilityProgress
+            {
+                facility_type_id = facilityTypeId,
+                level = 1
+            };
 
-    [System.Serializable]
-    public class FacilityState
-    {
-        public string TeamId;
-        public string PlayerFacilityId;
-        public int CurrentLevel;
-    }
+            state.facilities[facilityTypeId] = progress;
+        }
+        else if (string.IsNullOrWhiteSpace(progress.facility_type_id))
+        {
+            progress.facility_type_id = facilityTypeId;
+        }
 
-    [System.Serializable]
-    public class FacilityConfigRoot
-    {
-        public List<FacilityLevel> levels;
+        return progress;
     }
+}
 
-    [System.Serializable]
-    public class FacilityLevel
-    {
-        public int level;
-        public int upgradeCost;
-    }
+[System.Serializable]
+public class PlayerFacilityState
+{
+    public string player_id;
+    public Dictionary<string, PlayerFacilityProgress> facilities;
+}
+
+[System.Serializable]
+public class PlayerFacilityProgress
+{
+    public string facility_type_id;
+    public int level;
+}
+
+[System.Serializable]
+public class FacilityConfigRoot
+{
+    public List<FacilityLevel> levels;
+}
+
+[System.Serializable]
+public class FacilityLevel
+{
+    public int level;
+    public int upgradeCost;
+    public string descriptor;
+    public Dictionary<string, float> effects;
+    public Validation validation;
+}
+
+[System.Serializable]
+public class Validation
+{
+    public int minCost;
+    public int maxCost;
+    public Dictionary<string, float> effectCaps;
 }
