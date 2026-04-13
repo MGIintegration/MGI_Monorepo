@@ -66,6 +66,8 @@ public static class CoachesService
 {
     // In single-player the player id is fixed; wire to a proper PlayerService later.
     public const string LocalPlayerId = "local_player";
+    private const string CoachHiringSpendSource = "coach_hiring";
+    private const string CoachHiringRefundSource = "coach_hiring_refund";
 
     // ── Public API ───────────────────────────────────────────────────────────
 
@@ -119,32 +121,58 @@ public static class CoachesService
             return false;
         }
 
-        // 3. Check and deduct wallet via EconomyService
+        // 3. Idempotency: if this hire is already applied, no-op successfully.
+        var existingState = LoadTeamState(playerId);
+        var existingAssigned = GetAssignedCoachId(existingState, coachType);
+        if (string.Equals(existingAssigned, coachId, StringComparison.Ordinal))
+        {
+            hiredCoach = coach;
+            return true;
+        }
+
+        var existingContracts = GetActiveContracts(playerId);
+        if (existingContracts.Any(c =>
+                string.Equals(c.team_id, teamId, StringComparison.Ordinal) &&
+                string.Equals(c.coach_id, coachId, StringComparison.Ordinal) &&
+                string.Equals(NormalizeCoachType(c.coach_type), coachType, StringComparison.Ordinal)))
+        {
+            // Contract exists but state may not; treat as already-hired and avoid double-spend.
+            var stateToRepair = existingState ?? new TeamState { player_id = playerId, team_id = teamId };
+            stateToRepair.team_id = teamId;
+            ApplyAssignedCoachId(stateToRepair, coachType, coachId);
+            _ = SaveTeamState(playerId, stateToRepair);
+            hiredCoach = coach;
+            return true;
+        }
+
+        // 4. Check and deduct wallet via EconomyService
         int hireCost = Mathf.RoundToInt(coach.salary);
-        if (!new EconomyService().TrySpend(playerId, hireCost, 0, "coach_hiring", out _))
+        var economy = new EconomyService();
+        if (!economy.TrySpend(playerId, hireCost, 0, CoachHiringSpendSource, out _))
         {
             Debug.LogWarning($"[CoachesService] Insufficient funds to hire {coach.coach_name} (cost: {hireCost} coins).");
             return false;
         }
 
-        // 4. Update runtime team state
-        var state = LoadTeamState(playerId) ?? new TeamState
+        // 5. Update runtime team state
+        var state = existingState ?? new TeamState
         {
             team_id = teamId,
             player_id = playerId
         };
+        state.team_id = teamId;
 
-        switch (coachType)
+        ApplyAssignedCoachId(state, coachType, coachId);
+
+        var teamSaved = SaveTeamState(playerId, state);
+        var contractSaved = SaveCoachContract(playerId, teamId, coach);
+        if (!teamSaved || !contractSaved)
         {
-            case "O": state.offence_coach = coachId; break;
-            case "D": state.defence_coach = coachId; break;
-            case "S": state.special_teams_coach = coachId; break;
+            // Persistence failed after spend; refund and abort without publishing event.
+            economy.AddCurrency(playerId, hireCost, 0, CoachHiringRefundSource);
+            Debug.LogError("[CoachesService] Hire failed while saving state/contracts; spend has been refunded.");
+            return false;
         }
-
-        SaveTeamState(playerId, state);
-
-        // 5. Persist coach contract
-        SaveCoachContract(playerId, teamId, coach);
 
         // 6. Publish hire_coach event
         var payload = new HireCoachPayload
@@ -327,20 +355,21 @@ public static class CoachesService
         }
     }
 
-    private static void SaveTeamState(string playerId, TeamState state)
+    private static bool SaveTeamState(string playerId, TeamState state)
     {
         string path = FilePathResolver.GetCoachesPath(playerId, "teams.json");
         try
         {
-            File.WriteAllText(path, JsonUtility.ToJson(state, true));
+            return TryWriteAllTextAtomic(path, JsonUtility.ToJson(state, true));
         }
         catch (Exception e)
         {
             Debug.LogError($"[CoachesService] Failed to save team state: {e.Message}");
+            return false;
         }
     }
 
-    private static void SaveCoachContract(string playerId, string teamId, CoachDatabaseRecord coach)
+    private static bool SaveCoachContract(string playerId, string teamId, CoachDatabaseRecord coach)
     {
         string path = FilePathResolver.GetCoachesPath(playerId, "coach_contracts.json");
 
@@ -375,11 +404,67 @@ public static class CoachesService
 
         try
         {
-            File.WriteAllText(path, JsonUtility.ToJson(list, true));
+            return TryWriteAllTextAtomic(path, JsonUtility.ToJson(list, true));
         }
         catch (Exception e)
         {
             Debug.LogError($"[CoachesService] Failed to save contracts: {e.Message}");
+            return false;
+        }
+    }
+
+    private static string NormalizeCoachType(string coachType)
+    {
+        return coachType?.ToUpperInvariant();
+    }
+
+    private static string GetAssignedCoachId(TeamState state, string coachType)
+    {
+        if (state == null) return null;
+        return coachType switch
+        {
+            "O" => state.offence_coach,
+            "D" => state.defence_coach,
+            "S" => state.special_teams_coach,
+            _ => null
+        };
+    }
+
+    private static void ApplyAssignedCoachId(TeamState state, string coachType, string coachId)
+    {
+        switch (coachType)
+        {
+            case "O": state.offence_coach = coachId; break;
+            case "D": state.defence_coach = coachId; break;
+            case "S": state.special_teams_coach = coachId; break;
+        }
+    }
+
+    private static bool TryWriteAllTextAtomic(string destinationPath, string contents)
+    {
+        try
+        {
+            var dir = Path.GetDirectoryName(destinationPath);
+            if (!string.IsNullOrEmpty(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            var tempPath = destinationPath + ".tmp";
+            File.WriteAllText(tempPath, contents);
+
+            if (File.Exists(destinationPath))
+            {
+                File.Delete(destinationPath);
+            }
+
+            File.Move(tempPath, destinationPath);
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[CoachesService] Atomic write failed for '{destinationPath}': {e.Message}");
+            return false;
         }
     }
 }
