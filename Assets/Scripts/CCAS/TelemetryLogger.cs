@@ -333,7 +333,7 @@ public class TelemetryLogger : MonoBehaviour
     /// Builds a map of card UID → total pulls so far (from cached pull_history).
     /// Used for both duplicate detection and per-card dupe counters.
     /// </summary>
-    private Dictionary<string, int> BuildCardPullCountsFromHistory()
+    public Dictionary<string, int> BuildCardPullCountsFromHistory()
     {
         var dict = new Dictionary<string, int>();
         if (cached?.logs == null) return dict;
@@ -359,7 +359,7 @@ public class TelemetryLogger : MonoBehaviour
     /// Returns XP for a duplicate card based on its rarity, using Phase 1 Part 4 tuning.
     /// Falls back to default values if config is missing.
     /// </summary>
-    private int GetDuplicateXpForRarity(string rarity)
+    public int GetDuplicateXpForRarity(string rarity)
     {
         string r = (rarity ?? "common").ToLowerInvariant();
 

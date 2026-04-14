@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,7 +35,8 @@ public class DropHistoryController : MonoBehaviour
 
     private bool _pendingRefresh;
     private bool _isPopulating;
-    private System.Action<TelemetryLogger.PackPullLog> _onPullLoggedHandler;
+    private Action<EventBus.EventEnvelope> _onPullLoggedHandler;
+    private System.IDisposable _buyPackSub;
 
     void Awake()
     {
@@ -56,9 +58,8 @@ public class DropHistoryController : MonoBehaviour
             });
         }
 
-        _onPullLoggedHandler = OnPullLogged;
-        if (TelemetryLogger.Instance != null)
-            TelemetryLogger.Instance.OnPullLogged += _onPullLoggedHandler;
+        _onPullLoggedHandler = _ => RefreshDropHistory();
+        _buyPackSub = EventBus.Subscribe("buy_pack", _onPullLoggedHandler);
     }
 
     void OnEnable()
@@ -72,8 +73,7 @@ public class DropHistoryController : MonoBehaviour
 
     void OnDestroy()
     {
-        if (TelemetryLogger.Instance != null && _onPullLoggedHandler != null)
-            TelemetryLogger.Instance.OnPullLogged -= _onPullLoggedHandler;
+        _buyPackSub?.Dispose();
     }
 
     public void RefreshDropHistory()
