@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -14,14 +15,16 @@ public class AcquisitionHubController : MonoBehaviour
 
     [Header("Buttons")]
     public Button goToMarketButton;
-    public Button myPacksButton; // Previously openPackButton
+    public Button myPacksButton;
 
     [Header("Panels")]
     public GameObject hubPanel;
     public GameObject marketPanel;
     public GameObject packPanel;
     public GameObject dropHistoryPanel;
-    public GameObject myPacksPanel; // Placeholder for later
+    public GameObject myPacksPanel;
+
+    private IDisposable _buyPackSub;
 
     void Start()
     {
@@ -35,26 +38,56 @@ public class AcquisitionHubController : MonoBehaviour
 
         if (myPacksButton != null)
         {
+            // Force-enable the Button component itself — scene serialization can leave it unchecked
+            myPacksButton.enabled = true;
             myPacksButton.interactable = false;
-            myPacksButton.onClick.AddListener(ShowMyPacks);
+            myPacksButton.onClick.AddListener(OnMyPacksClicked);
+            Debug.Log("[CCAS] My Packs button found and wired up.");
+        }
+        else
+        {
+            Debug.LogWarning("[CCAS] myPacksButton is NULL in Start — assign it in the Inspector.");
         }
 
-        // Enable My Packs button if the player already has pull history
-        RefreshMyPacksButton();
+        // Seed button state from previous sessions
+        RefreshMyPacksButton("Start");
 
-        // Stay informed when new packs are opened
-        if (TelemetryLogger.Instance != null)
-            TelemetryLogger.Instance.OnPullLogged += _ => RefreshMyPacksButton();
+        // Subscribe to buy_pack event — fires every time a pack is opened
+        _buyPackSub = EventBus.Subscribe("buy_pack", env =>
+        {
+            Debug.Log($"[CCAS] buy_pack event received (player={env.player_id}) → enabling My Packs button");
+            PlayerPrefs.SetInt("ccas_has_pack_history", 1);
+            PlayerPrefs.Save();
+            RefreshMyPacksButton("buy_pack event");
+        });
 
         ShowHub();
+    }
+
+    void OnDestroy()
+    {
+        _buyPackSub?.Dispose();
+    }
+
+    private void OnMyPacksClicked()
+    {
+        Debug.Log($"[CCAS] My Packs button clicked. myPacksPanel={(myPacksPanel != null ? myPacksPanel.name : "NULL")}");
+
+        if (myPacksPanel != null)
+            ShowMyPacks();
+        else
+            Debug.LogWarning("[CCAS] myPacksPanel is not assigned — assign 'MyPacksPanel' GameObject to AcquisitionHubController.myPacksPanel in the Inspector.");
     }
 
     // --- Navigation Helpers ---
     public void ShowHub()
     {
         SetActivePanel(hubPanel);
+        Canvas.ForceUpdateCanvases();
+        if (hubPanel != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(hubPanel.GetComponent<RectTransform>());
         UpdateXPDisplay();
-        RefreshMyPacksButton();
+        RefreshMyPacksButton("ShowHub");
     }
     public void ShowMarket() => SetActivePanel(marketPanel);
     public void ShowMyPacks() => SetActivePanel(myPacksPanel);
@@ -84,14 +117,32 @@ public class AcquisitionHubController : MonoBehaviour
     }
 
     /// <summary>
-    /// Enables the My Packs button only when there is at least one pack in history.
-    /// Called on Start and each time a new pack is opened.
+    /// Enables My Packs button when the player has opened at least one pack.
+    /// Checks PlayerPrefs flag first (fast), falls back to TelemetryLogger history.
     /// </summary>
-    private void RefreshMyPacksButton()
+    private void RefreshMyPacksButton(string caller)
     {
-        if (myPacksButton == null) return;
-        var history = TelemetryLogger.Instance?.GetRecent(1);
-        myPacksButton.interactable = history != null && history.Count > 0;
+        if (myPacksButton == null)
+        {
+            Debug.LogWarning($"[CCAS] RefreshMyPacksButton({caller}): myPacksButton is NULL");
+            return;
+        }
+
+        bool hasHistory = PlayerPrefs.GetInt("ccas_has_pack_history", 0) == 1;
+
+        if (!hasHistory)
+        {
+            var recent = TelemetryLogger.Instance?.GetRecent(1);
+            hasHistory = recent != null && recent.Count > 0;
+            if (hasHistory)
+            {
+                PlayerPrefs.SetInt("ccas_has_pack_history", 1);
+                PlayerPrefs.Save();
+            }
+        }
+
+        myPacksButton.interactable = hasHistory;
+        Debug.Log($"[CCAS] RefreshMyPacksButton({caller}): hasHistory={hasHistory} → interactable={myPacksButton.interactable}");
     }
 
     /// <summary>

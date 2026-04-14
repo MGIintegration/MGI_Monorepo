@@ -38,7 +38,8 @@ public class MyPacksController : MonoBehaviour
 
     private bool   _pendingRefresh;
     private bool   _isPopulating;
-    private Action<TelemetryLogger.PackPullLog> _onPullLoggedHandler;
+    private Action<EventBus.EventEnvelope> _onPullLoggedHandler;
+    private IDisposable _buyPackSub;
 
     void Awake()
     {
@@ -53,8 +54,7 @@ public class MyPacksController : MonoBehaviour
                 () => FindFirstObjectByType<AcquisitionHubController>()?.ShowHub());
 
         _onPullLoggedHandler = _ => Refresh();
-        if (TelemetryLogger.Instance != null)
-            TelemetryLogger.Instance.OnPullLogged += _onPullLoggedHandler;
+        _buyPackSub = EventBus.Subscribe("buy_pack", _onPullLoggedHandler);
     }
 
     void OnEnable()
@@ -72,8 +72,7 @@ public class MyPacksController : MonoBehaviour
 
     void OnDestroy()
     {
-        if (TelemetryLogger.Instance != null && _onPullLoggedHandler != null)
-            TelemetryLogger.Instance.OnPullLogged -= _onPullLoggedHandler;
+        _buyPackSub?.Dispose();
     }
 
     public void Refresh()
@@ -91,6 +90,14 @@ public class MyPacksController : MonoBehaviour
     IEnumerator Populate()
     {
         _isPopulating = true;
+
+        if (contentParent == null || resultTemplate == null)
+        {
+            Debug.LogError("[MyPacks] contentParent or resultTemplate is not assigned in the Inspector. " +
+                           "Assign: contentParent = ScrollView/Viewport/Content, resultTemplate = a row prefab/GameObject.");
+            _isPopulating = false;
+            yield break;
+        }
 
         // Clear previous rows (keep resultTemplate in place)
         for (int i = contentParent.childCount - 1; i >= 0; i--)

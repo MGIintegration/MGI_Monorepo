@@ -99,17 +99,18 @@ public class PackOpeningController : MonoBehaviour
         EmotionalStateManager.Instance?.ApplyPackOutcome(packType, raritiesForHooks);
         HookOrchestrator.Instance?.TryTriggerOutcomeHooks(raritiesForHooks);
 
-        // Events first (duplicate detection reads history before this pull)
         var packData = mgr.config.pack_types[packType];
-        PublishBuyPackEvent(packType, packData.cost, cards);
 
-        // Telemetry (with full card data) — runs after event so history is still clean
+        // Telemetry (with full card data)
         TelemetryLogger.Instance?.LogPull(
             packType,
             packData.name,
             packData.cost,
             cards
         );
+
+        // Events last (ensure Telemetry has saved the data before subscribers refresh)
+        PublishBuyPackEvent(packType, packData.cost, cards);
 
         // Visuals - display actual card information
         for (int i = 0; i < _cards.Count; i++)
