@@ -53,6 +53,40 @@ public class HireCoachPayload
     public int cost_paid_coins;
 }
 
+/// <summary>
+/// Unity JsonUtility-friendly coach XP bonus config.
+/// The requested dictionary-like layout is represented with arrays so the
+/// config can be parsed reliably without manual JSON deserialization.
+/// </summary>
+[Serializable]
+public class CoachesBonusConfig
+{
+    public CoachTypeBonusEntry[] xp_bonus_rules = new CoachTypeBonusEntry[0];
+    public SynergyBonusRule[] synergy_bonus = new SynergyBonusRule[0];
+}
+
+[Serializable]
+public class CoachTypeBonusEntry
+{
+    public string coach_type;
+    public XpSourceBonusRule[] source_rules = new XpSourceBonusRule[0];
+}
+
+[Serializable]
+public class XpSourceBonusRule
+{
+    public string xp_source;
+    public float base_bonus;
+    public float rating_multiplier;
+}
+
+[Serializable]
+public class SynergyBonusRule
+{
+    public string[] required = new string[0];
+    public float bonus;
+}
+
 // ── Service ───────────────────────────────────────────────────────────────────
 
 /// <summary>
@@ -68,6 +102,10 @@ public static class CoachesService
     public const string LocalPlayerId = "local_player";
     private const string CoachHiringSpendSource = "coach_hiring";
     private const string CoachHiringRefundSource = "coach_hiring_refund";
+    private const string CoachBonusConfigFileName = "coaches_bonus_config.json";
+
+    private static CoachesBonusConfig cachedBonusConfig;
+    private static bool bonusConfigLoaded;
 
     // ── Public API ───────────────────────────────────────────────────────────
 
@@ -228,7 +266,153 @@ public static class CoachesService
         return LoadCatalog().FirstOrDefault(c => c.coach_id == coachId);
     }
 
+    /// <summary>
+    /// Returns the XP bonus percent for the given player and XP source.
+    /// Read-only lookup only: no file writes, no hiring changes, no XP application.
+    /// </summary>
+    public static float GetCoachXpBonusPercent(string playerId, string xpSource)
+    {
+        playerId ??= LocalPlayerId;
+        var normalizedXpSource = xpSource?.Trim();
+        var coachType = GetCoachTypeForXpSource(normalizedXpSource);
+        if (string.IsNullOrEmpty(coachType))
+        {
+            return 0f;
+        }
+
+        var state = GetTeamState(playerId);
+        if (state == null)
+        {
+            return 0f;
+        }
+
+        var coachId = GetAssignedCoachId(state, coachType);
+        if (string.IsNullOrEmpty(coachId))
+        {
+            return 0f;
+        }
+
+        var coach = GetCoachById(coachId);
+        if (coach == null)
+        {
+            return 0f;
+        }
+
+        var config = LoadBonusConfig();
+        if (config == null)
+        {
+            Debug.LogWarning("[CoachesService] Coach XP bonus config could not be loaded.");
+            return 0f;
+        }
+
+        var typeEntry = config.xp_bonus_rules?.FirstOrDefault(entry =>
+            entry != null &&
+            string.Equals(entry.coach_type, coachType, StringComparison.OrdinalIgnoreCase));
+        if (typeEntry == null)
+        {
+            return 0f;
+        }
+
+        var rule = typeEntry.source_rules?.FirstOrDefault(sourceRule =>
+            sourceRule != null &&
+            string.Equals(sourceRule.xp_source, normalizedXpSource, StringComparison.OrdinalIgnoreCase));
+        if (rule == null)
+        {
+            return 0f;
+        }
+
+        float totalBonus = CalculateCoachRuleBonus(coach, rule);
+
+        if (config.synergy_bonus != null)
+        {
+            foreach (var synergy in config.synergy_bonus)
+            {
+                if (synergy == null || synergy.required == null || synergy.required.Length == 0)
+                {
+                    continue;
+                }
+
+                if (!synergy.required.All(requiredType => HasAssignedCoachType(state, requiredType)))
+                {
+                    continue;
+                }
+
+                totalBonus += synergy.bonus;
+            }
+        }
+
+        return totalBonus;
+    }
+
     // ── Private helpers ──────────────────────────────────────────────────────
+
+    private static CoachesBonusConfig LoadBonusConfig()
+    {
+        if (bonusConfigLoaded)
+        {
+            return cachedBonusConfig;
+        }
+
+        bonusConfigLoaded = true;
+
+        string path = Path.Combine(Application.streamingAssetsPath, "Coaches", CoachBonusConfigFileName);
+        if (!File.Exists(path))
+        {
+            Debug.LogWarning($"[CoachesService] Bonus config not found at '{path}'.");
+            cachedBonusConfig = null;
+            return null;
+        }
+
+        try
+        {
+            cachedBonusConfig = JsonUtility.FromJson<CoachesBonusConfig>(File.ReadAllText(path)) ?? new CoachesBonusConfig();
+            return cachedBonusConfig;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[CoachesService] Failed to load bonus config: {e.Message}");
+            cachedBonusConfig = null;
+            return null;
+        }
+    }
+
+    private static string GetCoachTypeForXpSource(string xpSource)
+    {
+        if (string.IsNullOrWhiteSpace(xpSource))
+        {
+            return null;
+        }
+
+        switch (xpSource.Trim().ToLowerInvariant())
+        {
+            case "offensive_drill":
+                return "O";
+            case "defensive_drill":
+                return "D";
+            default:
+                return null;
+        }
+    }
+
+    private static bool HasAssignedCoachType(TeamState state, string coachType)
+    {
+        if (state == null)
+        {
+            return false;
+        }
+
+        return !string.IsNullOrEmpty(GetAssignedCoachId(state, coachType));
+    }
+
+    private static float CalculateCoachRuleBonus(CoachDatabaseRecord coach, XpSourceBonusRule rule)
+    {
+        if (coach == null || rule == null)
+        {
+            return 0f;
+        }
+
+        return rule.base_bonus + (coach.overall_rating * rule.rating_multiplier);
+    }
 
     private static List<CoachDatabaseRecord> LoadCatalog()
     {
