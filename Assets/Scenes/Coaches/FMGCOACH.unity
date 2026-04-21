@@ -11966,7 +11966,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3017048100086378510, guid: f604c2f408fcc403f997183dd1d1bc13, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: StatViewToggle, CoachingScripts
+      value: StatViewToggle, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3017048100086378510, guid: f604c2f408fcc403f997183dd1d1bc13, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -11994,7 +11994,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3918943919648809137, guid: f604c2f408fcc403f997183dd1d1bc13, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: StatViewToggle, CoachingScripts
+      value: StatViewToggle, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3918943919648809137, guid: f604c2f408fcc403f997183dd1d1bc13, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName

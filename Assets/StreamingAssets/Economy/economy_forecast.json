@@ -1,39 +1,53 @@
 {
-  "player_id": "123e4567-e89b-12d3-a456-426614174000",
-  "current_balance": 1000,
+  "player_id": "local_player",
+  "current_balance": 0,
   "weeks": 4,
-  "salary": 100,
-  "income": 200,
+  "salary": 0,
+  "income": 0,
   "bonuses": {
-    "1": 50,
-    "2": 0
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0
   },
   "expenses": {
-    "1": 30,
-    "2": 40,
-    "3": 50
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0
   },
   "forecast": [
     {
       "week": 1,
-      "net_change": 120,
-      "balance": 1120
+      "net_change": 0,
+      "balance": 0
     },
     {
       "week": 2,
-      "net_change": 60,
-      "balance": 1180
+      "net_change": 0,
+      "balance": 0
     },
     {
       "week": 3,
-      "net_change": 50,
-      "balance": 1230
+      "net_change": 0,
+      "balance": 0
     },
     {
       "week": 4,
-      "net_change": 100,
-      "balance": 1330
+      "net_change": 0,
+      "balance": 0
     }
   ],
-  "alerts": []
+  "alerts": [],
+  "base_salary": 100,
+  "base_income": 200,
+  "base_bonuses": {
+    "1": 50,
+    "2": 0
+  },
+  "base_expenses": {
+    "1": 30,
+    "2": 40,
+    "3": 50
+  }
 }

@@ -1,0 +1,36 @@
+[
+  {
+    "player_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "analysis_timestamp": "2026-01-31T01:17:48.9937380Z",
+    "next_analysis_due": "2026-03-14T01:17:48.9937380Z",
+    "health_status": "at_risk",
+    "economic_metrics": {
+      "inflation_rate": 0.0264,
+      "resource_scarcity": 0.141,
+      "balance_trend": "decreasing",
+      "transaction_velocity": 3.5,
+      "risk_score": 61.87259896638827
+    },
+    "failure_predictions": [],
+    "mitigation_suggestions": [
+      {
+        "suggestion_id": "balance_stabilization_001",
+        "category": "balance",
+        "priority": "high",
+        "description": "Implement measures to stabilize declining balance trend",
+        "expected_impact": "Reverse negative balance trend within 2-3 weeks",
+        "implementation_difficulty": "medium"
+      },
+      {
+        "suggestion_id": "income_boost_001",
+        "category": "income",
+        "priority": "high",
+        "description": "Increase income sources or boost existing income rates",
+        "expected_impact": "Increase daily income by 25-40%",
+        "implementation_difficulty": "low"
+      }
+    ],
+    "analysis_period_weeks": 6,
+    "confidence_score": 0.8
+  }
+]
