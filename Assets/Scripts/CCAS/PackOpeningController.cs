@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using CCAS.Backend;
 
 public class PackOpeningController : MonoBehaviour
 {
@@ -42,8 +43,19 @@ public class PackOpeningController : MonoBehaviour
         OpenPack();
     }
 
+    public void OpenPackOfType(string key, PackResult result)
+    {
+        packType = key;
+        OpenPack(result);
+    }
+
     [ContextMenu("Open Pack (Current Setting)")]
     public void OpenPack()
+    {
+        OpenPack(null);
+    }
+
+    private void OpenPack(PackResult serviceResult)
     {
         if (string.IsNullOrEmpty(packType))
         {
@@ -63,8 +75,10 @@ public class PackOpeningController : MonoBehaviour
             return;
         }
 
-        // Pull actual Card objects instead of just rarity strings
-        var cards = mgr.PullCards(packType);
+        // If we already opened via CCASService (BoosterMarket), use that result.
+        var cards = serviceResult != null && serviceResult.success && serviceResult.cards != null
+            ? serviceResult.cards
+            : mgr.PullCards(packType);
         Debug.Log($"[PackOpening] {packType} → {cards.Count} cards");
 
         if (cards.Count == 0)
@@ -101,16 +115,22 @@ public class PackOpeningController : MonoBehaviour
 
         var packData = mgr.config.pack_types[packType];
 
-        // Telemetry (with full card data)
-        TelemetryLogger.Instance?.LogPull(
-            packType,
-            packData.name,
-            packData.cost,
-            cards
-        );
+        // Telemetry/events:
+        // - When opened via CCASService, the spend and buy_pack event already happened there.
+        // - We still log for UI history, but avoid re-publishing events.
+        if (TelemetryLogger.Instance != null)
+        {
+            if (serviceResult != null)
+                TelemetryLogger.Instance.LogPull(packType, packData.name, packData.cost, serviceResult);
+            else
+                TelemetryLogger.Instance.LogPull(packType, packData.name, packData.cost, cards);
+        }
 
-        // Events last (ensure Telemetry has saved the data before subscribers refresh)
-        PublishBuyPackEvent(packType, packData.cost, cards);
+        if (serviceResult == null)
+        {
+            // Legacy-only: CCASService already publishes buy_pack when used.
+            PublishBuyPackEvent(packType, packData.cost, cards);
+        }
 
         // Visuals - display actual card information
         for (int i = 0; i < _cards.Count; i++)

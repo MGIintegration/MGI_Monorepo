@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using Newtonsoft.Json;
+using CCAS.Backend;
 
 /// <summary>
 /// Simplified Telemetry Logger (Phase 1)
@@ -149,15 +150,9 @@ public class TelemetryLogger : MonoBehaviour
                 }
             }
 
-            // Update player's XP pool based on duplicates in this pull
-            int previousXp = PlayerPrefs.GetInt("player_xp", 0);
-            int newTotalXp = previousXp + Mathf.Max(0, totalXpGained);
-            PlayerPrefs.SetInt("player_xp", newTotalXp);
-            PlayerPrefs.Save();
-
             ev.total_xp_gained = totalXpGained;
             ev.duplicate_count = duplicateCount;
-            ev.player_xp_after = newTotalXp;
+            ev.player_xp_after = PlayerPrefs.GetInt("player_xp", 0); // legacy field; authoritative XP comes from ProgressionService now
 
             // Emotional snapshot (after pull) - Phase 2 (negative/positive)
             if (EmotionalStateManager.Instance != null)
@@ -196,6 +191,112 @@ public class TelemetryLogger : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogError($"[Telemetry] Error during LogPull: {e.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Logs a pack pull from a CCASService PackResult so duplicate flags/XP match the authoritative backend.
+    /// This does NOT award XP; ProgressionService is responsible for XP state.
+    /// </summary>
+    public void LogPull(string packTypeKey, string packName, int packCostCoins, PackResult result)
+    {
+        if (result == null)
+        {
+            LogPull(packTypeKey, packName, packCostCoins, new List<Card>());
+            return;
+        }
+
+        var cards = result.cards ?? new List<Card>();
+        var details = result.cardDetails ?? new List<PackResultCard>();
+
+        // Build a quick lookup: cardUid -> (isDuplicate, xpAwarded)
+        var byUid = new Dictionary<string, PackResultCard>();
+        foreach (var d in details)
+        {
+            if (d == null) continue;
+            if (string.IsNullOrEmpty(d.cardUid)) continue;
+            if (!byUid.ContainsKey(d.cardUid))
+                byUid[d.cardUid] = d;
+        }
+
+        try
+        {
+            var ev = new PackPullLog
+            {
+                event_id = $"pull_{DateTime.UtcNow:yyyyMMdd_HHmmss}_{Guid.NewGuid():N}".Substring(0, 30),
+                timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                session_id = PlayerPrefs.GetString("session_id", $"session_{SystemInfo.deviceUniqueIdentifier}_{DateTime.UtcNow:yyyyMMdd}"),
+                player_id = PlayerPrefs.GetString("player_id", SystemInfo.deviceUniqueIdentifier),
+                player_level = PlayerPrefs.GetInt("player_level", 1),
+                pack_type = packTypeKey,
+                pack_name = packName,
+                cost_coins = packCostCoins,
+                pulled_cards = new List<CardData>(),
+                pull_results = new List<string>()
+            };
+
+            int totalXpGained = 0;
+            int duplicateCount = 0;
+
+            foreach (var card in cards)
+            {
+                if (card == null) continue;
+                string uid = card.uid ?? string.Empty;
+                string rarity = card.GetRarityString();
+
+                bool isDuplicate = false;
+                int xp = 0;
+                if (!string.IsNullOrEmpty(uid) && byUid.TryGetValue(uid, out var d))
+                {
+                    isDuplicate = d.isDuplicate;
+                    xp = Mathf.Max(0, d.xpAwarded);
+                }
+
+                if (isDuplicate)
+                {
+                    duplicateCount++;
+                    totalXpGained += xp;
+                }
+
+                ev.pulled_cards.Add(new CardData
+                {
+                    uid = uid,
+                    name = card.name ?? "",
+                    team = card.team ?? "",
+                    element = card.element ?? "",
+                    rarity = rarity,
+                    position5 = card.position5 ?? "",
+                    is_duplicate = isDuplicate,
+                    xp_gained = xp,
+                    total_pulls_for_card = 0,
+                    duplicate_pulls_for_card = 0
+                });
+                ev.pull_results.Add(rarity);
+            }
+
+            ev.total_xp_gained = totalXpGained;
+            ev.duplicate_count = duplicateCount;
+            ev.player_xp_after = PlayerPrefs.GetInt("player_xp", 0); // legacy field; UI should read ProgressionService for real XP
+
+            if (EmotionalStateManager.Instance != null)
+            {
+                var (neg, pos) = EmotionalStateManager.Instance.Snapshot();
+                ev.positive_after = pos;
+                ev.negative_after = neg;
+                ev.phase2_breakdown = EmotionalStateManager.Instance.GetLastBreakdown();
+            }
+
+            cached.logs.Add(ev);
+            if (cached.logs.Count > MaxLogs)
+                cached.logs.RemoveRange(0, cached.logs.Count - MaxLogs);
+
+            SaveFile();
+            ExportEmotionalStateCSV(ev);
+            OnPullLogged?.Invoke(ev);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[Telemetry] Error during LogPull(PackResult): {e.Message}");
         }
     }
 

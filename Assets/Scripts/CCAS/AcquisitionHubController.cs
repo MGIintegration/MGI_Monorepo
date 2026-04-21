@@ -28,10 +28,7 @@ public class AcquisitionHubController : MonoBehaviour
 
     void Start()
     {
-        if (coinsText != null)
-            coinsText.text = "Coins: 1200";
-
-        UpdateXPDisplay();
+        RefreshEconomyAndProgressionLabels();
 
         if (goToMarketButton != null)
             goToMarketButton.onClick.AddListener(ShowMarket);
@@ -51,6 +48,12 @@ public class AcquisitionHubController : MonoBehaviour
 
         // Seed button state from previous sessions
         RefreshMyPacksButton("Start");
+
+        // If the panel isn't assigned in the scene, keep the button disabled to avoid spam.
+        if (myPacksPanel == null && myPacksButton != null)
+        {
+            myPacksButton.interactable = false;
+        }
 
         // Subscribe to buy_pack event — fires every time a pack is opened
         _buyPackSub = EventBus.Subscribe("buy_pack", env =>
@@ -75,8 +78,7 @@ public class AcquisitionHubController : MonoBehaviour
 
         if (myPacksPanel != null)
             ShowMyPacks();
-        else
-            Debug.LogWarning("[CCAS] myPacksPanel is not assigned — assign 'MyPacksPanel' GameObject to AcquisitionHubController.myPacksPanel in the Inspector.");
+        // else: button should be non-interactable when myPacksPanel is null
     }
 
     // --- Navigation Helpers ---
@@ -86,7 +88,7 @@ public class AcquisitionHubController : MonoBehaviour
         Canvas.ForceUpdateCanvases();
         if (hubPanel != null)
             LayoutRebuilder.ForceRebuildLayoutImmediate(hubPanel.GetComponent<RectTransform>());
-        UpdateXPDisplay();
+        RefreshEconomyAndProgressionLabels();
         RefreshMyPacksButton("ShowHub");
     }
     public void ShowMarket() => SetActivePanel(marketPanel);
@@ -99,6 +101,15 @@ public class AcquisitionHubController : MonoBehaviour
         var opener = packPanel?.GetComponentInChildren<PackOpeningController>(true);
         if (opener != null)
             opener.OpenPackOfType(packKey);
+    }
+
+    public void ShowPackOpening(string packKey, CCAS.Backend.PackResult result)
+    {
+        SetActivePanel(packPanel);
+
+        var opener = packPanel?.GetComponentInChildren<PackOpeningController>(true);
+        if (opener != null)
+            opener.OpenPackOfType(packKey, result);
     }
 
     public void ShowHistory()
@@ -148,11 +159,23 @@ public class AcquisitionHubController : MonoBehaviour
     /// <summary>
     /// Updates the XP label on the hub using the player's total duplicate XP.
     /// </summary>
-    private void UpdateXPDisplay()
+    private void RefreshEconomyAndProgressionLabels()
     {
-        if (xpText == null) return;
+        string playerId = PlayerPrefs.GetString("player_id", SystemInfo.deviceUniqueIdentifier);
 
-        int xp = PlayerPrefs.GetInt("player_xp", 0);
-        xpText.text = $"XP: {xp}";
+        if (coinsText != null)
+        {
+            var wallet = new EconomyService().GetWallet(playerId, true);
+            coinsText.text = wallet != null ? $"Coins: {wallet.coins}" : "Coins: ?";
+        }
+
+        if (xpText != null)
+        {
+            var prog = ProgressionService.Instance;
+            var state = prog != null ? prog.GetState(playerId, true) : null;
+            xpText.text = state != null
+                ? $"XP: {state.current_xp}"
+                : $"XP: {PlayerPrefs.GetInt("player_xp", 0)}";
+        }
     }
 }
