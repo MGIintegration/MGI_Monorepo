@@ -146,7 +146,7 @@ public class ProgressionService : MonoBehaviour
         // Publish event
         PublishXpUpdatedEvent(playerId, oldXp, state.current_xp, oldTier, state.current_tier);
 
-        Debug.Log($"[ProgressionService] Added {xp} XP to {playerId} (source: {source}). Total: {state.current_xp}, Tier: {state.current_tier}");
+        Debug.Log($"[ProgressionService] Added {finalXp} XP to {playerId} (source: {source}). Total: {state.current_xp}, Tier: {state.current_tier}");
     }
 
 
