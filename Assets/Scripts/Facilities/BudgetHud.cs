@@ -11,20 +11,32 @@ public class BudgetHud : MonoBehaviour
     [Header("IDs")]
     public string teamId;
 
+    [Header("Fallback display")]
+    public int fallbackBudget = 80000;
+    public float fallbackRecoveryBoostPercent = 10f;
+
     private BudgetHudMiddleware budgetHudMiddleware;
+    private bool hasStarted;
 
     void Awake()
     {
         if (!budgetText) Debug.LogError("[BudgetHud] 'budgetText' is not assigned in Inspector.");
         if (string.IsNullOrWhiteSpace(teamId)) Debug.LogError("[BudgetHud] 'teamId' is empty.");
 
-        Debug.Log("DEVICE_ID = " + DeviceIdProvider.GetOrCreateDeviceId());
-
         budgetHudMiddleware = new BudgetHudMiddleware();
     }
 
-    void OnEnable() => Refresh();
-    void Start() => Refresh();
+    void OnEnable()
+    {
+        if (hasStarted)
+            Refresh();
+    }
+
+    void Start()
+    {
+        hasStarted = true;
+        Refresh();
+    }
 
     public void Refresh()
     {
@@ -32,6 +44,12 @@ public class BudgetHud : MonoBehaviour
 
         if (!result.Success)
         {
+            if (result.MissingBudgetFile)
+            {
+                ApplyFallbackDisplay();
+                return;
+            }
+
             Debug.LogError("[BudgetHud] " + result.Message);
 
             if (budgetText)
@@ -53,5 +71,17 @@ public class BudgetHud : MonoBehaviour
         {
             recoveryBoostText.text = $"RECOVERY BOOST: +{result.RecoveryBoostPercent:0.#}%";
         }
+    }
+
+    private void ApplyFallbackDisplay()
+    {
+        if (budgetText && string.IsNullOrWhiteSpace(budgetText.text))
+        {
+            var usd = fallbackBudget.ToString("C0", CultureInfo.GetCultureInfo("en-US"));
+            budgetText.text = $"FACILITY BUDGET: {usd}";
+        }
+
+        if (recoveryBoostText && string.IsNullOrWhiteSpace(recoveryBoostText.text))
+            recoveryBoostText.text = $"RECOVERY BOOST: +{fallbackRecoveryBoostPercent:0.#}%";
     }
 }

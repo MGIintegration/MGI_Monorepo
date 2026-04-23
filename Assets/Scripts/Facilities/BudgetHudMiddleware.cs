@@ -24,6 +24,7 @@ public class BudgetHudMiddleware
             return new BudgetHudResult
             {
                 Success = false,
+                MissingBudgetFile = true,
                 Message = $"Budget file not found at {path}"
             };
         }
