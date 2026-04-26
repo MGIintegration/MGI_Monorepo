@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using CCAS.Backend;
 
 public class PackOpeningController : MonoBehaviour
 {
@@ -42,8 +43,19 @@ public class PackOpeningController : MonoBehaviour
         OpenPack();
     }
 
+    public void OpenPackOfType(string key, PackResult result)
+    {
+        packType = key;
+        OpenPack(result);
+    }
+
     [ContextMenu("Open Pack (Current Setting)")]
     public void OpenPack()
+    {
+        OpenPack(null);
+    }
+
+    private void OpenPack(PackResult serviceResult)
     {
         if (string.IsNullOrEmpty(packType))
         {
@@ -63,8 +75,10 @@ public class PackOpeningController : MonoBehaviour
             return;
         }
 
-        // Pull actual Card objects instead of just rarity strings
-        var cards = mgr.PullCards(packType);
+        // If we already opened via CCASService (BoosterMarket), use that result.
+        var cards = serviceResult != null && serviceResult.success && serviceResult.cards != null
+            ? serviceResult.cards
+            : mgr.PullCards(packType);
         Debug.Log($"[PackOpening] {packType} → {cards.Count} cards");
 
         if (cards.Count == 0)
@@ -99,14 +113,24 @@ public class PackOpeningController : MonoBehaviour
         EmotionalStateManager.Instance?.ApplyPackOutcome(packType, raritiesForHooks);
         HookOrchestrator.Instance?.TryTriggerOutcomeHooks(raritiesForHooks);
 
-        // Telemetry (with full card data)
         var packData = mgr.config.pack_types[packType];
-        TelemetryLogger.Instance?.LogPull(
-            packType,
-            packData.name,  // replaced pack_id
-            packData.cost,
-            cards  // Pass Card objects instead of just rarities
-        );
+
+        // Telemetry/events:
+        // - When opened via CCASService, the spend and buy_pack event already happened there.
+        // - We still log for UI history, but avoid re-publishing events.
+        if (TelemetryLogger.Instance != null)
+        {
+            if (serviceResult != null)
+                TelemetryLogger.Instance.LogPull(packType, packData.name, packData.cost, serviceResult);
+            else
+                TelemetryLogger.Instance.LogPull(packType, packData.name, packData.cost, cards);
+        }
+
+        if (serviceResult == null)
+        {
+            // Legacy-only: CCASService already publishes buy_pack when used.
+            PublishBuyPackEvent(packType, packData.cost, cards);
+        }
 
         // Visuals - display actual card information
         for (int i = 0; i < _cards.Count; i++)
@@ -127,6 +151,77 @@ public class PackOpeningController : MonoBehaviour
         if (cardParent is RectTransform rt)
             LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
     }
+
+    void PublishBuyPackEvent(string packTypeKey, int costCoins, List<Card> cards)
+    {
+        string playerId = PlayerPrefs.GetString("player_id", SystemInfo.deviceUniqueIdentifier);
+
+        // Read duplicate history before this pull — same snapshot TelemetryLogger uses
+        var pullCounts = TelemetryLogger.Instance?.BuildCardPullCountsFromHistory()
+                         ?? new Dictionary<string, int>();
+
+        var cardEntries = new List<BuyPackCardEntry>();
+        foreach (var card in cards)
+        {
+            if (card == null) continue;
+            string uid    = card.uid ?? string.Empty;
+            string rarity = card.GetRarityString();
+
+            int prevPulls = 0;
+            if (!string.IsNullOrEmpty(uid)) pullCounts.TryGetValue(uid, out prevPulls);
+            bool isDuplicate = !string.IsNullOrEmpty(uid) && prevPulls > 0;
+            if (!string.IsNullOrEmpty(uid)) pullCounts[uid] = prevPulls + 1;
+
+            int xp = isDuplicate
+                ? (TelemetryLogger.Instance?.GetDuplicateXpForRarity(rarity) ?? 0)
+                : 0;
+
+            cardEntries.Add(new BuyPackCardEntry
+            {
+                card_id      = uid,
+                rarity       = rarity,
+                is_duplicate = isDuplicate,
+                xp_awarded   = xp
+            });
+        }
+
+        // 1. buy_pack — consumed by Economy + Progression when integrated
+        EventBus.Publish(new EventBus.EventEnvelope
+        {
+            event_type  = "buy_pack",
+            player_id   = playerId,
+            payloadJson = JsonUtility.ToJson(new BuyPackPayload
+            {
+                pack_type_id = packTypeKey,
+                cost_paid    = new CostPaid { coins = costCoins, gems = 0 },
+                cards_pulled = cardEntries
+            })
+        });
+
+        // 2. xp_from_duplicate — one event per duplicate card, consumed by Progression
+        foreach (var entry in cardEntries)
+        {
+            if (!entry.is_duplicate) continue;
+            EventBus.Publish(new EventBus.EventEnvelope
+            {
+                event_type  = "xp_from_duplicate",
+                player_id   = playerId,
+                payloadJson = JsonUtility.ToJson(new XpFromDuplicatePayload
+                {
+                    card_id      = entry.card_id,
+                    rarity       = entry.rarity,
+                    xp_gained    = entry.xp_awarded,
+                    source       = $"duplicate_card_{entry.rarity}",
+                    pack_type_id = packTypeKey
+                })
+            });
+        }
+    }
+
+    [System.Serializable] private class CostPaid            { public int coins; public int gems; }
+    [System.Serializable] private class BuyPackCardEntry    { public string card_id; public string rarity; public bool is_duplicate; public int xp_awarded; }
+    [System.Serializable] private class BuyPackPayload      { public string pack_type_id; public CostPaid cost_paid; public List<BuyPackCardEntry> cards_pulled; }
+    [System.Serializable] private class XpFromDuplicatePayload { public string card_id; public string rarity; public int xp_gained; public string source; public string pack_type_id; }
 
     void BuildOrReuseCards(int needed)
     {

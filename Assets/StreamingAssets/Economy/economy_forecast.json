@@ -1,6 +1,6 @@
 {
-  "player_id": "local_player",
-  "current_balance": 0,
+  "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+  "current_balance": 500,
   "weeks": 4,
   "salary": 0,
   "income": 0,
@@ -11,7 +11,7 @@
     "4": 0
   },
   "expenses": {
-    "1": 0,
+    "1": 12000,
     "2": 0,
     "3": 0,
     "4": 0
@@ -19,23 +19,23 @@
   "forecast": [
     {
       "week": 1,
-      "net_change": 0,
-      "balance": 0
+      "net_change": -12000,
+      "balance": 500
     },
     {
       "week": 2,
       "net_change": 0,
-      "balance": 0
+      "balance": 500
     },
     {
       "week": 3,
       "net_change": 0,
-      "balance": 0
+      "balance": 500
     },
     {
       "week": 4,
       "net_change": 0,
-      "balance": 0
+      "balance": 500
     }
   ],
   "alerts": [],

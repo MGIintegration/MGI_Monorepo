@@ -1,1 +1,74 @@
-[]
+[
+  {
+    "id": "0280c44b-fedf-4f68-aa23-ac675ba03e55",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 1000,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-04-21T19:12:38.1490520Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "17ccb08a-89e1-41d6-8cb5-be9a820ab7f2",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 1500,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-04-21T19:16:16.9997670Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "cf05e2e7-74d4-4f3b-8d95-2638721aae59",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 2000,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-04-21T19:16:20.5620240Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "5a0d049f-03d9-4c6b-8603-6d227b2e87a2",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 2000,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-04-21T19:17:32.6972670Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "b14d717d-773b-4b01-83fc-79b3d1b219e8",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 2000,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-04-21T19:17:47.4728960Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "240593c7-e7bb-468d-9104-2d525367189a",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 1000,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-04-21T19:18:11.4446450Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "e48a2eee-28f2-41bb-8148-13fd1242644c",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 1500,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-04-21T19:20:46.9625450Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "b0e8c004-5400-4390-bf07-2ce9fd93347a",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 1000,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-04-21T19:57:33.8152500Z",
+    "source": "pack_purchase"
+  }
+]

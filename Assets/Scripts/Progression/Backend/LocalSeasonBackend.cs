@@ -199,7 +199,7 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
             }
 
             // Award XP to player team (stub implementation)
-            if (currentSeason.teams.FirstOrDefault(t => t != null && t.is_player_team) is TeamSaveData playerTeam)
+            if (playerTeam != null)
             {
                 if (string.IsNullOrEmpty(playerTeam.player_id))
                 {
@@ -288,7 +288,14 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
     {
         try
         {
-            _progressionService?.AddXp(playerId, xpAmount, source);
+            _progressionService?.AddXp(
+                playerId,
+                xpAmount,
+                source,
+                Guid.NewGuid().ToString(), // unique eventId
+                1f // default multiplier
+            );
+
             SaveProgressionDataToJson();
 
             var state = _progressionService?.GetState(playerId, createIfMissing: false);
@@ -300,31 +307,7 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
             onError?.Invoke(ex.Message);
         }
     }
-   private PlayerProgressionSaveData ConvertToLegacyFormat(PlayerProgressionState newState)
-    {
-        var legacyData = new PlayerProgressionSaveData
-        {
-            player_id = newState.player_id,
-            current_xp = newState.current_xp,
-            current_tier = newState.current_tier,
-            tier_progression = _progressionService?.GetAllTiers() ?? new Dictionary<string, TierData>(),
-            xp_history = new List<XPHistoryEntry>()
-        };
 
-        foreach (var entry in newState.xp_history)
-        {
-            legacyData.xp_history.Add(new XPHistoryEntry
-            {
-                timestamp = entry.timestamp,
-                xp_gained = entry.xp_gained,
-                source = entry.source,
-                facility_multiplier = 1.0f,
-                coaching_bonus = 0.0f
-            });
-        }
-
-        return legacyData;
-    }
     /// <summary>
     /// Awards season-end XP rewards based on final standings
     /// Provides bonus XP for 1st (50), 2nd (30), 3rd (15) place finishes
@@ -383,7 +366,13 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
             }
 
             // Award the XP
-            _progressionService?.AddXp(playerTeam.player_id, xpReward, "season_reward");
+            _progressionService?.AddXp(
+                playerTeam.player_id,
+                xpReward,
+                "season_reward",
+                Guid.NewGuid().ToString(),
+                1f
+            );
             SaveProgressionDataToJson();
             Debug.Log($"[LocalSeasonBackend] Season reward awarded: {xpReward} XP for {placement} place finish");
             onSuccess?.Invoke($"Awarded {xpReward} XP for {placement} place finish");

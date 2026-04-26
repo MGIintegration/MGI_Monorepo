@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using CCAS.Config;
+using CCAS.Backend;
 
 /// <summary>
 /// Dynamically builds Booster Market UI from JSON config (phase1_simplified_config.json).
@@ -13,6 +15,14 @@ public class BoosterMarketAuto : MonoBehaviour
     [Header("UI Prefab + Layout")]
     public GameObject packButtonPrefab;
     public Transform contentParent;
+
+    [Header("Optional UI Feedback")]
+    [Tooltip("Assign the InsufficientFundsText TMP object on the Booster Market panel.")]
+    public TMP_Text insufficientFundsText;
+    [Tooltip("Seconds to show the insufficient funds message.")]
+    public float insufficientFundsSeconds = 2f;
+
+    private Coroutine _insufficientFundsRoutine;
 
     void Start()
     {
@@ -46,7 +56,12 @@ public class BoosterMarketAuto : MonoBehaviour
                 label.text = $"{pack.name} ({pack.cost} coins)";
 
             if (buyButton != null)
+            {
+                // IMPORTANT: The prefab may have an OnClick wired in the Inspector (legacy path).
+                // Clear it so opening always goes through CCASService.
+                buyButton.onClick.RemoveAllListeners();
                 buyButton.onClick.AddListener(() => TryOpenPack(packKey));
+            }
 
             Debug.Log($"[BoosterMarket] Created button for {pack.name}");
         }
@@ -61,7 +76,44 @@ public class BoosterMarketAuto : MonoBehaviour
             return;
         }
 
-        Debug.Log($"[BoosterMarket] Opening pack: {packKey}");
-        hub.ShowPackOpening(packKey);
+        string playerId = PlayerPrefs.GetString("player_id", SystemInfo.deviceUniqueIdentifier);
+
+        var service = CCASService.Instance;
+        if (service == null)
+        {
+            Debug.LogError("[BoosterMarket] CCASService.Instance is missing in scene.");
+            return;
+        }
+
+        var result = service.OpenPack(playerId, packKey);
+        if (result == null || !result.success)
+        {
+            Debug.LogWarning($"[BoosterMarket] OpenPack failed: {result?.failureReason ?? "unknown"}");
+            if (result != null && result.failureReason == "insufficient_funds")
+                ShowInsufficientFunds();
+            return;
+        }
+
+        Debug.Log($"[BoosterMarket] Opened pack via CCASService: {packKey}");
+        hub.ShowPackOpening(packKey, result);
+    }
+
+    private void ShowInsufficientFunds()
+    {
+        if (insufficientFundsText == null)
+            return;
+
+        if (_insufficientFundsRoutine != null)
+            StopCoroutine(_insufficientFundsRoutine);
+
+        _insufficientFundsRoutine = StartCoroutine(ShowInsufficientFundsRoutine());
+    }
+
+    private IEnumerator ShowInsufficientFundsRoutine()
+    {
+        insufficientFundsText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(Mathf.Max(0.1f, insufficientFundsSeconds));
+        insufficientFundsText.gameObject.SetActive(false);
+        _insufficientFundsRoutine = null;
     }
 }
