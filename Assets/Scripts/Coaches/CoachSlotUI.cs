@@ -29,11 +29,12 @@ public class CoachSlotUI : MonoBehaviour
 
     private void Start()
     {
-        // Subscribe to coach events
         CoachManager.OnCoachHired += OnCoachHired;
         CoachManager.OnCoachFired += OnCoachFired;
-        
-        // Initialize display based on type
+
+        if (fireCoachButton != null)
+            fireCoachButton.onClick.AddListener(() => CoachManager.instance?.FireCoach(type));
+
         Initialize(type);
     }
     
@@ -97,21 +98,27 @@ public class CoachSlotUI : MonoBehaviour
     public void UpdateDisplay(CoachData coach)
     {
         currentCoach = coach;
-        
+
         if (coach == null)
         {
-            // Show empty state
             if (emptyState != null) emptyState.SetActive(true);
             if (hiredState != null) hiredState.SetActive(false);
+
+            // Fallback: clear texts and disable fire button when no state GameObjects assigned
+            if (nameText != null)   nameText.text   = "Name: —";
+            if (salaryText != null) salaryText.text = "Salary: —";
+            if (ratingText != null) ratingText.text = "Rating: —";
+            if (DEFText != null)    DEFText.text    = "";
+            if (OFFText != null)    OFFText.text    = "";
+            if (fireCoachButton != null) fireCoachButton.interactable = false;
         }
         else
         {
-            // Show hired state
             if (emptyState != null) emptyState.SetActive(false);
             if (hiredState != null) hiredState.SetActive(true);
 
-            // Update hired state UI
             UpdateHiredStateDisplay(coach);
+            if (fireCoachButton != null) fireCoachButton.interactable = true;
         }
     }
 
@@ -128,8 +135,6 @@ public class CoachSlotUI : MonoBehaviour
 
         if (DEFText != null)
             DEFText.text = "DEF +" + $"{coach.defenseBonus}" + ", OFF +" + $"{coach.offenseBonus}";
-
-
     }
 
     private void UpdateCoach() 

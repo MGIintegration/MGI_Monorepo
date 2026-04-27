@@ -500,7 +500,7 @@ public static class CoachesService
         {
             coach_id              = coach_id,
             coach_name            = coach_name,
-            coach_type            = coach_type,
+            coach_type            = NormalizeSchemaCoachType(coach_type),
             experience            = experience,
             championship_won      = championship_won,
             overall_rating        = overall_rating_calculated,
@@ -595,6 +595,13 @@ public static class CoachesService
             Debug.LogError($"[CoachesService] Failed to save contracts: {e.Message}");
             return false;
         }
+    }
+
+    // Maps catalog values like "ST" → "S" so all coach types are O | D | S.
+    private static string NormalizeSchemaCoachType(string raw)
+    {
+        var upper = raw?.ToUpperInvariant();
+        return upper == "ST" ? "S" : upper;
     }
 
     private static string NormalizeCoachType(string coachType)

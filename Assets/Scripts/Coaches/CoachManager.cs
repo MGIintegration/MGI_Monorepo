@@ -6,6 +6,7 @@ using System.Collections;
 using UnityEngine.Networking;
 using System.Linq;
 using UnityEngine.UI;
+using TMPro;
 
 public class CoachManager : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class CoachManager : MonoBehaviour
 
     public Button fireOffence;
     public Button fireDefense;
+
+    [Header("Budget Display")]
+    public TextMeshProUGUI mainScreenBudgetText;
 
     [Header("API Configuration")]
     [SerializeField] private string baseURL = "http://localhost:5175";
@@ -52,6 +56,16 @@ public class CoachManager : MonoBehaviour
         fireDefense.onClick.AddListener(() =>FireCoach(CoachType.Defense));
 
         InitializeSystem();
+        UpdateBudgetDisplay();
+    }
+
+    private void UpdateBudgetDisplay()
+    {
+        if (mainScreenBudgetText == null) return;
+        var wallet = new EconomyService().GetWallet(CoachesService.LocalPlayerId);
+        mainScreenBudgetText.text = wallet != null
+            ? $"WEEKLY BUDGET: {wallet.coins.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)} COINS"
+            : "WEEKLY BUDGET: --";
     }
 
     private void InitializeSystem()
@@ -156,6 +170,7 @@ public class CoachManager : MonoBehaviour
         }
         OnCoachHired?.Invoke(coach, coach.position);
         Debug.Log($"Hired {coach.coachName} for {coach.position}");
+        UpdateBudgetDisplay();
         return true;
     }
 
@@ -192,6 +207,7 @@ public class CoachManager : MonoBehaviour
 
         OnCoachFired?.Invoke(position);
         Debug.Log($"Fired {coachToFire.coachName} from {position}");
+        UpdateBudgetDisplay();
         return true;
     }
 

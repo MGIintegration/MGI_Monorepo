@@ -59,7 +59,7 @@ public class AppManager : MonoBehaviour
 
         // Screen 2 Buttons
         backToMainMenuButton.onClick.AddListener(() => ShowScreen(mainMenu));
-        refreshButton.onClick.AddListener(() => Debug.Log("Refresh button was clicked"));
+        refreshButton.onClick.AddListener(() => coachHiringScreen?.GetComponent<CoachHiringMarket>()?.RefreshCoaches());
 
         hireCoach1Button.onClick.AddListener(() => Debug.Log("Hire Coach 1 button was clicked"));
         compareCoach1Button.onClick.AddListener(() => Debug.Log("Compare Coach 1 button was clicked"));
