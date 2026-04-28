@@ -121,8 +121,14 @@ public class ProgressionService : MonoBehaviour
             return;
         }
 
-        // APPLY MULTIPLIER
-        int finalXp = Mathf.RoundToInt(baseXp * multiplier);
+        // GET FACILITY MULTIPLIER
+        float facilityMultiplier = 1.2f;
+
+        // COMBINE MULTIPLIERS
+        float finalMultiplier = multiplier * facilityMultiplier;
+
+        // APPLY FINAL XP
+        int finalXp = Mathf.RoundToInt(baseXp * finalMultiplier);
 
         // STORE EVENT
         var historyEntry = new XpHistoryEntry(playerId, finalXp, source)
