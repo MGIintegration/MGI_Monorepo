@@ -32,6 +32,9 @@ public class CoachHiringMarket : MonoBehaviour
     public Dropdown filterDropdown;
     public TextMeshProUGUI budgetText;
 
+    [Header("Details Screen")]
+    public GameObject coachDetailsScreen;
+
     [Header("Testing Controls")]
     public TextMeshProUGUI instructionsText;
 
@@ -41,6 +44,7 @@ public class CoachHiringMarket : MonoBehaviour
 
     private CoachDatabaseRecord dbCoach1;
     private CoachDatabaseRecord dbCoach2;
+    private bool _hasLoaded;
 
     private void Start()
     {
@@ -48,12 +52,35 @@ public class CoachHiringMarket : MonoBehaviour
             instructionsText.text = "N = New Coaches, F = Filter Type";
 
         SetupFilterDropdown();
+        WireDetailsButtons();
     }
 
-    // OnEnable fires every time this screen is shown, not just once on first load.
+    private void WireDetailsButtons()
+    {
+        if (viewCoachButton1 != null)
+            viewCoachButton1.onClick.AddListener(() => ShowDetails(dbCoach1));
+        if (viewCoachButton2 != null)
+            viewCoachButton2.onClick.AddListener(() => ShowDetails(dbCoach2));
+    }
+
+    private void ShowDetails(CoachDatabaseRecord coach)
+    {
+        if (coach == null || coachDetailsScreen == null) return;
+        var populator = coachDetailsScreen.GetComponentInChildren<CoachProfilePopulator>(true);
+        if (populator != null)
+            populator.PopulateFromRecord(coach);
+        gameObject.SetActive(false);
+        coachDetailsScreen.SetActive(true);
+    }
+
     private void OnEnable()
     {
-        RefreshCoaches();
+        // Only auto-load the first time — returning from details keeps the same coaches.
+        if (!_hasLoaded)
+        {
+            RefreshCoaches();
+            _hasLoaded = true;
+        }
         UpdateBudgetDisplay();
     }
 
@@ -257,12 +284,13 @@ public class CoachHiringMarket : MonoBehaviour
 
     private bool IsSlotOccupied(string coachType)
     {
-        if (CoachManager.instance == null) return false;
+        var state = CoachesService.GetTeamState();
+        if (state == null) return false;
         switch (coachType?.ToUpper())
         {
-            case "O": return CoachManager.instance.offenseCoach != null;
-            case "D": return CoachManager.instance.defenseCoach != null;
-            case "S": return CoachManager.instance.SpecialCoach != null;
+            case "O": return !string.IsNullOrEmpty(state.offence_coach);
+            case "D": return !string.IsNullOrEmpty(state.defence_coach);
+            case "S": return !string.IsNullOrEmpty(state.special_teams_coach);
             default:  return false;
         }
     }
@@ -335,7 +363,6 @@ public class CoachHiringMarket : MonoBehaviour
         if (CoachesService.TryHireCoach(teamId, dbCoach1.coach_id, out var hired, CoachesService.LocalPlayerId))
         {
             Debug.Log($"[CoachHiringMarket] Successfully hired: {hired.coach_name}");
-            NotifyCoachHired(hired);
             UpdateBudgetDisplay();
         }
         else
@@ -361,7 +388,6 @@ public class CoachHiringMarket : MonoBehaviour
         if (CoachesService.TryHireCoach(teamId, dbCoach2.coach_id, out var hired, CoachesService.LocalPlayerId))
         {
             Debug.Log($"[CoachHiringMarket] Successfully hired: {hired.coach_name}");
-            NotifyCoachHired(hired);
             UpdateBudgetDisplay();
         }
         else
@@ -370,16 +396,10 @@ public class CoachHiringMarket : MonoBehaviour
         }
     }
 
+    public CoachDatabaseRecord GetCoach(int slot) => slot == 1 ? dbCoach1 : dbCoach2;
+
     // Kept for legacy scene wiring compatibility.
     public void Initialize(CoachType type) { }
 
     #endregion
-
-    // Syncs in-memory CoachManager state and fires OnCoachHired so CoachSlotUI updates.
-    private void NotifyCoachHired(CoachDatabaseRecord coach)
-    {
-        if (CoachManager.instance == null) return;
-        var coachData = CoachData.CreateFromDatabaseRecord(coach);
-        CoachManager.instance.HireCoach(coachData);
-    }
 }

@@ -1,15 +1,15 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 public class CoachSlotUI : MonoBehaviour
 {
-    public CoachData assignedCoach;
     public CoachType type;
 
     [Header("UI States")]
-    public GameObject emptyState;  // The "Empty" GameObject
-    public GameObject hiredState;  // The "Hired" GameObject with Name, Salary, Rating, etc.
+    public GameObject emptyState;
+    public GameObject hiredState;
 
     [Header("Hired State Elements")]
     public TextMeshProUGUI nameText;
@@ -23,88 +23,124 @@ public class CoachSlotUI : MonoBehaviour
     [Header("Empty State Elements")]
     public Button hireCoachButton;
 
-    private CoachData currentCoach;
-    private CoachType slotType;
-   // private CoachManager coachManager;
+    [Header("Navigation")]
+    public GameObject coachDetailsScreen;
+    public GameObject mainScreen;
+    public GameObject hiringMarketScreen;
+
+    private IDisposable hireSubscription;
+    private IDisposable fireSubscription;
 
     private void Start()
     {
-        CoachManager.OnCoachHired += OnCoachHired;
-        CoachManager.OnCoachFired += OnCoachFired;
-
         if (fireCoachButton != null)
-            fireCoachButton.onClick.AddListener(() => CoachManager.instance?.FireCoach(type));
+            fireCoachButton.onClick.AddListener(OnFireButtonClicked);
 
-        Initialize(type);
+        if (viewCoachButton != null)
+            viewCoachButton.onClick.AddListener(OnViewButtonClicked);
+
+        if (hireCoachButton != null)
+            hireCoachButton.onClick.AddListener(OnHireCoachButtonClicked);
     }
-    
-    private void OnDestroy()
+
+    private void OnHireCoachButtonClicked()
     {
-        // Unsubscribe from events
-        CoachManager.OnCoachHired -= OnCoachHired;
-        CoachManager.OnCoachFired -= OnCoachFired;
+        if (hiringMarketScreen == null) return;
+        if (mainScreen != null) mainScreen.SetActive(false);
+        hiringMarketScreen.SetActive(true);
     }
-    
-    private void OnCoachHired(CoachData coach, CoachType coachType)
+
+    private void OnViewButtonClicked()
     {
-        // Update display if this slot matches the hired coach type
-        if (coachType == type)
-        {
-            UpdateDisplay(coach);
-        }
+        if (coachDetailsScreen == null) return;
+        var state = CoachesService.GetTeamState();
+        var coachId = GetAssignedCoachId(state, GetServiceCoachType());
+        if (string.IsNullOrEmpty(coachId)) return;
+        var populator = coachDetailsScreen.GetComponentInChildren<CoachProfilePopulator>(true);
+        if (populator != null)
+            populator.PopulateFromRecord(CoachesService.GetCoachById(coachId));
+        if (mainScreen != null) mainScreen.SetActive(false);
+        coachDetailsScreen.SetActive(true);
     }
-    
-    private void OnCoachFired(CoachType coachType)
+
+    private void OnEnable()
     {
-        // Update display if this slot matches the fired coach type
-        if (coachType == type)
+        hireSubscription = EventBus.Subscribe("hire_coach", OnHireCoachEvent);
+        fireSubscription = EventBus.Subscribe("fire_coach", OnFireCoachEvent);
+        RefreshFromService();
+    }
+
+    private void OnDisable()
+    {
+        hireSubscription?.Dispose();
+        fireSubscription?.Dispose();
+    }
+
+    private void OnHireCoachEvent(EventBus.EventEnvelope evt)
+    {
+        var payload = JsonUtility.FromJson<HireCoachPayload>(evt.payloadJson);
+        if (payload != null && string.Equals(payload.coach_type, GetServiceCoachType(), StringComparison.Ordinal))
+            RefreshFromService();
+    }
+
+    private void OnFireCoachEvent(EventBus.EventEnvelope evt)
+    {
+        var payload = JsonUtility.FromJson<FireCoachPayload>(evt.payloadJson);
+        if (payload != null && string.Equals(payload.coach_type, GetServiceCoachType(), StringComparison.Ordinal))
+            RefreshFromService();
+    }
+
+    private void OnFireButtonClicked()
+    {
+        CoachesService.FireCoach(GetServiceCoachType());
+    }
+
+    private void RefreshFromService()
+    {
+        var serviceType = GetServiceCoachType();
+        if (string.IsNullOrEmpty(serviceType)) return;
+
+        var state = CoachesService.GetTeamState();
+        var coachId = GetAssignedCoachId(state, serviceType);
+
+        if (string.IsNullOrEmpty(coachId))
         {
             UpdateDisplay(null);
+            return;
         }
+
+        UpdateDisplay(CoachesService.GetCoachById(coachId));
     }
-    private void Update()
+
+    private static string GetAssignedCoachId(TeamState state, string coachType)
     {
-        // Check if the assigned coach has changed from CoachManager
-        var currentManagerCoach = GetCurrentCoachFromManager();
-        if (currentManagerCoach != assignedCoach)
+        if (state == null) return null;
+        switch (coachType)
         {
-            assignedCoach = currentManagerCoach;
-            UpdateDisplay(assignedCoach);
+            case "O": return state.offence_coach;
+            case "D": return state.defence_coach;
+            case "S": return state.special_teams_coach;
+            default:  return null;
         }
     }
-    
-    private CoachData GetCurrentCoachFromManager()
+
+    private string GetServiceCoachType()
     {
-        if (CoachManager.instance == null) return null;
-        
         switch (type)
         {
-            case CoachType.Offense:
-                return CoachManager.instance.offenseCoach;
-            case CoachType.Defense:
-                return CoachManager.instance.defenseCoach;
-            default:
-                return null;
+            case CoachType.Offense:      return "O";
+            case CoachType.Defense:      return "D";
+            case CoachType.SpecialTeams: return "S";
+            default:                     return null;
         }
     }
 
-    public void Initialize(CoachType type)
+    public void UpdateDisplay(CoachDatabaseRecord coach)
     {
-        slotType = type;
-        UpdateDisplay(null); // Start with empty state
-        
-    }
-
-    public void UpdateDisplay(CoachData coach)
-    {
-        currentCoach = coach;
-
         if (coach == null)
         {
             if (emptyState != null) emptyState.SetActive(true);
             if (hiredState != null) hiredState.SetActive(false);
-
-            // Fallback: clear texts and disable fire button when no state GameObjects assigned
             if (nameText != null)   nameText.text   = "Name: —";
             if (salaryText != null) salaryText.text = "Salary: —";
             if (ratingText != null) ratingText.text = "Rating: —";
@@ -116,56 +152,38 @@ public class CoachSlotUI : MonoBehaviour
         {
             if (emptyState != null) emptyState.SetActive(false);
             if (hiredState != null) hiredState.SetActive(true);
-
             UpdateHiredStateDisplay(coach);
             if (fireCoachButton != null) fireCoachButton.interactable = true;
         }
     }
 
-    private void UpdateHiredStateDisplay(CoachData coach)
+    private void UpdateHiredStateDisplay(CoachDatabaseRecord coach)
     {
         if (nameText != null)
-            nameText.text = coach.coachName;
+            nameText.text = coach.coach_name;
 
         if (salaryText != null)
-            salaryText.text = $"${coach.weeklySalary:N0}/wk";
+        {
+            float weeklySalary = coach.salary * 1_000_000f / 52f;
+            salaryText.text = $"${weeklySalary.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)}/wk";
+        }
 
         if (ratingText != null)
-            ratingText.text = "Rating :" + $"{coach.starRating} Stars";
+            ratingText.text = $"Rating: {Mathf.RoundToInt(Mathf.Clamp(coach.overall_rating, 1f, 5f))} Stars";
 
         if (DEFText != null)
-            DEFText.text = "DEF +" + $"{coach.defenseBonus}" + ", OFF +" + $"{coach.offenseBonus}";
-    }
-
-    private void UpdateCoach() 
-    {
-        if (CoachManager.instance != null)
         {
-            if (type == CoachType.Offense)
+            if (GetServiceCoachType() == "S")
             {
-                assignedCoach = CoachManager.instance.offenseCoach;
-                if (assignedCoach != null)
-                {
-                    Debug.Log($"[CoachSlotUI] Assigning offense coach: {assignedCoach.coachName}");
-                }
+                int st = Mathf.RoundToInt((coach.field_goal_accuracy + coach.kickoff_instance + coach.return_speed + coach.return_coverage) / 4f * 5f);
+                DEFText.text = $"ST +{st}";
             }
-            else if (type == CoachType.Defense) 
+            else
             {
-                assignedCoach = CoachManager.instance.defenseCoach;
-                if (assignedCoach != null)
-                {
-                    Debug.Log($"[CoachSlotUI] Assigning defense coach: {assignedCoach.coachName}");
-                }
+                int def = Mathf.RoundToInt((coach.run_defence + coach.pressure_control + coach.coverage_discipline + coach.turnover) / 4f * 5f);
+                int off = Mathf.RoundToInt((coach.passing_efficiency + coach.rush + coach.red_zone_conversion + coach.play_variation) / 4f * 5f);
+                DEFText.text = $"DEF +{def}, OFF +{off}";
             }
         }
     }
-/*
-    private void FireCoach()
-    {
-        if (currentCoach != null && coachManager != null)
-        {
-            coachManager.FireCoach(slotType);
-        }
-    }*/
-
 }

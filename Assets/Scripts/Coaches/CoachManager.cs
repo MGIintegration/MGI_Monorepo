@@ -32,6 +32,9 @@ public class CoachManager : MonoBehaviour
     [SerializeField] private bool loadFromAPI = true; // Toggle for API vs JSON fallback
     private bool isAPIAvailable = false;
 
+    private IDisposable hireSubscription;
+    private IDisposable fireSubscription;
+
     private void Awake()
     {
         // If an instance already exists and it's not this one, destroy this one.
@@ -50,10 +53,24 @@ public class CoachManager : MonoBehaviour
     public static event Action<CoachData, CoachType> OnCoachHired;
     public static event Action<CoachType> OnCoachFired;
 
+    private void OnEnable()
+    {
+        hireSubscription = EventBus.Subscribe("hire_coach", _ => UpdateBudgetDisplay());
+        fireSubscription = EventBus.Subscribe("fire_coach", _ => UpdateBudgetDisplay());
+    }
+
+    private void OnDisable()
+    {
+        hireSubscription?.Dispose();
+        fireSubscription?.Dispose();
+    }
+
     private void Start()
     {
-        fireOffence.onClick.AddListener(() =>FireCoach(CoachType.Offense));
-        fireDefense.onClick.AddListener(() =>FireCoach(CoachType.Defense));
+        if (fireOffence != null)
+            fireOffence.onClick.AddListener(() => CoachesService.FireCoach("O"));
+        if (fireDefense != null)
+            fireDefense.onClick.AddListener(() => CoachesService.FireCoach("D"));
 
         InitializeSystem();
         UpdateBudgetDisplay();
