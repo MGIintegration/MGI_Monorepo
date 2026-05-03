@@ -1,0 +1,30 @@
+{
+  "xp_bonus_rules": [
+    {
+      "coach_type": "O",
+      "source_rules": [
+        {
+          "xp_source": "match_win",
+          "base_bonus": 0.03,
+          "rating_multiplier": 0.0004
+        }
+      ]
+    },
+    {
+      "coach_type": "D",
+      "source_rules": [
+        {
+          "xp_source": "match_win",
+          "base_bonus": 0.03,
+          "rating_multiplier": 0.0004
+        }
+      ]
+    }
+  ],
+  "synergy_bonus": [
+    {
+      "required": ["O", "D"],
+      "bonus": 0.02
+    }
+  ]
+}

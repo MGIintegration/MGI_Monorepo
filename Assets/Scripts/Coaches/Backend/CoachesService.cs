@@ -53,6 +53,49 @@ public class HireCoachPayload
     public int cost_paid_coins;
 }
 
+/// <summary>Payload attached to the fire_coach event.</summary>
+[Serializable]
+public class FireCoachPayload
+{
+    public string team_id;
+    public string coach_id;
+    public string coach_type;
+}
+
+/// <summary>
+/// Unity JsonUtility-friendly coach XP bonus config.
+/// The requested dictionary-like layout is represented with arrays so the
+/// config can be parsed reliably without manual JSON deserialization.
+/// </summary>
+[Serializable]
+public class CoachesBonusConfig
+{
+    public CoachTypeBonusEntry[] xp_bonus_rules = new CoachTypeBonusEntry[0];
+    public SynergyBonusRule[] synergy_bonus = new SynergyBonusRule[0];
+}
+
+[Serializable]
+public class CoachTypeBonusEntry
+{
+    public string coach_type;
+    public XpSourceBonusRule[] source_rules = new XpSourceBonusRule[0];
+}
+
+[Serializable]
+public class XpSourceBonusRule
+{
+    public string xp_source;
+    public float base_bonus;
+    public float rating_multiplier;
+}
+
+[Serializable]
+public class SynergyBonusRule
+{
+    public string[] required = new string[0];
+    public float bonus;
+}
+
 // ── Service ───────────────────────────────────────────────────────────────────
 
 /// <summary>
@@ -66,8 +109,13 @@ public static class CoachesService
 {
     // In single-player the player id is fixed; wire to a proper PlayerService later.
     public const string LocalPlayerId = "local_player";
-    private const string CoachHiringSpendSource = "coach_hiring";
-    private const string CoachHiringRefundSource = "coach_hiring_refund";
+    private const string CoachHiringSpendSource   = "coach_hiring";
+    private const string CoachHiringRefundSource  = "coach_hiring_refund";
+    private const string CoachFiringRefundSource  = "coach_firing_refund";
+    private const string CoachBonusConfigFileName = "coaches_bonus_config.json";
+
+    private static CoachesBonusConfig cachedBonusConfig;
+    private static bool bonusConfigLoaded;
 
     // ── Public API ───────────────────────────────────────────────────────────
 
@@ -146,7 +194,8 @@ public static class CoachesService
         }
 
         // 4. Check and deduct wallet via EconomyService
-        int hireCost = Mathf.RoundToInt(coach.salary);
+        // salary in schema = millions/year; convert to weekly coin cost to match display
+        int hireCost = Mathf.RoundToInt(coach.salary * 1_000_000f / 52f);
         var economy = new EconomyService();
         if (!economy.TrySpend(playerId, hireCost, 0, CoachHiringSpendSource, out _))
         {
@@ -228,7 +277,185 @@ public static class CoachesService
         return LoadCatalog().FirstOrDefault(c => c.coach_id == coachId);
     }
 
+    /// <summary>
+    /// Removes the coach of the given type from the team's state and contracts,
+    /// then publishes a fire_coach event.
+    /// </summary>
+    public static bool FireCoach(string coachType, string playerId = null)
+    {
+        playerId ??= LocalPlayerId;
+        coachType = NormalizeCoachType(coachType);
+
+        if (coachType != "O" && coachType != "D" && coachType != "S")
+        {
+            Debug.LogWarning($"[CoachesService] Unknown coach type '{coachType}' for fire operation.");
+            return false;
+        }
+
+        var state = LoadTeamState(playerId);
+        if (state == null)
+        {
+            Debug.LogWarning("[CoachesService] No team state found; nothing to fire.");
+            return false;
+        }
+
+        var firedCoachId = GetAssignedCoachId(state, coachType);
+        if (string.IsNullOrEmpty(firedCoachId))
+        {
+            Debug.LogWarning($"[CoachesService] No {coachType} coach assigned; nothing to fire.");
+            return false;
+        }
+
+        string teamId = state.team_id;
+
+        // Read salary from the contract before removing it.
+        var activeContracts = GetActiveContracts(playerId);
+        var contract = activeContracts.FirstOrDefault(c =>
+            string.Equals(NormalizeCoachType(c.coach_type), coachType, StringComparison.Ordinal));
+        int refundAmount = contract != null ? Mathf.RoundToInt(contract.salary * 1_000_000f / 52f) : 0;
+
+        ApplyAssignedCoachId(state, coachType, string.Empty);
+        if (!SaveTeamState(playerId, state))
+        {
+            Debug.LogError("[CoachesService] Failed to save team state after firing coach.");
+            return false;
+        }
+
+        RemoveCoachContract(playerId, coachType);
+
+        // Refund salary only (bonus is non-refundable) after both files are saved.
+        if (refundAmount > 0)
+            new EconomyService().AddCurrency(playerId, refundAmount, 0, CoachFiringRefundSource);
+
+        EventBus.Publish(new EventBus.EventEnvelope
+        {
+            event_id  = Guid.NewGuid().ToString(),
+            event_type = "fire_coach",
+            player_id  = playerId,
+            timestamp  = DateTime.UtcNow.ToString("o"),
+            payloadJson = JsonUtility.ToJson(new FireCoachPayload
+            {
+                team_id    = teamId,
+                coach_id   = firedCoachId,
+                coach_type = coachType
+            })
+        });
+
+        Debug.Log($"[CoachesService] Fired coach '{firedCoachId}' ({coachType}) from team '{teamId}'.");
+        return true;
+    }
+
+    /// <summary>
+    /// Returns the XP bonus percent for the given player and XP source.
+    /// Read-only lookup only: no file writes, no hiring changes, no XP application.
+    /// </summary>
+    public static float GetCoachXpBonusPercent(string playerId, string xpSource)
+    {
+        playerId ??= LocalPlayerId;
+        var normalizedXpSource = xpSource?.Trim();
+        if (string.IsNullOrEmpty(normalizedXpSource)) return 0f;
+
+        var state = GetTeamState(playerId);
+        if (state == null) return 0f;
+
+        var config = LoadBonusConfig();
+        if (config == null)
+        {
+            Debug.LogWarning("[CoachesService] Coach XP bonus config could not be loaded.");
+            return 0f;
+        }
+
+        float totalBonus = 0f;
+
+        // Sum bonus from every coach type that is hired and has a rule for this source.
+        if (config.xp_bonus_rules != null)
+        {
+            foreach (var typeEntry in config.xp_bonus_rules)
+            {
+                if (typeEntry == null) continue;
+
+                var coachId = GetAssignedCoachId(state, typeEntry.coach_type);
+                if (string.IsNullOrEmpty(coachId)) continue;
+
+                var coach = GetCoachById(coachId);
+                if (coach == null) continue;
+
+                var rule = typeEntry.source_rules?.FirstOrDefault(r =>
+                    r != null &&
+                    string.Equals(r.xp_source, normalizedXpSource, StringComparison.OrdinalIgnoreCase));
+                if (rule == null) continue;
+
+                totalBonus += CalculateCoachRuleBonus(coach, rule);
+            }
+        }
+
+        if (totalBonus == 0f) return 0f;
+
+        // Synergy bonus: only applies when all required coach types are hired.
+        if (config.synergy_bonus != null)
+        {
+            foreach (var synergy in config.synergy_bonus)
+            {
+                if (synergy == null || synergy.required == null || synergy.required.Length == 0) continue;
+                if (!synergy.required.All(requiredType => HasAssignedCoachType(state, requiredType))) continue;
+                totalBonus += synergy.bonus;
+            }
+        }
+
+        return totalBonus;
+    }
+
     // ── Private helpers ──────────────────────────────────────────────────────
+
+    private static CoachesBonusConfig LoadBonusConfig()
+    {
+        if (bonusConfigLoaded)
+        {
+            return cachedBonusConfig;
+        }
+
+        bonusConfigLoaded = true;
+
+        string path = Path.Combine(Application.streamingAssetsPath, "Coaches", CoachBonusConfigFileName);
+        if (!File.Exists(path))
+        {
+            Debug.LogWarning($"[CoachesService] Bonus config not found at '{path}'.");
+            cachedBonusConfig = null;
+            return null;
+        }
+
+        try
+        {
+            cachedBonusConfig = JsonUtility.FromJson<CoachesBonusConfig>(File.ReadAllText(path)) ?? new CoachesBonusConfig();
+            return cachedBonusConfig;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[CoachesService] Failed to load bonus config: {e.Message}");
+            cachedBonusConfig = null;
+            return null;
+        }
+    }
+
+    private static bool HasAssignedCoachType(TeamState state, string coachType)
+    {
+        if (state == null)
+        {
+            return false;
+        }
+
+        return !string.IsNullOrEmpty(GetAssignedCoachId(state, coachType));
+    }
+
+    private static float CalculateCoachRuleBonus(CoachDatabaseRecord coach, XpSourceBonusRule rule)
+    {
+        if (coach == null || rule == null)
+        {
+            return 0f;
+        }
+
+        return rule.base_bonus + (coach.overall_rating * rule.rating_multiplier);
+    }
 
     private static List<CoachDatabaseRecord> LoadCatalog()
     {
@@ -297,6 +524,7 @@ public static class CoachesService
         public float overall_rating_calculated;
         public float salary;
         public int contract_length;
+        public int bonus_percentage;
         public string current_team_assigned_when_coach_is_hired;
         public string prev_team;
         public float run_defence;
@@ -316,12 +544,13 @@ public static class CoachesService
         {
             coach_id              = coach_id,
             coach_name            = coach_name,
-            coach_type            = coach_type,
+            coach_type            = NormalizeSchemaCoachType(coach_type),
             experience            = experience,
             championship_won      = championship_won,
             overall_rating        = overall_rating_calculated,
             salary                = salary,
             contract_length       = contract_length,
+            bonus_percentage      = bonus_percentage,
             current_team          = current_team_assigned_when_coach_is_hired,
             prev_team             = prev_team,
             run_defence           = run_defence,
@@ -413,6 +642,13 @@ public static class CoachesService
         }
     }
 
+    // Maps catalog values like "ST" → "S" so all coach types are O | D | S.
+    private static string NormalizeSchemaCoachType(string raw)
+    {
+        var upper = raw?.ToUpperInvariant();
+        return upper == "ST" ? "S" : upper;
+    }
+
     private static string NormalizeCoachType(string coachType)
     {
         return coachType?.ToUpperInvariant();
@@ -437,6 +673,25 @@ public static class CoachesService
             case "O": state.offence_coach = coachId; break;
             case "D": state.defence_coach = coachId; break;
             case "S": state.special_teams_coach = coachId; break;
+        }
+    }
+
+    private static void RemoveCoachContract(string playerId, string coachType)
+    {
+        string path = FilePathResolver.GetCoachesPath(playerId, "coach_contracts.json");
+        if (!File.Exists(path)) return;
+        try
+        {
+            var list = JsonUtility.FromJson<CoachContractList>(File.ReadAllText(path));
+            if (list?.contracts == null) return;
+            var contracts = new List<CoachContract>(list.contracts);
+            contracts.RemoveAll(c => string.Equals(NormalizeCoachType(c.coach_type), coachType, StringComparison.Ordinal));
+            list.contracts = contracts.ToArray();
+            TryWriteAllTextAtomic(path, JsonUtility.ToJson(list, true));
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[CoachesService] Failed to remove coach contract: {e.Message}");
         }
     }
 

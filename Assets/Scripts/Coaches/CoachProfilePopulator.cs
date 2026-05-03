@@ -115,6 +115,12 @@ public class CoachProfilePopulator : MonoBehaviour
     public Transform specialityContainer;
     public Transform contractRowContainer;
 
+    [Header("Actions")]
+    public UnityEngine.UI.Button hireButton;
+
+    private CoachDatabaseRecord _currentRecord;
+    private const string TeamId = "4d1c8be1-c9f0-4f0f-9e91-b424d8343f86";
+
     // Database cache
     private static List<CoachDatabaseRecord> cachedCoaches = null;
     private static bool isCacheInitialized = false;
@@ -122,27 +128,26 @@ public class CoachProfilePopulator : MonoBehaviour
     // Team name cache for API lookups
     private static Dictionary<string, string> teamIdToNameCache = new Dictionary<string, string>();
 
-    // Start is called before the first frame update
     void Start()
     {
-        // Initialize coach from database if enabled
-        if (loadFromDatabase)
+        if (hireButton != null)
+            hireButton.onClick.AddListener(OnHireButtonClicked);
+
+        if (coach != null)
         {
-            if (useAPI)
-            {
-                StartCoroutine(LoadCoachFromAPI());
-            }
-            else
-            {
-                LoadCoachFromDatabase();
-            }
+            ClearUI();
+            PopulateUI();
+            return;
         }
 
-        // Ensure we have a coach to display
-        if (coach == null)
+        if (loadFromDatabase)
         {
-            coach = CreateDefaultCoach();
+            if (useAPI) StartCoroutine(LoadCoachFromAPI());
+            else        LoadCoachFromDatabase();
         }
+
+        if (coach == null)
+            coach = CreateDefaultCoach();
 
         PopulateUI();
     }
@@ -669,16 +674,17 @@ public class CoachProfilePopulator : MonoBehaviour
     /// </summary>
     private ContractTermEntry[] TransformToContractTerms(CoachDatabaseRecord dbCoach)
     {
-        float weeklySalary = (dbCoach.salary * 1000000f) / 52f;
-        float performanceBonus = weeklySalary * 0.15f;
+        var culture = System.Globalization.CultureInfo.InvariantCulture;
+        float weeklySalary = (dbCoach.salary * 1_000_000f) / 52f;
+        float performanceBonus = weeklySalary * (dbCoach.bonus_percentage / 100f);
         float totalCost = weeklySalary * dbCoach.contract_length;
 
         return new ContractTermEntry[]
         {
-            new ContractTermEntry { key = "Weekly Salary", value = $"${weeklySalary:N0}" },
-            new ContractTermEntry { key = "Contract Length", value = $"{dbCoach.contract_length} games minimum" },
-            new ContractTermEntry { key = "Performance Bonus", value = $"+${performanceBonus:N0} for 80%+ wins" },
-            new ContractTermEntry { key = "Total Cost", value = $"${totalCost:N0}" }
+            new ContractTermEntry { key = "Weekly Salary",      value = $"${weeklySalary.ToString("N0", culture)}" },
+            new ContractTermEntry { key = "Contract Length",    value = $"{dbCoach.contract_length} games minimum" },
+            new ContractTermEntry { key = "Performance Bonus",  value = $"+${performanceBonus.ToString("N0", culture)} for 80%+ wins" },
+            new ContractTermEntry { key = "Total Cost",         value = $"${totalCost.ToString("N0", culture)}" }
         };
     }
 
@@ -713,6 +719,32 @@ public class CoachProfilePopulator : MonoBehaviour
                 new ContractTermEntry { key = "Total Cost", value = "$20,000" }
             }
         };
+    }
+
+    /// <summary>
+    /// Called by AppManager when navigating from the hiring market.
+    /// Receives the exact coach the player clicked Details on.
+    /// </summary>
+    public void PopulateFromRecord(CoachDatabaseRecord record)
+    {
+        if (record == null) return;
+        _currentRecord = record;
+        coach = TransformToCoachProfile(record);
+        ClearUI();
+        PopulateUI();
+    }
+
+    private void OnHireButtonClicked()
+    {
+        if (_currentRecord == null)
+        {
+            Debug.LogWarning("[CoachProfilePopulator] No coach loaded to hire.");
+            return;
+        }
+        if (CoachesService.TryHireCoach(TeamId, _currentRecord.coach_id, out var hired))
+            Debug.Log($"[CoachProfilePopulator] Hired {hired.coach_name}");
+        else
+            Debug.LogWarning($"[CoachProfilePopulator] Failed to hire {_currentRecord.coach_name} — slot occupied or insufficient funds.");
     }
 
     /// <summary>
