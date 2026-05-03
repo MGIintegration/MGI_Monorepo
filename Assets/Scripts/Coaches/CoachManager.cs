@@ -6,6 +6,7 @@ using System.Collections;
 using UnityEngine.Networking;
 using System.Linq;
 using UnityEngine.UI;
+using TMPro;
 
 public class CoachManager : MonoBehaviour
 {
@@ -22,11 +23,17 @@ public class CoachManager : MonoBehaviour
     public Button fireOffence;
     public Button fireDefense;
 
+    [Header("Budget Display")]
+    public TextMeshProUGUI mainScreenBudgetText;
+
     [Header("API Configuration")]
     [SerializeField] private string baseURL = "http://localhost:5175";
     [SerializeField] private string teamId = "4d1c8be1-c9f0-4f0f-9e91-b424d8343f86"; // Default team ID
     [SerializeField] private bool loadFromAPI = true; // Toggle for API vs JSON fallback
     private bool isAPIAvailable = false;
+
+    private IDisposable hireSubscription;
+    private IDisposable fireSubscription;
 
     private void Awake()
     {
@@ -46,12 +53,36 @@ public class CoachManager : MonoBehaviour
     public static event Action<CoachData, CoachType> OnCoachHired;
     public static event Action<CoachType> OnCoachFired;
 
+    private void OnEnable()
+    {
+        hireSubscription = EventBus.Subscribe("hire_coach", _ => UpdateBudgetDisplay());
+        fireSubscription = EventBus.Subscribe("fire_coach", _ => UpdateBudgetDisplay());
+    }
+
+    private void OnDisable()
+    {
+        hireSubscription?.Dispose();
+        fireSubscription?.Dispose();
+    }
+
     private void Start()
     {
-        fireOffence.onClick.AddListener(() =>FireCoach(CoachType.Offense));
-        fireDefense.onClick.AddListener(() =>FireCoach(CoachType.Defense));
+        if (fireOffence != null)
+            fireOffence.onClick.AddListener(() => CoachesService.FireCoach("O"));
+        if (fireDefense != null)
+            fireDefense.onClick.AddListener(() => CoachesService.FireCoach("D"));
 
         InitializeSystem();
+        UpdateBudgetDisplay();
+    }
+
+    private void UpdateBudgetDisplay()
+    {
+        if (mainScreenBudgetText == null) return;
+        var wallet = new EconomyService().GetWallet(CoachesService.LocalPlayerId);
+        mainScreenBudgetText.text = wallet != null
+            ? $"WEEKLY BUDGET: {wallet.coins.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)} COINS"
+            : "WEEKLY BUDGET: --";
     }
 
     private void InitializeSystem()
@@ -156,6 +187,7 @@ public class CoachManager : MonoBehaviour
         }
         OnCoachHired?.Invoke(coach, coach.position);
         Debug.Log($"Hired {coach.coachName} for {coach.position}");
+        UpdateBudgetDisplay();
         return true;
     }
 
@@ -192,6 +224,7 @@ public class CoachManager : MonoBehaviour
 
         OnCoachFired?.Invoke(position);
         Debug.Log($"Fired {coachToFire.coachName} from {position}");
+        UpdateBudgetDisplay();
         return true;
     }
 
