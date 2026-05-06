@@ -132,6 +132,9 @@ public class PackOpeningController : MonoBehaviour
             PublishBuyPackEvent(packType, packData.cost, cards);
         }
 
+        // Refresh drop history after LogPull so it has the latest data
+        dropHistoryController?.RefreshDropHistory();
+
         // Visuals - display actual card information
         for (int i = 0; i < _cards.Count; i++)
         {

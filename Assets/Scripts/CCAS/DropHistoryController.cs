@@ -64,11 +64,8 @@ public class DropHistoryController : MonoBehaviour
 
     void OnEnable()
     {
-        if (_pendingRefresh)
-        {
-            _pendingRefresh = false;
-            RefreshDropHistory();
-        }
+        _pendingRefresh = false;
+        RefreshDropHistory();
     }
 
     void OnDestroy()
