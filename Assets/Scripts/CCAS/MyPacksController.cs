@@ -23,6 +23,7 @@ public class MyPacksController : MonoBehaviour
     [Header("Scroll List")]
     public Transform  contentParent;
     public GameObject resultTemplate;
+    public GameObject headerRow;       // assign the title bar — never cloned, never destroyed
     public ScrollRect scrollRect;
 
     [Header("Navigation")]
@@ -59,15 +60,8 @@ public class MyPacksController : MonoBehaviour
 
     void OnEnable()
     {
-        if (_pendingRefresh)
-        {
-            _pendingRefresh = false;
-            Refresh();
-        }
-        else
-        {
-            Refresh();
-        }
+        _pendingRefresh = false;
+        Refresh();
     }
 
     void OnDestroy()
@@ -99,11 +93,11 @@ public class MyPacksController : MonoBehaviour
             yield break;
         }
 
-        // Clear previous rows (keep resultTemplate in place)
+        // Clear previous rows (keep resultTemplate and headerRow in place)
         for (int i = contentParent.childCount - 1; i >= 0; i--)
         {
             var child = contentParent.GetChild(i).gameObject;
-            if (child == resultTemplate) continue;
+            if (child == resultTemplate || child == headerRow) continue;
             Destroy(child);
         }
 
@@ -136,21 +130,29 @@ public class MyPacksController : MonoBehaviour
             string packName = !string.IsNullOrEmpty(log.pack_name) ? log.pack_name : log.pack_type;
             string date     = FormatTimestamp(log.timestamp);
 
-            string line = $"{packName}  ·  {cardCount} cards";
-            if (xp > 0)   line += $"  ·  +{xp} XP";
-            if (dups > 0)  line += $"  ·  {dups} dup";
-            line += $"\n<size=70%><color=#888888>{date}</color></size>";
+            // Strip " Pack" suffix (e.g. "Gold Pack" → "Gold")
+            string packLabel = packName?.Replace(" Pack", "").Trim();
+
+            // 5 fixed columns: Pack | Cards | XP | Duplicates | Date
+            string[] cols = new string[]
+            {
+                !string.IsNullOrEmpty(packLabel) ? packLabel        : "-",
+                cardCount > 0                    ? $"{cardCount}"   : "-",
+                xp > 0                           ? $"+{xp} XP"     : "-",
+                dups > 0                         ? $"{dups}"        : "-",
+                !string.IsNullOrEmpty(date)      ? date             : "-"
+            };
 
             var row = Instantiate(resultTemplate, contentParent);
             row.SetActive(true);
 
-            var tmp = row.GetComponentInChildren<TextMeshProUGUI>();
-            if (tmp != null)
+            var tmps = row.GetComponentsInChildren<TextMeshProUGUI>();
+            for (int t = 0; t < tmps.Length && t < cols.Length; t++)
             {
-                tmp.text           = line;
-                tmp.richText       = true;
-                tmp.overflowMode   = TextOverflowModes.Overflow;
-                tmp.color          = Color.white;
+                tmps[t].text         = cols[t];
+                tmps[t].richText     = false;
+                tmps[t].overflowMode = TextOverflowModes.Ellipsis;
+                tmps[t].color        = Color.white;
             }
         }
 
@@ -168,7 +170,7 @@ public class MyPacksController : MonoBehaviour
         try
         {
             var dt = DateTimeOffset.FromUnixTimeMilliseconds(unixMs).LocalDateTime;
-            return dt.ToString("MMM d, h:mm tt");
+            return dt.ToString("dd MMM, HH:mm");
         }
         catch
         {
