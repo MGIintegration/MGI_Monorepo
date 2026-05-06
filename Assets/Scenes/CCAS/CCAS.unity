@@ -806,6 +806,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   packButtonPrefab: {fileID: 4306335833091580652, guid: ce7eb1c7a911042a0a73056f706172f3, type: 3}
   contentParent: {fileID: 2014758919}
+  insufficientFundsText: {fileID: 0}
+  insufficientFundsSeconds: 2
 --- !u!1 &149630450
 GameObject:
   m_ObjectHideFlags: 0
@@ -2632,6 +2634,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   packButtonPrefab: {fileID: 4306335833091580652, guid: ce7eb1c7a911042a0a73056f706172f3, type: 3}
   contentParent: {fileID: 979377021}
+  insufficientFundsText: {fileID: 0}
+  insufficientFundsSeconds: 2
 --- !u!1 &429237152
 GameObject:
   m_ObjectHideFlags: 0
@@ -4819,7 +4823,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &822703937
 MonoBehaviour:
   m_ObjectHideFlags: 0
