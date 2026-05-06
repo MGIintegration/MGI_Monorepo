@@ -181,6 +181,53 @@ public class FacilitiesService
         return result;
     }
 
+    /// <summary>
+    /// Returns a typed read-only snapshot for Progression or any other consumer
+    /// that needs facility levels, effects, and precomputed XP multipliers.
+    /// </summary>
+    public ProgressionFacilitySnapshot GetProgressionSnapshot(string playerId)
+    {
+        var normalizedPlayerId = string.IsNullOrWhiteSpace(playerId) ? DefaultPlayerId : playerId;
+        var levels = new Dictionary<string, int>();
+        var effects = new Dictionary<string, Dictionary<string, float>>();
+
+        foreach (var facilityTypeId in _facilityResourceMap.Keys)
+        {
+            var progress = GetFacilityProgress(normalizedPlayerId, facilityTypeId);
+            levels[facilityTypeId] = progress?.level ?? 1;
+            effects[facilityTypeId] = GetFacilityEffects(normalizedPlayerId, facilityTypeId);
+        }
+
+        return new ProgressionFacilitySnapshot
+        {
+            player_id = normalizedPlayerId,
+            facility_levels = levels,
+            facility_effects = effects,
+            match_xp_multiplier = CalculateMatchXpMultiplier(effects),
+            training_xp_multiplier = CalculateTrainingXpMultiplier(effects),
+            recovery_xp_multiplier = CalculateRecoveryXpMultiplier(effects)
+        };
+    }
+
+    /// <summary>
+    /// Returns the Facilities-defined multiplier that Progression should apply
+    /// for a given XP source.
+    /// Supported source values include match, training, and recovery.
+    /// </summary>
+    public float GetProgressionXpMultiplier(string playerId, string source)
+    {
+        var snapshot = GetProgressionSnapshot(playerId);
+        string normalizedSource = string.IsNullOrWhiteSpace(source) ? "match" : source.Trim().ToLowerInvariant();
+
+        return normalizedSource switch
+        {
+            "match" or "match_win" or "match_loss" => snapshot.match_xp_multiplier,
+            "training" or "training_session" or "practice" => snapshot.training_xp_multiplier,
+            "recovery" or "rehab" => snapshot.recovery_xp_multiplier,
+            _ => snapshot.match_xp_multiplier
+        };
+    }
+
     public bool IsValidFacilityType(string facilityTypeId)
     {
         return !string.IsNullOrWhiteSpace(facilityTypeId) && _facilityResourceMap.ContainsKey(facilityTypeId);
@@ -266,6 +313,58 @@ public class FacilitiesService
 
         return progress;
     }
+
+    private float CalculateMatchXpMultiplier(Dictionary<string, Dictionary<string, float>> allEffects)
+    {
+        float bonus =
+            GetEffectValue(allEffects, "film_room", "PlayerIntelligenceBoost") +
+            GetEffectValue(allEffects, "film_room", "GamePlanEffectiveness");
+
+        return 1f + bonus;
+    }
+
+    private float CalculateTrainingXpMultiplier(Dictionary<string, Dictionary<string, float>> allEffects)
+    {
+        float bonus =
+            GetEffectValue(allEffects, "weight_room", "PlayerStrengthBoost") +
+            GetEffectValue(allEffects, "weight_room", "PlayerConditioningBoost") +
+            GetEffectValue(allEffects, "weight_room", "FatigueResistance");
+
+        return 1f + bonus;
+    }
+
+    private float CalculateRecoveryXpMultiplier(Dictionary<string, Dictionary<string, float>> allEffects)
+    {
+        float bonus =
+            GetEffectValue(allEffects, "rehab_center", "InjuryRecoveryMultiplier") +
+            GetEffectValue(allEffects, "rehab_center", "PlayerHealthBoost") +
+            GetEffectValue(allEffects, "rehab_center", "InjuryRiskReduction");
+
+        return 1f + bonus;
+    }
+
+    private float GetEffectValue(
+        Dictionary<string, Dictionary<string, float>> allEffects,
+        string facilityTypeId,
+        string effectKey)
+    {
+        if (!allEffects.TryGetValue(facilityTypeId, out var effects) || effects == null)
+        {
+            return 0f;
+        }
+
+        if (!effects.TryGetValue(effectKey, out var value))
+        {
+            return 0f;
+        }
+
+        if (effectKey.EndsWith("Multiplier"))
+        {
+            return Mathf.Max(0f, value - 1f);
+        }
+
+        return Mathf.Max(0f, value);
+    }
 }
 
 [System.Serializable]
@@ -304,4 +403,15 @@ public class Validation
     public int minCost;
     public int maxCost;
     public Dictionary<string, float> effectCaps;
+}
+
+[System.Serializable]
+public class ProgressionFacilitySnapshot
+{
+    public string player_id;
+    public Dictionary<string, int> facility_levels;
+    public Dictionary<string, Dictionary<string, float>> facility_effects;
+    public float match_xp_multiplier;
+    public float training_xp_multiplier;
+    public float recovery_xp_multiplier;
 }
