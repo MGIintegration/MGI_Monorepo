@@ -741,10 +741,29 @@ public class CoachProfilePopulator : MonoBehaviour
             Debug.LogWarning("[CoachProfilePopulator] No coach loaded to hire.");
             return;
         }
+
+        var state = CoachesService.GetTeamState();
+        string coachType = _currentRecord.coach_type?.ToUpper();
+        string occupied = null;
+        if (state != null)
+        {
+            switch (coachType)
+            {
+                case "O": occupied = state.offence_coach; break;
+                case "D": occupied = state.defence_coach; break;
+                case "S": occupied = state.special_teams_coach; break;
+            }
+        }
+        if (!string.IsNullOrEmpty(occupied))
+        {
+            Debug.LogWarning($"[CoachProfilePopulator] A {coachType} coach slot is already filled — fire the current coach first.");
+            return;
+        }
+
         if (CoachesService.TryHireCoach(TeamId, _currentRecord.coach_id, out var hired))
             Debug.Log($"[CoachProfilePopulator] Hired {hired.coach_name}");
         else
-            Debug.LogWarning($"[CoachProfilePopulator] Failed to hire {_currentRecord.coach_name} — slot occupied or insufficient funds.");
+            Debug.LogWarning($"[CoachProfilePopulator] Failed to hire {_currentRecord.coach_name} — insufficient funds.");
     }
 
     /// <summary>

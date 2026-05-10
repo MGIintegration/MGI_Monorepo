@@ -191,6 +191,7 @@ public class CoachManager : MonoBehaviour
         return true;
     }
 
+    [System.Obsolete("Use CoachesService.FireCoach() instead — this method only updates in-memory state and does not persist.")]
     public bool FireCoach(CoachType position)
     {
         CoachData coachToFire = null;
