@@ -53,6 +53,15 @@ public class HireCoachPayload
     public int cost_paid_coins;
 }
 
+/// <summary>Payload attached to the fire_coach event.</summary>
+[Serializable]
+public class FireCoachPayload
+{
+    public string team_id;
+    public string coach_id;
+    public string coach_type;
+}
+
 /// <summary>
 /// Unity JsonUtility-friendly coach XP bonus config.
 /// The requested dictionary-like layout is represented with arrays so the
@@ -101,7 +110,8 @@ public static class CoachesService
     // In single-player the player id is fixed; wire to a proper PlayerService later.
     public const string LocalPlayerId = "local_player";
     private const string CoachHiringSpendSource = "coach_hiring";
-    private const string CoachHiringRefundSource = "coach_hiring_refund";
+    private const string CoachHiringRefundSource  = "coach_hiring_refund";
+    private const string CoachFiringRefundSource  = "coach_firing_refund";
     private const string CoachBonusConfigFileName = "coaches_bonus_config.json";
 
     private static CoachesBonusConfig cachedBonusConfig;
@@ -264,6 +274,72 @@ public static class CoachesService
     public static CoachDatabaseRecord GetCoachById(string coachId)
     {
         return LoadCatalog().FirstOrDefault(c => c.coach_id == coachId);
+    }
+
+    /// <summary>
+    /// Removes the coach of the given type from the team's state and contracts,
+    /// then refunds the weekly salary and publishes a fire_coach event.
+    /// </summary>
+    public static bool FireCoach(string coachType, string playerId = null)
+    {
+        playerId ??= LocalPlayerId;
+        coachType = NormalizeCoachType(coachType);
+
+        if (coachType != "O" && coachType != "D" && coachType != "S")
+        {
+            Debug.LogWarning($"[CoachesService] Unknown coach type '{coachType}' for fire operation.");
+            return false;
+        }
+
+        var state = LoadTeamState(playerId);
+        if (state == null)
+        {
+            Debug.LogWarning("[CoachesService] No team state found; nothing to fire.");
+            return false;
+        }
+
+        var firedCoachId = GetAssignedCoachId(state, coachType);
+        if (string.IsNullOrEmpty(firedCoachId))
+        {
+            Debug.LogWarning($"[CoachesService] No {coachType} coach assigned; nothing to fire.");
+            return false;
+        }
+
+        string teamId = state.team_id;
+
+        var activeContracts = GetActiveContracts(playerId);
+        var contract = activeContracts.FirstOrDefault(c =>
+            string.Equals(NormalizeCoachType(c.coach_type), coachType, StringComparison.Ordinal));
+        int refundAmount = contract != null ? Mathf.RoundToInt(contract.salary * 1_000_000f / 52f) : 0;
+
+        ApplyAssignedCoachId(state, coachType, string.Empty);
+        if (!SaveTeamState(playerId, state))
+        {
+            Debug.LogError("[CoachesService] Failed to save team state after firing coach.");
+            return false;
+        }
+
+        RemoveCoachContract(playerId, coachType);
+
+        if (refundAmount > 0)
+            new EconomyService().AddCurrency(playerId, refundAmount, 0, CoachFiringRefundSource);
+
+        EventBus.Publish(new EventBus.EventEnvelope
+        {
+            event_id   = Guid.NewGuid().ToString(),
+            event_type = "fire_coach",
+            player_id  = playerId,
+            timestamp  = DateTime.UtcNow.ToString("o"),
+            payloadJson = JsonUtility.ToJson(new FireCoachPayload
+            {
+                team_id    = teamId,
+                coach_id   = firedCoachId,
+                coach_type = coachType
+            })
+        });
+
+        Debug.Log($"[CoachesService] Fired coach '{firedCoachId}' ({coachType}) from team '{teamId}'.");
+        return true;
     }
 
     /// <summary>
@@ -602,6 +678,25 @@ public static class CoachesService
     {
         var upper = raw?.ToUpperInvariant();
         return upper == "ST" ? "S" : upper;
+    }
+
+    private static void RemoveCoachContract(string playerId, string coachType)
+    {
+        string path = FilePathResolver.GetCoachesPath(playerId, "coach_contracts.json");
+        if (!File.Exists(path)) return;
+        try
+        {
+            var list = JsonUtility.FromJson<CoachContractList>(File.ReadAllText(path));
+            if (list?.contracts == null) return;
+            var contracts = new List<CoachContract>(list.contracts);
+            contracts.RemoveAll(c => string.Equals(NormalizeCoachType(c.coach_type), coachType, StringComparison.Ordinal));
+            list.contracts = contracts.ToArray();
+            TryWriteAllTextAtomic(path, JsonUtility.ToJson(list, true));
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[CoachesService] Failed to remove coach contract: {e.Message}");
+        }
     }
 
     private static string NormalizeCoachType(string coachType)
