@@ -343,77 +343,53 @@ public static class CoachesService
     }
 
     /// <summary>
-    /// Returns the XP bonus percent for the given player and XP source.
-    /// Read-only lookup only: no file writes, no hiring changes, no XP application.
+    /// Returns the XP bonus multiplier (additive) for the given player and XP source.
+    /// Sums bonuses from all hired coaches whose rules match the source, then adds synergy.
+    /// Read-only: no file writes, no hiring changes, no XP application.
     /// </summary>
     public static float GetCoachXpBonusPercent(string playerId, string xpSource)
     {
         playerId ??= LocalPlayerId;
         var normalizedXpSource = xpSource?.Trim();
-        var coachType = GetCoachTypeForXpSource(normalizedXpSource);
-        if (string.IsNullOrEmpty(coachType))
-        {
-            return 0f;
-        }
+        if (string.IsNullOrEmpty(normalizedXpSource)) return 0f;
 
         var state = GetTeamState(playerId);
-        if (state == null)
-        {
-            return 0f;
-        }
-
-        var coachId = GetAssignedCoachId(state, coachType);
-        if (string.IsNullOrEmpty(coachId))
-        {
-            return 0f;
-        }
-
-        var coach = GetCoachById(coachId);
-        if (coach == null)
-        {
-            return 0f;
-        }
+        if (state == null) return 0f;
 
         var config = LoadBonusConfig();
-        if (config == null)
+        if (config?.xp_bonus_rules == null)
         {
             Debug.LogWarning("[CoachesService] Coach XP bonus config could not be loaded.");
             return 0f;
         }
 
-        var typeEntry = config.xp_bonus_rules?.FirstOrDefault(entry =>
-            entry != null &&
-            string.Equals(entry.coach_type, coachType, StringComparison.OrdinalIgnoreCase));
-        if (typeEntry == null)
-        {
-            return 0f;
-        }
+        float totalBonus = 0f;
 
-        var rule = typeEntry.source_rules?.FirstOrDefault(sourceRule =>
-            sourceRule != null &&
-            string.Equals(sourceRule.xp_source, normalizedXpSource, StringComparison.OrdinalIgnoreCase));
-        if (rule == null)
+        foreach (var typeEntry in config.xp_bonus_rules)
         {
-            return 0f;
-        }
+            if (typeEntry == null) continue;
 
-        float totalBonus = CalculateCoachRuleBonus(coach, rule);
+            var rule = typeEntry.source_rules?.FirstOrDefault(r =>
+                r != null &&
+                string.Equals(r.xp_source, normalizedXpSource, StringComparison.OrdinalIgnoreCase));
+            if (rule == null) continue;
+
+            var coachId = GetAssignedCoachId(state, NormalizeCoachType(typeEntry.coach_type));
+            if (string.IsNullOrEmpty(coachId)) continue;
+
+            var coach = GetCoachById(coachId);
+            if (coach == null) continue;
+
+            totalBonus += CalculateCoachRuleBonus(coach, rule);
+        }
 
         if (config.synergy_bonus != null)
         {
             foreach (var synergy in config.synergy_bonus)
             {
-                if (synergy == null || synergy.required == null || synergy.required.Length == 0)
-                {
-                    continue;
-                }
-
-                if (!synergy.required.All(requiredType => HasAssignedCoachType(state, requiredType)))
-                {
-                    continue;
-                }
-
-                totalBonus += synergy.bonus;
+                if (synergy == null || synergy.required == null || synergy.required.Length == 0) continue;
+                if (synergy.required.All(t => HasAssignedCoachType(state, t)))
+                    totalBonus += synergy.bonus;
             }
         }
 
@@ -449,24 +425,6 @@ public static class CoachesService
             Debug.LogWarning($"[CoachesService] Failed to load bonus config: {e.Message}");
             cachedBonusConfig = null;
             return null;
-        }
-    }
-
-    private static string GetCoachTypeForXpSource(string xpSource)
-    {
-        if (string.IsNullOrWhiteSpace(xpSource))
-        {
-            return null;
-        }
-
-        switch (xpSource.Trim().ToLowerInvariant())
-        {
-            case "offensive_drill":
-                return "O";
-            case "defensive_drill":
-                return "D";
-            default:
-                return null;
         }
     }
 

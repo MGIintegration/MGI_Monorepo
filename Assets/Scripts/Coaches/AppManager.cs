@@ -50,9 +50,15 @@ public class AppManager : MonoBehaviour
             viewOffenseCoachButton.onClick.AddListener(() =>
             {
                 var state = CoachesService.GetTeamState();
+                if (string.IsNullOrEmpty(state?.offence_coach)) return;
+                var coach = CoachesService.GetCoachById(state.offence_coach);
+                if (coach == null)
+                {
+                    Debug.LogWarning($"[AppManager] Offence coach '{state.offence_coach}' not found in catalog.");
+                    return;
+                }
                 var populator = coachDetailsScreen?.GetComponentInChildren<CoachProfilePopulator>(true);
-                if (populator != null && !string.IsNullOrEmpty(state?.offence_coach))
-                    populator.PopulateFromRecord(CoachesService.GetCoachById(state.offence_coach));
+                populator?.PopulateFromRecord(coach);
                 ShowScreen(coachDetailsScreen);
             });
         if (fireOffenseCoachButton != null)
@@ -61,9 +67,15 @@ public class AppManager : MonoBehaviour
             viewDefenseCoachButton.onClick.AddListener(() =>
             {
                 var state = CoachesService.GetTeamState();
+                if (string.IsNullOrEmpty(state?.defence_coach)) return;
+                var coach = CoachesService.GetCoachById(state.defence_coach);
+                if (coach == null)
+                {
+                    Debug.LogWarning($"[AppManager] Defence coach '{state.defence_coach}' not found in catalog.");
+                    return;
+                }
                 var populator = coachDetailsScreen?.GetComponentInChildren<CoachProfilePopulator>(true);
-                if (populator != null && !string.IsNullOrEmpty(state?.defence_coach))
-                    populator.PopulateFromRecord(CoachesService.GetCoachById(state.defence_coach));
+                populator?.PopulateFromRecord(coach);
                 ShowScreen(coachDetailsScreen);
             });
         if (fireDefenseCoachButton != null)

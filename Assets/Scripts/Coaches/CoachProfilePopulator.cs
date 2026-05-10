@@ -128,11 +128,14 @@ public class CoachProfilePopulator : MonoBehaviour
     // Team name cache for API lookups
     private static Dictionary<string, string> teamIdToNameCache = new Dictionary<string, string>();
 
-    void Start()
+    void Awake()
     {
         if (hireButton != null)
             hireButton.onClick.AddListener(OnHireButtonClicked);
+    }
 
+    void Start()
+    {
         if (coach != null)
         {
             ClearUI();
