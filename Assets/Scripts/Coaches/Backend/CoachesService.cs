@@ -194,7 +194,7 @@ public static class CoachesService
         }
 
         // 4. Check and deduct wallet via EconomyService
-        int hireCost = Mathf.RoundToInt(coach.salary);
+        int hireCost = Mathf.RoundToInt(coach.salary * 1_000_000f / 52f);
         var economy = new EconomyService();
         if (!economy.TrySpend(playerId, hireCost, 0, CoachHiringSpendSource, out _))
         {
