@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,11 +18,19 @@ public class PackOpeningController : MonoBehaviour
 
     [Header("Settings")]
     public string packType = "bronze_pack";
+    [Tooltip("Allow falling back to DropConfigManager.PullCards when CCASService is unavailable.")]
+    public bool useLegacyFallback = false;
 
     [Header("References")]
     public DropHistoryController dropHistoryController;
 
+    [Header("Error UI")]
+    [Tooltip("Assign a TMP_Text on the pack panel to show insufficient funds message.")]
+    public TMP_Text insufficientFundsText;
+    public float insufficientFundsSeconds = 2f;
+
     private readonly List<GameObject> _cards = new();
+    private Coroutine _insufficientFundsRoutine;
 
     void Start()
     {
@@ -75,10 +84,33 @@ public class PackOpeningController : MonoBehaviour
             return;
         }
 
-        // If we already opened via CCASService (BoosterMarket), use that result.
+        // If no pre-computed result, call CCASService directly.
+        if (serviceResult == null)
+        {
+            var service = CCASService.Instance;
+            if (service != null)
+            {
+                string playerId = PlayerPrefs.GetString("player_id", SystemInfo.deviceUniqueIdentifier);
+                serviceResult = service.OpenPack(playerId, packType);
+                if (serviceResult == null || !serviceResult.success)
+                {
+                    if (serviceResult?.failureReason == "insufficient_funds")
+                        ShowInsufficientFundsError();
+                    else
+                        Debug.LogWarning($"[PackOpening] OpenPack failed: {serviceResult?.failureReason ?? "unknown"}");
+                    return;
+                }
+            }
+            else if (!useLegacyFallback)
+            {
+                Debug.LogError("[PackOpening] CCASService not available and legacy fallback is disabled.");
+                return;
+            }
+        }
+
         var cards = serviceResult != null && serviceResult.success && serviceResult.cards != null
             ? serviceResult.cards
-            : mgr.PullCards(packType);
+            : mgr.PullCards(packType); // only reached when useLegacyFallback=true and CCASService unavailable
         Debug.Log($"[PackOpening] {packType} → {cards.Count} cards");
 
         if (cards.Count == 0)
@@ -222,6 +254,21 @@ public class PackOpeningController : MonoBehaviour
     [System.Serializable] private class BuyPackCardEntry    { public string card_id; public string rarity; public bool is_duplicate; public int xp_awarded; }
     [System.Serializable] private class BuyPackPayload      { public string pack_type_id; public CostPaid cost_paid; public List<BuyPackCardEntry> cards_pulled; }
     [System.Serializable] private class XpFromDuplicatePayload { public string card_id; public string rarity; public int xp_gained; public string source; public string pack_type_id; }
+
+    private void ShowInsufficientFundsError()
+    {
+        if (insufficientFundsText == null) return;
+        if (_insufficientFundsRoutine != null) StopCoroutine(_insufficientFundsRoutine);
+        _insufficientFundsRoutine = StartCoroutine(ShowInsufficientFundsRoutine());
+    }
+
+    private IEnumerator ShowInsufficientFundsRoutine()
+    {
+        insufficientFundsText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(Mathf.Max(0.1f, insufficientFundsSeconds));
+        insufficientFundsText.gameObject.SetActive(false);
+        _insufficientFundsRoutine = null;
+    }
 
     void BuildOrReuseCards(int needed)
     {
