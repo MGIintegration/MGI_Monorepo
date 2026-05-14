@@ -321,9 +321,12 @@ public static class CoachesService
             return false;
         }
 
-        RemoveCoachContract(playerId, coachType);
+        if (!RemoveCoachContract(playerId, coachType))
+        {
+            Debug.LogError("[CoachesService] Failed to remove coach contract; refund and event suppressed to avoid inconsistent state.");
+            return false;
+        }
 
-        // Refund salary only (bonus is non-refundable) after both files are saved.
         if (refundAmount > 0)
             new EconomyService().AddCurrency(playerId, refundAmount, 0, CoachFiringRefundSource);
 
@@ -676,22 +679,23 @@ public static class CoachesService
         }
     }
 
-    private static void RemoveCoachContract(string playerId, string coachType)
+    private static bool RemoveCoachContract(string playerId, string coachType)
     {
         string path = FilePathResolver.GetCoachesPath(playerId, "coach_contracts.json");
-        if (!File.Exists(path)) return;
+        if (!File.Exists(path)) return true;
         try
         {
             var list = JsonUtility.FromJson<CoachContractList>(File.ReadAllText(path));
-            if (list?.contracts == null) return;
+            if (list?.contracts == null) return true;
             var contracts = new List<CoachContract>(list.contracts);
             contracts.RemoveAll(c => string.Equals(NormalizeCoachType(c.coach_type), coachType, StringComparison.Ordinal));
             list.contracts = contracts.ToArray();
-            TryWriteAllTextAtomic(path, JsonUtility.ToJson(list, true));
+            return TryWriteAllTextAtomic(path, JsonUtility.ToJson(list, true));
         }
         catch (Exception e)
         {
             Debug.LogError($"[CoachesService] Failed to remove coach contract: {e.Message}");
+            return false;
         }
     }
 
