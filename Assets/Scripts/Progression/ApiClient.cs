@@ -12,7 +12,7 @@ public class PlayerProgressionSaveData
     public int current_xp;
     public string current_tier;
     public Dictionary<string, TierData> tier_progression;
-    public List<XPHistoryEntry> xp_history;
+    public List<XpHistoryEntry> xp_history;
 }
 
 [Serializable]
@@ -33,15 +33,7 @@ public class TeamProgressionSaveData
     public List<Dictionary<string, object>> xp_history;
 }
 
-[Serializable]
-public class XPHistoryEntry
-{
-    public string timestamp;
-    public int xp_gained;
-    public string source;
-    public float facility_multiplier;
-    public float coaching_bonus;
-}
+
 
 public class TeamSaveData
 {
@@ -251,7 +243,7 @@ public class ApiClient : MonoBehaviour
             current_xp = p["current_xp"].AsInt,
             current_tier = p["current_tier"],
             tier_progression = new Dictionary<string, TierData>(),
-            xp_history = new List<XPHistoryEntry>()
+            xp_history = new List<XpHistoryEntry>()
         };
 
         foreach (KeyValuePair<string, JSONNode> kv in p["tier_progression"].AsObject)
@@ -271,13 +263,14 @@ public class ApiClient : MonoBehaviour
 
         foreach (JSONNode entry in p["xp_history"].AsArray)
         {
-            prog.xp_history.Add(new XPHistoryEntry
+            prog.xp_history.Add(new XpHistoryEntry
             {
+                id = entry["id"],
+                player_id = entry["player_id"],
                 timestamp = entry["timestamp"],
                 xp_gained = entry["xp_gained"].AsInt,
-                source = entry["source"],
-                facility_multiplier = entry["facility_multiplier"].AsFloat,
-                coaching_bonus = entry["coaching_bonus"].AsFloat
+                source = entry["source"]
+                
             });
         }
 

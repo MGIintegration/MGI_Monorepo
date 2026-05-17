@@ -16,15 +16,7 @@ public class TierProgression
     public string[] unlock_features;
 }
 
-[Serializable]
-public class XpHistoryEntry
-{
-    public string timestamp;
-    public int xp_gained;
-    public string source;
-    public float facility_multiplier;
-    public float coaching_bonus;
-}
+
 
 [Serializable]
 public class PlayerProgression

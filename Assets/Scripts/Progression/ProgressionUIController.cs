@@ -139,9 +139,7 @@ public class ProgressionUIController : MonoBehaviour
 
             string source = string.IsNullOrEmpty(lastEntry.source) ? "unknown" : lastEntry.source;
             string xp = lastEntry.xp_gained.ToString();
-            string facility = lastEntry.facility_multiplier.ToString("0.##");
-            string coaching = lastEntry.coaching_bonus.ToString("0.##");
-
+            
 
 
             _simTitleLabel.text = $"🎮 MATCH RESULT - WEEK {updatedData.current_week}";
@@ -235,9 +233,7 @@ public class ProgressionUIController : MonoBehaviour
 
     private string PlayerTier()
     {
-        var player = _seasonManager.PlayerTeam;
-        return ApiClient.Instance.PlayerProgressionSaveData?.current_tier ?? "Rookie";
-
+        return _seasonManager.PlayerTier;
     }
 
     private void ShowScreen(string screenName)

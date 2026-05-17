@@ -39,8 +39,8 @@ using TMPro;
             if (currentXPText != null)
                 currentXPText.text = $"Total XP: {sm.PlayerXP}";
 
-            var prog = ApiClient.Instance?.PlayerProgressionSaveData;
-            if (prog == null || prog.xp_history == null) return;
+            var prog = sm.XpHistoryEntries;
+            if (prog == null || prog.Count == 0) return;
 
             for (int i = xpListParent.childCount - 1; i >= 0; i--)
             {
@@ -50,9 +50,9 @@ using TMPro;
             }
 
             // Create new entries (Iterate backwards to show NEWEST first)
-            for (int i = prog.xp_history.Count - 1; i >= 0; i--)
+            for (int i = prog.Count - 1; i >= 0; i--)
             {
-                var entry = prog.xp_history[i];
+                var entry = prog[i];
                 
                 var go = Instantiate(xpEntryPrefab, xpListParent);
                 var texts = go.GetComponentsInChildren<TextMeshProUGUI>();

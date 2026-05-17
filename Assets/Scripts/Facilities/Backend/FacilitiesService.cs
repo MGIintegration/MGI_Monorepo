@@ -9,6 +9,9 @@ public class FacilitiesService
 {
     public const string DefaultPlayerId = "local_player";
     private const string PlayerFacilitiesFileName = "player_facilities.json";
+    private const string UpgradeFacilitySpendSource = "upgrade_facility";
+
+    private readonly EconomyService _economy = new EconomyService();
 
     // facility_type_id -> Resources file name
     private readonly Dictionary<string, string> _facilityResourceMap = new()
@@ -20,8 +23,11 @@ public class FacilitiesService
 
     /// <summary>
     /// Upgrades a facility by one level for the given player.
+    /// Deducts the upgrade cost via EconomyService.TrySpend (source: "upgrade_facility");
+    /// returns false without changing state if funds are insufficient.
+    /// On success, increments the level, saves player_facilities.json, and publishes
+    /// an "upgrade_facility" event on the shared EventBus.
     /// Returns the updated PlayerFacilityProgress in newState.
-    /// Economy/EventBus integration can be added later before SavePlayerFacilityState().
     /// </summary>
     public bool TryUpgradeFacility(string playerId, string facilityTypeId, out PlayerFacilityProgress newState)
     {
@@ -65,14 +71,56 @@ public class FacilitiesService
             return false;
         }
 
-        // TODO: Add EconomyService.TrySpend(playerId, nextLevelConfig.upgradeCost, 0, "upgrade_facility", out ...)
-        // before applying the level-up.
+        int costCoins = nextLevelConfig.upgradeCost;
+        int costGems = 0;
+
+        if (!_economy.TrySpend(playerId, costCoins, costGems, UpgradeFacilitySpendSource))
+        {
+            Debug.LogWarning(
+                $"FacilitiesService.TryUpgradeFacility: insufficient funds for '{facilityTypeId}' " +
+                $"(need {costCoins} coins, {costGems} gems).");
+            newState = progress;
+            return false;
+        }
 
         progress.level = nextLevel;
         SavePlayerFacilityState(playerState);
 
+        PublishUpgradeFacilityEvent(playerId, facilityTypeId, nextLevel, costCoins, costGems);
+
         newState = progress;
         return true;
+    }
+
+    private void PublishUpgradeFacilityEvent(
+        string playerId,
+        string facilityTypeId,
+        int newLevel,
+        int costCoins,
+        int costGems)
+    {
+        var payload = new
+        {
+            facility_type_id = facilityTypeId,
+            new_level = newLevel,
+            cost_coins = costCoins,
+            cost_gems = costGems
+        };
+
+        try
+        {
+            EventBus.Publish(new EventBus.EventEnvelope
+            {
+                event_type = UpgradeFacilitySpendSource,
+                player_id = playerId,
+                payloadJson = JsonConvert.SerializeObject(payload)
+            });
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning(
+                $"FacilitiesService.PublishUpgradeFacilityEvent: failed to publish event. {ex.Message}");
+        }
     }
 
     /// <summary>

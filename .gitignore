@@ -66,3 +66,7 @@ crashlytics-build.properties
 
 # Mono auto generated files
 mono_crash.*.json
+
+# Cursor (local developer config/state)
+.cursor/
+.cursorignore

@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System; // 👈 Needed for Action event
+using System;
 
 public class WalletInfoPanel : MonoBehaviour
 {
@@ -21,17 +21,78 @@ public class WalletInfoPanel : MonoBehaviour
     [Header("Transaction Ledger")]
     [SerializeField] private TransactionLedgerPanel transactionLedgerPanel;
 
-    // 🔔 Event that notifies other scripts when wallet values change
+    [Header("Economy Service")]
+    [SerializeField] private string playerId = "local_player";
+    [SerializeField] private bool autoCreateWalletIfMissing = true;
+    [SerializeField] private bool refreshOnWalletUpdatedEvent = true;
+    [SerializeField] private int fallbackWeeklyForecast = 0;
+
     public static event Action OnWalletUpdated;
 
-    // Example dynamic values
-    private int coins = 10000;
-    private int gems = 20;
-    private int coachingCredits = 100;
-    private int weeklyForecast = -200;
+    private EconomyService economyService;
+    private readonly EconomyForecastService forecastService = new EconomyForecastService();
+    private IDisposable walletUpdatedSubscription;
+
+    private int coins;
+    private int gems;
+    private int coachingCredits;
+
+    private void OnEnable()
+    {
+        if (economyService == null)
+        {
+            economyService = new EconomyService();
+        }
+
+        LoadWalletFromStorage();
+        UpdateWalletDisplay();
+        UpdateForecast();
+    }
 
     private void Start()
     {
+        if (economyService == null)
+        {
+            economyService = new EconomyService();
+        }
+
+        if (refreshOnWalletUpdatedEvent)
+        {
+            walletUpdatedSubscription = EventBus.Subscribe("wallet_updated", OnWalletUpdatedEventMessage);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        walletUpdatedSubscription?.Dispose();
+    }
+
+    private void LoadWalletFromStorage()
+    {
+        if (economyService == null)
+        {
+            return;
+        }
+
+        var wallet = economyService.GetWallet(playerId, autoCreateWalletIfMissing);
+        if (wallet == null)
+        {
+            return;
+        }
+
+        coins = wallet.coins;
+        gems = wallet.gems;
+        coachingCredits = wallet.coaching_credits;
+    }
+
+    private void OnWalletUpdatedEventMessage(EventBus.EventEnvelope evt)
+    {
+        if (evt == null || evt.player_id != playerId)
+        {
+            return;
+        }
+
+        LoadWalletFromStorage();
         UpdateWalletDisplay();
         UpdateForecast();
     }
@@ -53,41 +114,90 @@ public class WalletInfoPanel : MonoBehaviour
 
     private void UpdateForecast()
     {
-        if (weeklyForecastUI != null)
-            weeklyForecastUI.SetForecast(weeklyForecast);
+        if (weeklyForecastUI == null)
+        {
+            return;
+        }
+
+        if (forecastService.TryGetSnapshot(playerId, out var snapshot))
+        {
+            weeklyForecastUI.SetForecast(snapshot.netDelta);
+            return;
+        }
+
+        weeklyForecastUI.SetForecast(fallbackWeeklyForecast);
     }
 
     public void AddCoins(int amount)
     {
-        coins += amount;
-        UpdateWalletDisplay();
-        
-        // Add transaction to ledger
-        if (transactionLedgerPanel != null)
-            transactionLedgerPanel.AddTransaction(ResourceType.Coins, amount);
+        ApplyWalletDelta(amount, 0, 0, "ui_add_coins", "ui_spend_coins");
     }
 
     public void AddGems(int amount)
     {
-        gems += amount;
-        UpdateWalletDisplay();
-        
-        if (transactionLedgerPanel != null)
-            transactionLedgerPanel.AddTransaction(ResourceType.Gems, amount);
+        ApplyWalletDelta(0, amount, 0, "ui_add_gems", "ui_spend_gems");
     }
 
     public void AddCredits(int amount)
     {
-        coachingCredits += amount;
+        ApplyWalletDelta(0, 0, amount, "ui_add_coaching_credits", "ui_spend_coaching_credits");
+    }
+
+    private void ApplyWalletDelta(
+        int coinsDelta,
+        int gemsDelta,
+        int coachingCreditsDelta,
+        string earnSource,
+        string spendSource)
+    {
+        if (economyService == null)
+        {
+            return;
+        }
+
+        var spendCoins = Mathf.Max(0, -coinsDelta);
+        var spendGems = Mathf.Max(0, -gemsDelta);
+        var spendCoachingCredits = Mathf.Max(0, -coachingCreditsDelta);
+        var addCoins = Mathf.Max(0, coinsDelta);
+        var addGems = Mathf.Max(0, gemsDelta);
+        var addCoachingCredits = Mathf.Max(0, coachingCreditsDelta);
+
+        var updated = true;
+        if (addCoins > 0 || addGems > 0 || addCoachingCredits > 0)
+        {
+            economyService.AddCurrency(playerId, addCoins, addGems, addCoachingCredits, earnSource);
+        }
+        else if (spendCoins > 0 || spendGems > 0 || spendCoachingCredits > 0)
+        {
+            updated = economyService.TrySpend(
+                playerId,
+                spendCoins,
+                spendGems,
+                spendCoachingCredits,
+                spendSource,
+                out _);
+        }
+
+        if (!updated)
+        {
+            Debug.LogWarning("[WalletInfoPanel] Wallet update failed due to insufficient balance or invalid input.");
+            return;
+        }
+
+        LoadWalletFromStorage();
         UpdateWalletDisplay();
-        
+        if (!refreshOnWalletUpdatedEvent)
+        {
+            UpdateForecast();
+        }
+
         if (transactionLedgerPanel != null)
-            transactionLedgerPanel.AddTransaction(ResourceType.CoachingCredits, amount);
+            transactionLedgerPanel.ReloadTransactionsFromStorage();
     }
 
     public void SetWeeklyForecast(int amount)
     {
-        weeklyForecast = amount;
+        fallbackWeeklyForecast = amount;
         UpdateForecast();
     }
 

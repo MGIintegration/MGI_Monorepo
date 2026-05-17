@@ -212,7 +212,7 @@ namespace FMGSeasonProgression
         public Dictionary<string, TierData> tier_progression { get; set; } = new();
 
         [JsonPropertyName("xp_history")]
-        public List<XPHistoryEntry> xp_history { get; set; } = new();
+        public List<XpHistoryEntry> xp_history { get; set; } = new();
     }
 
     public class TierData
@@ -230,7 +230,7 @@ namespace FMGSeasonProgression
         public List<string> unlock_features { get; set; } = new();
     }
 
-    public class XPHistoryEntry
+    public class XpHistoryEntry
     {
         [JsonPropertyName("timestamp")]
         public string timestamp { get; set; } = DateTime.UtcNow.ToString("o");
@@ -324,7 +324,7 @@ namespace FMGSeasonProgression
                     }
                 }
 
-                progression.xp_history.Add(new XPHistoryEntry
+                progression.xp_history.Add(new XpHistoryEntry
                 {
                     timestamp = DateTime.UtcNow.ToString("o"),
                     xp_gained = xp_gained,

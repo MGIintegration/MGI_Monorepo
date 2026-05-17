@@ -68,23 +68,12 @@ public class SimulationFeedbackUI : MonoBehaviour
 
         // Show some basic info — week and current XP
         int wk = seasonManager.CurrentWeek;
-        var prog = ApiClient.Instance?.PlayerProgressionSaveData;
-        int xp_earned = 0;
-        if (prog != null && prog.xp_history != null)
-        {
-            foreach (var entry in prog.xp_history)
-            {
-                xp_earned = entry.xp_gained; // Assuming XPHistoryEntry has xp_gained field
-            }
-        }
+        int xp_earned = seasonManager.LastXpGained;
        
         titleText?.SetText($"MATCH SIMULATION RESULT - WEEK {wk}");
         xpEarnedText?.SetText($"XP Gained: {xp_earned}");
         // Show current tier if we have progression data
-        if (prog != null)
-            rewardText?.SetText($"Tier: {prog.current_tier}");
-        else
-            rewardText?.SetText("Tier: -");
+        rewardText?.SetText($"Tier: {seasonManager.PlayerTier}");
 
 
     }
@@ -122,20 +111,9 @@ public class SimulationFeedbackUI : MonoBehaviour
             resultText?.SetText(playerWon ? "Result: WIN" : "Result: LOSS");
             resultText.color = playerWon ? Color.green : Color.red;
 
-            // xp displayed from ApiClient progression (just updated)
-            var prog = ApiClient.Instance?.PlayerProgressionSaveData;
-            int xp_earned = 0;
-            if (prog.xp_history != null)
-            {
-                foreach (var entry in prog.xp_history)
-                {
-                    xp_earned = entry.xp_gained; // Assuming XPHistoryEntry has xp_gained field
-                }
-            }
-            if (prog != null)
-                xpEarnedText?.SetText($"XP Gained: {xp_earned}");
-            else
-                xpEarnedText?.SetText("XP Gained: -");
+            // xp displayed from SeasonManager progression (just updated)
+            int xp_earned = seasonManager.LastXpGained;
+            xpEarnedText?.SetText($"XP Gained: {xp_earned}");
             int offenseBoost = Random.Range(5, 15);
             int defenseBoost = Random.Range(3, 10);
             offenseText?.SetText($"Offense: +{offenseBoost}%");

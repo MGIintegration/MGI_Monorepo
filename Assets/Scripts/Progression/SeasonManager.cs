@@ -9,8 +9,9 @@ public class SeasonManager : MonoBehaviour
     public static SeasonManager Instance { get; private set; }
 
     private SeasonSaveData seasonData;
-    private ApiClient apiClient;
+    private ISeasonBackend backend;
     private ProgressionUIController uiController;
+    private ProgressionService progressionService;
 
     // 🔔 Event fired whenever backend data changes (UI listens to this)
     public event Action OnSeasonDataUpdated;
@@ -29,18 +30,34 @@ public class SeasonManager : MonoBehaviour
 
     private void Start()
     {
-        apiClient = gameObject.AddComponent<ApiClient>();
+        // Initialize the progression service
+        progressionService = ProgressionService.Instance;
+        if (progressionService == null)
+        {
+            var progressionGo = new GameObject("ProgressionService");
+            progressionService = progressionGo.AddComponent<ProgressionService>();
+        }
+
+        // Initialize the backend (using LocalSeasonBackend by default, can be swapped with ApiClient)
+        backend = LocalSeasonBackend.Instance;
+        if (backend == null)
+        {
+            Debug.LogError("[SeasonManager] Failed to initialize backend");
+            return;
+        }
+
         uiController = FindObjectOfType<ProgressionUIController>();
 
         // Create a new season from backend
-        StartCoroutine(apiClient.PostCreateSeason(data =>
+        var teamNames = new List<string> { "Jets", "Hawks", "Sharks", "Bears", "Lions", "Giants", "Eagles" };
+        backend.CreateSeason(teamNames, "YOU", data =>
         {
             seasonData = data;
 
             // Notify UI that data is ready
             OnSeasonDataUpdated?.Invoke();
             uiController?.OnSeasonDataReady();
-        }));
+        });
     }
 
     // --- Exposed Properties ---
@@ -50,7 +67,17 @@ public class SeasonManager : MonoBehaviour
     public List<TeamSaveData> Teams => seasonData?.teams ?? new List<TeamSaveData>();
     public TeamSaveData PlayerTeam => seasonData?.teams?.FirstOrDefault(t => t.is_player_team);
 
-    public int PlayerXP => ApiClient.Instance?.PlayerProgressionSaveData?.current_xp ?? 0;
+    public int PlayerXP
+    {
+        get
+        {
+            var playerId = PlayerTeam?.player_id;
+            if (string.IsNullOrEmpty(playerId)) return 0;
+
+            var state = progressionService?.GetState(playerId, createIfMissing: false);
+            return state?.current_xp ?? 0;
+        }
+    }
 
     public int PlayerRank
     {
@@ -66,11 +93,16 @@ public class SeasonManager : MonoBehaviour
             return playerIndex >= 0 ? playerIndex + 1 : 0;
         }
     }
+
     public string PlayerTier
     {
         get
         {
-            return ApiClient.Instance?.PlayerProgressionSaveData?.current_tier ?? "rookie";
+            var playerId = PlayerTeam?.player_id;
+            if (string.IsNullOrEmpty(playerId)) return "rookie";
+
+            var state = progressionService?.GetState(playerId, createIfMissing: false);
+            return state?.current_tier ?? "rookie";
         }
     }
 
@@ -78,13 +110,10 @@ public class SeasonManager : MonoBehaviour
     {
         get
         {
-            var prog = ApiClient.Instance?.PlayerProgressionSaveData;
-            if (prog == null || prog.tier_progression == null) return null;
+            var playerId = PlayerTeam?.player_id;
+            if (string.IsNullOrEmpty(playerId)) return null;
 
-            if (prog.tier_progression.TryGetValue(PlayerTier, out var tierData))
-                return tierData;
-
-            return null;
+            return progressionService?.GetCurrentTier(playerId);
         }
     }
 
@@ -92,25 +121,57 @@ public class SeasonManager : MonoBehaviour
     {
         get
         {
-            return ApiClient.Instance?.PlayerProgressionSaveData?.tier_progression 
-                ?? new Dictionary<string, TierData>();
+            return progressionService?.GetAllTiers() ?? new Dictionary<string, TierData>();
         }
     }
 
+    public List<XpHistoryEntry> XpHistoryEntries
+    {
+        get
+        {
+            var playerId = PlayerTeam?.player_id;
+            if (string.IsNullOrEmpty(playerId)) return new List<XpHistoryEntry>();
 
+            var state = progressionService?.GetState(playerId, createIfMissing: false);
+            return state?.xp_history ?? new List<XpHistoryEntry>();
+        }
+    }
 
     public List<string> XpHistory
     {
         get
         {
-            var xpData = ApiClient.Instance?.PlayerProgressionSaveData?.xp_history;
-            if (xpData == null) return new List<string>();
+            var playerId = PlayerTeam?.player_id;
+            if (string.IsNullOrEmpty(playerId)) return new List<string>();
 
-            return xpData.Select(e => $"{e.timestamp}: +{e.xp_gained} XP ({e.source})").ToList();
+            var state = progressionService?.GetState(playerId, createIfMissing: false);
+            if (state?.xp_history == null) return new List<string>();
+
+            var result = new List<string>();
+            foreach (var entry in state.xp_history)
+            {
+                result.Add($"{entry.timestamp}: +{entry.xp_gained} XP ({entry.source})");
+            }
+            return result;
         }
     }
 
-    // --- API Integration ---
+    public int LastXpGained
+    {
+        get
+        {
+            var playerId = PlayerTeam?.player_id;
+            if (string.IsNullOrEmpty(playerId)) return 0;
+
+            var state = progressionService?.GetState(playerId, createIfMissing: false);
+            if (state?.xp_history == null || state.xp_history.Count == 0) return 0;
+
+            // Return the most recent XP entry
+            return state.xp_history[state.xp_history.Count - 1].xp_gained;
+        }
+    }
+
+    // --- Backend Integration ---
     public void SimulateNextWeek(Action<SeasonSaveData> callback = null)
     {
         if (seasonData == null)
@@ -119,31 +180,30 @@ public class SeasonManager : MonoBehaviour
             return;
         }
 
-        StartCoroutine(SimulateWeekCoroutine(callback));
-    }
-
-    private IEnumerator SimulateWeekCoroutine(Action<SeasonSaveData> callback)
-    {
-        yield return apiClient.PostSimulateWeek(seasonData, data =>
+        if (backend == null)
         {
-            seasonData = data;
-            Debug.Log($"Week {seasonData.current_week} simulated.");
-        });
+            Debug.LogError("❌ Cannot simulate week: Backend not initialized");
+            return;
+        }
 
-        // Fetch updated XP history
-        var playerId = PlayerTeam?.player_id;
-
-        yield return apiClient.GetPlayerProgression(playerId, () =>
+        // Simulate the week asynchronously
+        backend.SimulateWeek(seasonData, updatedData =>
         {
-            OnSeasonDataUpdated?.Invoke();  
+            seasonData = updatedData;
+            Debug.Log($"✅ Week {seasonData.current_week} simulated.");
+            
+            // Notify UI
+            OnSeasonDataUpdated?.Invoke();
             callback?.Invoke(seasonData);
+        },
+        error =>
+        {
+            Debug.LogError($"❌ SimulateWeek error: {error}");
         });
     }
-
 
     public void RefreshUI()
     {
-
         OnSeasonDataUpdated?.Invoke();
         uiController?.OnSeasonDataReady();
     }

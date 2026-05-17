@@ -54,7 +54,12 @@ public class CardView : MonoBehaviour
         {
             cg.alpha = 0f;
             StopAllCoroutines();
-            StartCoroutine(FadeIn());
+            // If this object is inactive in hierarchy (e.g. parent panel disabled),
+            // Unity will throw when starting a coroutine. In that case just snap visible.
+            if (isActiveAndEnabled && gameObject.activeInHierarchy)
+                StartCoroutine(FadeIn());
+            else
+                cg.alpha = revealAlpha;
         }
     }
 
@@ -110,7 +115,10 @@ public class CardView : MonoBehaviour
         {
             cg.alpha = 0f;
             StopAllCoroutines();
-            StartCoroutine(FadeIn());
+            if (isActiveAndEnabled && gameObject.activeInHierarchy)
+                StartCoroutine(FadeIn());
+            else
+                cg.alpha = revealAlpha;
         }
     }
 

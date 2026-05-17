@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PackDropHistory",
+  "type": "object",
+  "properties": {
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "player_id", "pack_type_id", "cost_paid", "cards_pulled", "timestamp"],
+        "properties": {
+          "id":           { "type": "string" },
+          "player_id":    { "type": "string" },
+          "pack_type_id": { "type": "string" },
+          "cost_paid": {
+            "type": "object",
+            "properties": {
+              "coins": { "type": "integer" },
+              "gems":  { "type": "integer" }
+            }
+          },
+          "cards_pulled": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "card_id":      { "type": "string" },
+                "rarity":       { "type": "string" },
+                "is_duplicate": { "type": "boolean" },
+                "xp_awarded":   { "type": "integer" }
+              }
+            }
+          },
+          "timestamp": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}
