@@ -49,9 +49,23 @@ public class AppManager : MonoBehaviour
         // Assigning button clicks to corresponding screens
 
         // Screen 1 Buttons
-        viewOffenseCoachButton.onClick.AddListener(() => ShowScreen(coachDetailsScreen));
+        viewOffenseCoachButton.onClick.AddListener(() =>
+        {
+            var state = CoachesService.GetTeamState();
+            var populator = coachDetailsScreen?.GetComponentInChildren<CoachProfilePopulator>(true);
+            if (populator != null && !string.IsNullOrEmpty(state?.offence_coach))
+                populator.PopulateFromRecord(CoachesService.GetCoachById(state.offence_coach));
+            ShowScreen(coachDetailsScreen);
+        });
         fireOffenseCoachButton.onClick.AddListener(() => Debug.Log("Fire offence coach button was clicked"));
-        viewDefenseCoachButton.onClick.AddListener(() => ShowScreen(coachDetailsScreen));
+        viewDefenseCoachButton.onClick.AddListener(() =>
+        {
+            var state = CoachesService.GetTeamState();
+            var populator = coachDetailsScreen?.GetComponentInChildren<CoachProfilePopulator>(true);
+            if (populator != null && !string.IsNullOrEmpty(state?.defence_coach))
+                populator.PopulateFromRecord(CoachesService.GetCoachById(state.defence_coach));
+            ShowScreen(coachDetailsScreen);
+        });
         fireDefenseCoachButton.onClick.AddListener(() => Debug.Log("Fire deffence coach button was clicked"));
         hiringCoachMarketButton.onClick.AddListener(() => ShowScreen(coachHiringScreen));
         performanceButton.onClick.AddListener(() => ShowScreen(performanceScreen));
@@ -59,15 +73,29 @@ public class AppManager : MonoBehaviour
 
         // Screen 2 Buttons
         backToMainMenuButton.onClick.AddListener(() => ShowScreen(mainMenu));
-        refreshButton.onClick.AddListener(() => Debug.Log("Refresh button was clicked"));
+        refreshButton.onClick.AddListener(() => coachHiringScreen?.GetComponent<CoachHiringMarket>()?.RefreshCoaches());
 
         hireCoach1Button.onClick.AddListener(() => Debug.Log("Hire Coach 1 button was clicked"));
         compareCoach1Button.onClick.AddListener(() => Debug.Log("Compare Coach 1 button was clicked"));
-        viewCoach1Button.onClick.AddListener(() => ShowScreen(coachDetailsScreen));
+        viewCoach1Button.onClick.AddListener(() =>
+        {
+            var market = coachHiringScreen?.GetComponent<CoachHiringMarket>();
+            var populator = coachDetailsScreen?.GetComponentInChildren<CoachProfilePopulator>(true);
+            if (market != null && populator != null)
+                populator.PopulateFromRecord(market.GetCoach(1));
+            ShowScreen(coachDetailsScreen);
+        });
 
         hireCoach2Button.onClick.AddListener(() => Debug.Log("Hire Coach 2 button was clicked"));
         compareCoach2Button.onClick.AddListener(() => Debug.Log("Compare Coach 2 button was clicked"));
-        viewCoach2Button.onClick.AddListener(() => ShowScreen(coachDetailsScreen));
+        viewCoach2Button.onClick.AddListener(() =>
+        {
+            var market = coachHiringScreen?.GetComponent<CoachHiringMarket>();
+            var populator = coachDetailsScreen?.GetComponentInChildren<CoachProfilePopulator>(true);
+            if (market != null && populator != null)
+                populator.PopulateFromRecord(market.GetCoach(2));
+            ShowScreen(coachDetailsScreen);
+        });
 
         // Screen 3 Buttons
         compareButton.onClick.AddListener(() => Debug.Log("Compare button was clicked"));
