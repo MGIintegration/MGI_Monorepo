@@ -31,8 +31,7 @@ namespace CCAS.Backend
     }
 
     /// <summary>
-    /// One entry in the player's card collection.
-    /// Stored in StreamingAssets/CCAS/card_collection.json (Phase 2 file I/O).
+    /// One entry in the player's card collection (persistent data via FilePathResolver).
     /// </summary>
     [Serializable]
     public class CardCollectionEntry
@@ -44,8 +43,7 @@ namespace CCAS.Backend
     }
 
     /// <summary>
-    /// One entry in the pack drop history.
-    /// Stored in StreamingAssets/CCAS/pack_drop_history.json (Phase 2 file I/O).
+    /// One entry in the pack drop history (persistent data via FilePathResolver).
     /// </summary>
     [Serializable]
     public class PackDropHistoryEntry
