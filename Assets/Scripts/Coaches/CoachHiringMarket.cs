@@ -382,7 +382,6 @@ public class CoachHiringMarket : MonoBehaviour
         {
             Debug.Log($"[CoachHiringMarket] Successfully hired: {hired.coach_name}");
             UpdateBudgetDisplay();
-            RefreshCoaches();
         }
         else
         {
@@ -408,7 +407,6 @@ public class CoachHiringMarket : MonoBehaviour
         {
             Debug.Log($"[CoachHiringMarket] Successfully hired: {hired.coach_name}");
             UpdateBudgetDisplay();
-            RefreshCoaches();
         }
         else
         {
