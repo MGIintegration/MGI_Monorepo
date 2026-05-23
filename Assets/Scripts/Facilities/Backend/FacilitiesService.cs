@@ -8,17 +8,18 @@ using Newtonsoft.Json;
 public class FacilitiesService
 {
     public const string DefaultPlayerId = "local_player";
+    private const string FacilitiesConfigFileName = "facilities_config.json";
     private const string PlayerFacilitiesFileName = "player_facilities.json";
     private const string UpgradeFacilitySpendSource = "upgrade_facility";
 
     private readonly EconomyService _economy = new EconomyService();
+    private FacilitiesConfigRoot _configCache;
 
-    // facility_type_id -> Resources file name
-    private readonly Dictionary<string, string> _facilityResourceMap = new()
+    private readonly HashSet<string> _validFacilityTypeIds = new()
     {
-        { "weight_room", "WeightRoom" },
-        { "rehab_center", "Rehab" },
-        { "film_room", "Film" }
+        "weight_room",
+        "rehab_center",
+        "film_room"
     };
 
     /// <summary>
@@ -55,7 +56,7 @@ public class FacilitiesService
         var playerState = GetPlayerFacilityState(playerId);
         var progress = GetOrCreateFacilityProgress(playerState, facilityTypeId);
 
-        int maxLevel = config.levels.Max(l => l.level);
+        int maxLevel = config.max_level > 0 ? config.max_level : config.levels.Max(l => l.level);
         if (progress.level >= maxLevel)
         {
             Debug.LogWarning($"FacilitiesService.TryUpgradeFacility: '{facilityTypeId}' already at max level.");
@@ -71,7 +72,7 @@ public class FacilitiesService
             return false;
         }
 
-        int costCoins = nextLevelConfig.upgradeCost;
+        int costCoins = nextLevelConfig.upgrade_cost;
         int costGems = 0;
 
         if (!_economy.TrySpend(playerId, costCoins, costGems, UpgradeFacilitySpendSource))
@@ -134,39 +135,27 @@ public class FacilitiesService
             playerId = DefaultPlayerId;
         }
 
-        string path = FilePathResolver.GetFacilitiesPath(playerId, PlayerFacilitiesFileName);
+        var root = LoadPlayerFacilitiesRoot(playerId);
+        var state = root.player_facilities.FirstOrDefault(p => p.player_id == playerId);
 
-        if (!File.Exists(path))
+        bool shouldSave = false;
+
+        if (state == null)
         {
-            var newState = CreateDefaultPlayerFacilityState(playerId);
-            SavePlayerFacilityState(newState);
-            return newState;
+            state = CreateDefaultPlayerFacilityState(playerId);
+            root.player_facilities.Add(state);
+            shouldSave = true;
         }
 
-        try
+        state.facilities ??= new Dictionary<string, PlayerFacilityProgress>();
+        shouldSave |= EnsureKnownFacilityProgress(state);
+
+        if (shouldSave)
         {
-            string json = File.ReadAllText(path);
-            var state = JsonConvert.DeserializeObject<PlayerFacilityState>(json);
-
-            if (state == null)
-            {
-                var fallback = CreateDefaultPlayerFacilityState(playerId);
-                SavePlayerFacilityState(fallback);
-                return fallback;
-            }
-
-            state.player_id = string.IsNullOrWhiteSpace(state.player_id) ? playerId : state.player_id;
-            state.facilities ??= new Dictionary<string, PlayerFacilityProgress>();
-
-            return state;
+            SavePlayerFacilitiesRoot(playerId, root);
         }
-        catch (Exception ex)
-        {
-            Debug.LogError($"FacilitiesService.GetPlayerFacilityState: failed to read state. {ex.Message}");
-            var fallback = CreateDefaultPlayerFacilityState(playerId);
-            SavePlayerFacilityState(fallback);
-            return fallback;
-        }
+
+        return state;
     }
 
     /// <summary>
@@ -210,7 +199,7 @@ public class FacilitiesService
         }
 
         var levelData = config.levels.FirstOrDefault(l => l.level == progress.level);
-        return levelData?.effects ?? new Dictionary<string, float>();
+        return levelData?.benefits ?? new Dictionary<string, float>();
     }
 
     /// <summary>
@@ -221,7 +210,7 @@ public class FacilitiesService
     {
         var result = new Dictionary<string, Dictionary<string, float>>();
 
-        foreach (var facilityTypeId in _facilityResourceMap.Keys)
+        foreach (var facilityTypeId in _validFacilityTypeIds)
         {
             result[facilityTypeId] = GetFacilityEffects(playerId, facilityTypeId);
         }
@@ -239,7 +228,7 @@ public class FacilitiesService
         var levels = new Dictionary<string, int>();
         var effects = new Dictionary<string, Dictionary<string, float>>();
 
-        foreach (var facilityTypeId in _facilityResourceMap.Keys)
+        foreach (var facilityTypeId in _validFacilityTypeIds)
         {
             var progress = GetFacilityProgress(normalizedPlayerId, facilityTypeId);
             levels[facilityTypeId] = progress?.level ?? 1;
@@ -278,34 +267,98 @@ public class FacilitiesService
 
     public bool IsValidFacilityType(string facilityTypeId)
     {
-        return !string.IsNullOrWhiteSpace(facilityTypeId) && _facilityResourceMap.ContainsKey(facilityTypeId);
+        return !string.IsNullOrWhiteSpace(facilityTypeId)
+            && _validFacilityTypeIds.Contains(facilityTypeId);
     }
 
-    private FacilityConfigRoot LoadFacilityConfig(string facilityTypeId)
+    private FacilityDefinition LoadFacilityConfig(string facilityTypeId)
     {
         if (!IsValidFacilityType(facilityTypeId))
         {
             return null;
         }
 
-        string resourceName = _facilityResourceMap[facilityTypeId];
-        TextAsset configAsset = Resources.Load<TextAsset>(resourceName);
+        var root = LoadFacilitiesConfigRoot();
+        return root?.facility_definitions?
+            .FirstOrDefault(f => f.facility_type_id == facilityTypeId);
+    }
 
-        if (configAsset == null)
+    private FacilitiesConfigRoot LoadFacilitiesConfigRoot()
+    {
+        if (_configCache != null)
         {
-            Debug.LogError($"FacilitiesService.LoadFacilityConfig: Resources file '{resourceName}' not found.");
+            return _configCache;
+        }
+
+        string path = Path.Combine(
+            Application.streamingAssetsPath,
+            "Facilities",
+            FacilitiesConfigFileName);
+
+        if (!File.Exists(path))
+        {
+            Debug.LogError($"FacilitiesService.LoadFacilitiesConfigRoot: config not found at {path}.");
             return null;
         }
 
         try
         {
-            return JsonConvert.DeserializeObject<FacilityConfigRoot>(configAsset.text);
+            string json = File.ReadAllText(path);
+            _configCache = JsonConvert.DeserializeObject<FacilitiesConfigRoot>(json);
+
+            if (_configCache == null)
+            {
+                Debug.LogError("FacilitiesService.LoadFacilitiesConfigRoot: facilities_config.json is empty or invalid.");
+                return null;
+            }
+
+            _configCache.facility_definitions ??= new List<FacilityDefinition>();
+            return _configCache;
         }
         catch (Exception ex)
         {
-            Debug.LogError($"FacilitiesService.LoadFacilityConfig: failed to parse '{resourceName}'. {ex.Message}");
+            Debug.LogError($"FacilitiesService.LoadFacilitiesConfigRoot: failed to parse config. {ex.Message}");
             return null;
         }
+    }
+
+    private PlayerFacilitiesRoot LoadPlayerFacilitiesRoot(string playerId)
+    {
+        string path = FilePathResolver.GetFacilitiesPath(playerId, PlayerFacilitiesFileName);
+
+        if (!File.Exists(path))
+        {
+            return new PlayerFacilitiesRoot();
+        }
+
+        try
+        {
+            string json = File.ReadAllText(path);
+            var root = JsonConvert.DeserializeObject<PlayerFacilitiesRoot>(json);
+
+            if (root?.player_facilities != null)
+            {
+                return root;
+            }
+
+            var legacyState = JsonConvert.DeserializeObject<LegacyPlayerFacilityState>(json);
+            if (legacyState != null && !string.IsNullOrWhiteSpace(legacyState.player_id))
+            {
+                return new PlayerFacilitiesRoot
+                {
+                    player_facilities = new List<PlayerFacilityState>
+                    {
+                        ConvertLegacyState(legacyState)
+                    }
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"FacilitiesService.LoadPlayerFacilitiesRoot: failed to read state. {ex.Message}");
+        }
+
+        return new PlayerFacilitiesRoot();
     }
 
     private void SavePlayerFacilityState(PlayerFacilityState state)
@@ -318,16 +371,28 @@ public class FacilitiesService
 
         state.facilities ??= new Dictionary<string, PlayerFacilityProgress>();
 
-        string path = FilePathResolver.GetFacilitiesPath(state.player_id, PlayerFacilitiesFileName);
+        var root = LoadPlayerFacilitiesRoot(state.player_id);
+        root.player_facilities.RemoveAll(p => p.player_id == state.player_id);
+        root.player_facilities.Add(state);
+
+        SavePlayerFacilitiesRoot(state.player_id, root);
+    }
+
+    private void SavePlayerFacilitiesRoot(string playerId, PlayerFacilitiesRoot root)
+    {
+        root ??= new PlayerFacilitiesRoot();
+        root.player_facilities ??= new List<PlayerFacilityState>();
+
+        string path = FilePathResolver.GetFacilitiesPath(playerId, PlayerFacilitiesFileName);
 
         try
         {
-            string json = JsonConvert.SerializeObject(state, Formatting.Indented);
+            string json = JsonConvert.SerializeObject(root, Formatting.Indented);
             File.WriteAllText(path, json);
         }
         catch (Exception ex)
         {
-            Debug.LogError($"FacilitiesService.SavePlayerFacilityState: failed to save state. {ex.Message}");
+            Debug.LogError($"FacilitiesService.SavePlayerFacilitiesRoot: failed to save state. {ex.Message}");
         }
     }
 
@@ -348,18 +413,65 @@ public class FacilitiesService
         {
             progress = new PlayerFacilityProgress
             {
-                facility_type_id = facilityTypeId,
                 level = 1
             };
 
             state.facilities[facilityTypeId] = progress;
         }
-        else if (string.IsNullOrWhiteSpace(progress.facility_type_id))
-        {
-            progress.facility_type_id = facilityTypeId;
-        }
 
         return progress;
+    }
+
+    private bool EnsureKnownFacilityProgress(PlayerFacilityState state)
+    {
+        bool changed = false;
+
+        foreach (var facilityTypeId in _validFacilityTypeIds)
+        {
+            if (state.facilities.TryGetValue(facilityTypeId, out var progress) && progress != null)
+            {
+                if (progress.level < 1)
+                {
+                    progress.level = 1;
+                    changed = true;
+                }
+
+                continue;
+            }
+
+            state.facilities[facilityTypeId] = new PlayerFacilityProgress
+            {
+                level = 1
+            };
+            changed = true;
+        }
+
+        return changed;
+    }
+
+    private PlayerFacilityState ConvertLegacyState(LegacyPlayerFacilityState legacyState)
+    {
+        var state = CreateDefaultPlayerFacilityState(legacyState.player_id);
+
+        if (legacyState.facilities == null)
+        {
+            return state;
+        }
+
+        foreach (var kvp in legacyState.facilities)
+        {
+            if (!IsValidFacilityType(kvp.Key) || kvp.Value == null)
+            {
+                continue;
+            }
+
+            state.facilities[kvp.Key] = new PlayerFacilityProgress
+            {
+                level = Mathf.Max(1, kvp.Value.level)
+            };
+        }
+
+        return state;
     }
 
     private float CalculateMatchXpMultiplier(Dictionary<string, Dictionary<string, float>> allEffects)
@@ -416,22 +528,18 @@ public class FacilitiesService
 }
 
 [System.Serializable]
-public class PlayerFacilityState
+public class FacilitiesConfigRoot
 {
-    public string player_id;
-    public Dictionary<string, PlayerFacilityProgress> facilities;
+    public string schema_version = "1.0";
+    public List<FacilityDefinition> facility_definitions;
 }
 
 [System.Serializable]
-public class PlayerFacilityProgress
+public class FacilityDefinition
 {
     public string facility_type_id;
-    public int level;
-}
-
-[System.Serializable]
-public class FacilityConfigRoot
-{
+    public string display_name;
+    public int max_level;
     public List<FacilityLevel> levels;
 }
 
@@ -439,9 +547,9 @@ public class FacilityConfigRoot
 public class FacilityLevel
 {
     public int level;
-    public int upgradeCost;
+    public int upgrade_cost;
     public string descriptor;
-    public Dictionary<string, float> effects;
+    public Dictionary<string, float> benefits;
     public Validation validation;
 }
 
@@ -454,6 +562,26 @@ public class Validation
 }
 
 [System.Serializable]
+public class PlayerFacilitiesRoot
+{
+    public string schema_version = "1.0";
+    public List<PlayerFacilityState> player_facilities = new();
+}
+
+[System.Serializable]
+public class PlayerFacilityState
+{
+    public string player_id;
+    public Dictionary<string, PlayerFacilityProgress> facilities;
+}
+
+[System.Serializable]
+public class PlayerFacilityProgress
+{
+    public int level;
+}
+
+[System.Serializable]
 public class ProgressionFacilitySnapshot
 {
     public string player_id;
@@ -462,4 +590,18 @@ public class ProgressionFacilitySnapshot
     public float match_xp_multiplier;
     public float training_xp_multiplier;
     public float recovery_xp_multiplier;
+}
+
+[System.Serializable]
+internal class LegacyPlayerFacilityState
+{
+    public string player_id;
+    public Dictionary<string, LegacyPlayerFacilityProgress> facilities;
+}
+
+[System.Serializable]
+internal class LegacyPlayerFacilityProgress
+{
+    public string facility_type_id;
+    public int level;
 }
