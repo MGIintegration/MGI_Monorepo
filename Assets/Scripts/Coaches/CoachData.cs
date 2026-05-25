@@ -183,6 +183,7 @@ public class CoachDatabaseRecord
     public float overall_rating;
     public float salary;
     public int contract_length;
+    public int bonus_percentage;
     public string current_team;
     public string prev_team;
     
