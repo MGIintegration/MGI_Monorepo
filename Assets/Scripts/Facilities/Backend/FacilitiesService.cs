@@ -256,13 +256,27 @@ public class FacilitiesService
         var snapshot = GetProgressionSnapshot(playerId);
         string normalizedSource = string.IsNullOrWhiteSpace(source) ? "match" : source.Trim().ToLowerInvariant();
 
-        return normalizedSource switch
+        if (normalizedSource.StartsWith("duplicate_card"))
         {
-            "match" or "match_win" or "match_loss" => snapshot.match_xp_multiplier,
-            "training" or "training_session" or "practice" => snapshot.training_xp_multiplier,
-            "recovery" or "rehab" => snapshot.recovery_xp_multiplier,
-            _ => snapshot.match_xp_multiplier
-        };
+            return 1f;
+        }
+
+        if (normalizedSource.Contains("training") || normalizedSource.Contains("practice"))
+        {
+            return snapshot.training_xp_multiplier;
+        }
+
+        if (normalizedSource.Contains("recovery") || normalizedSource.Contains("rehab"))
+        {
+            return snapshot.recovery_xp_multiplier;
+        }
+
+        if (normalizedSource.Contains("match") || normalizedSource == "season_reward")
+        {
+            return snapshot.match_xp_multiplier;
+        }
+
+        return 1f;
     }
 
     public bool IsValidFacilityType(string facilityTypeId)

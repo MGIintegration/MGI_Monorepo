@@ -16,6 +16,9 @@ public class ProgressionService : MonoBehaviour
     // Read-only configuration loaded from progression.json
     private ProgressionConfig _progressionConfig;
 
+    // Read-only facilities lookup (no upgrades or state writes from Progression)
+    private FacilitiesService _facilitiesReader;
+
     // Events
     public event Action<string, int> OnXpUpdated; // (playerId, newTotalXp)
     public event Action<string, string> OnTierChanged; // (playerId, newTier)
@@ -93,7 +96,7 @@ public class ProgressionService : MonoBehaviour
 
    
     /// <summary>
-    /// Records an XP grant. Callers pass the final amount to store (integration plan §2.2).
+    /// Records an XP grant. Base amount is adjusted by facility multipliers before persisting.
     /// eventId prevents applying the same grant twice (e.g. CCAS pack opens).
     /// </summary>
     public void AddXp(string playerId, int xp, string source, string eventId)
@@ -125,7 +128,9 @@ public class ProgressionService : MonoBehaviour
             return;
         }
 
-        var historyEntry = new XpHistoryEntry(playerId, xp, source)
+        int finalXp = ApplyFacilityXpMultiplier(playerId, xp, source);
+
+        var historyEntry = new XpHistoryEntry(playerId, finalXp, source)
         {
             id = eventId
         };
@@ -133,7 +138,7 @@ public class ProgressionService : MonoBehaviour
         state.xp_history.Add(historyEntry);
 
         int oldXp = state.current_xp;
-        state.current_xp += xp;
+        state.current_xp += finalXp;
 
         // Recalculate tier
         string oldTier = state.current_tier;
@@ -145,7 +150,40 @@ public class ProgressionService : MonoBehaviour
         // Publish event
         PublishXpUpdatedEvent(playerId, oldXp, state.current_xp, oldTier, state.current_tier);
 
-        Debug.Log($"[ProgressionService] Added {xp} XP to {playerId} (source: {source}). Total: {state.current_xp}, Tier: {state.current_tier}");
+        if (finalXp != xp)
+        {
+            Debug.Log(
+                $"[ProgressionService] Added {finalXp} XP to {playerId} (source: {source}, base: {xp}). " +
+                $"Total: {state.current_xp}, Tier: {state.current_tier}");
+        }
+        else
+        {
+            Debug.Log($"[ProgressionService] Added {finalXp} XP to {playerId} (source: {source}). Total: {state.current_xp}, Tier: {state.current_tier}");
+        }
+    }
+
+    /// <summary>
+    /// Read-only facilities lookup. Uses FacilitiesService getters only.
+    /// </summary>
+    private FacilitiesService GetFacilitiesReader()
+    {
+        return _facilitiesReader ??= new FacilitiesService();
+    }
+
+    private int ApplyFacilityXpMultiplier(string playerId, int baseXp, string source)
+    {
+        float multiplier = GetFacilitiesReader().GetProgressionXpMultiplier(playerId, source);
+        if (multiplier <= 0f)
+        {
+            multiplier = 1f;
+        }
+
+        if (Mathf.Approximately(multiplier, 1f))
+        {
+            return baseXp;
+        }
+
+        return Mathf.Max(1, Mathf.RoundToInt(baseXp * multiplier));
     }
 
 
