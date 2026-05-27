@@ -96,7 +96,7 @@ public class ProgressionService : MonoBehaviour
 
    
     /// <summary>
-    /// Records an XP grant. Base amount is adjusted by facility multipliers before persisting.
+    /// Records an XP grant. Base amount is adjusted by facility multipliers, then coach bonuses.
     /// eventId prevents applying the same grant twice (e.g. CCAS pack opens).
     /// </summary>
     public void AddXp(string playerId, int xp, string source, string eventId)
@@ -128,7 +128,7 @@ public class ProgressionService : MonoBehaviour
             return;
         }
 
-        int finalXp = ApplyFacilityXpMultiplier(playerId, xp, source);
+        int finalXp = ApplyXpBonuses(playerId, xp, source);
 
         var historyEntry = new XpHistoryEntry(playerId, finalXp, source)
         {
@@ -170,6 +170,12 @@ public class ProgressionService : MonoBehaviour
         return _facilitiesReader ??= new FacilitiesService();
     }
 
+    private int ApplyXpBonuses(string playerId, int baseXp, string source)
+    {
+        int xp = ApplyFacilityXpMultiplier(playerId, baseXp, source);
+        return ApplyCoachXpBonus(playerId, xp, source);
+    }
+
     private int ApplyFacilityXpMultiplier(string playerId, int baseXp, string source)
     {
         float multiplier = GetFacilitiesReader().GetProgressionXpMultiplier(playerId, source);
@@ -184,6 +190,21 @@ public class ProgressionService : MonoBehaviour
         }
 
         return Mathf.Max(1, Mathf.RoundToInt(baseXp * multiplier));
+    }
+
+    /// <summary>
+    /// Read-only coach bonus from CoachesService (active assignments + coaches_bonus_config.json).
+    /// Applied on top of facility-adjusted XP.
+    /// </summary>
+    private static int ApplyCoachXpBonus(string playerId, int xpAfterFacilities, string source)
+    {
+        float coachBonusPercent = CoachesService.GetCoachXpBonusPercent(playerId, source);
+        if (coachBonusPercent <= 0f || Mathf.Approximately(coachBonusPercent, 0f))
+        {
+            return xpAfterFacilities;
+        }
+
+        return Mathf.Max(1, Mathf.RoundToInt(xpAfterFacilities * (1f + coachBonusPercent)));
     }
 
 
