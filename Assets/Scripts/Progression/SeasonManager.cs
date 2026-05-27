@@ -133,7 +133,12 @@ public class SeasonManager : MonoBehaviour
             if (string.IsNullOrEmpty(playerId)) return new List<XpHistoryEntry>();
 
             var state = progressionService?.GetState(playerId, createIfMissing: false);
-            return state?.xp_history ?? new List<XpHistoryEntry>();
+            if (state?.xp_history == null) return new List<XpHistoryEntry>();
+
+            return state.xp_history
+                .Where(e => string.IsNullOrEmpty(e.player_id) ||
+                            string.Equals(e.player_id, playerId, StringComparison.Ordinal))
+                .ToList();
         }
     }
 
@@ -144,11 +149,8 @@ public class SeasonManager : MonoBehaviour
             var playerId = PlayerTeam?.player_id;
             if (string.IsNullOrEmpty(playerId)) return new List<string>();
 
-            var state = progressionService?.GetState(playerId, createIfMissing: false);
-            if (state?.xp_history == null) return new List<string>();
-
             var result = new List<string>();
-            foreach (var entry in state.xp_history)
+            foreach (var entry in XpHistoryEntries)
             {
                 result.Add($"{entry.timestamp}: +{entry.xp_gained} XP ({entry.source})");
             }
@@ -163,11 +165,10 @@ public class SeasonManager : MonoBehaviour
             var playerId = PlayerTeam?.player_id;
             if (string.IsNullOrEmpty(playerId)) return 0;
 
-            var state = progressionService?.GetState(playerId, createIfMissing: false);
-            if (state?.xp_history == null || state.xp_history.Count == 0) return 0;
+            var entries = XpHistoryEntries;
+            if (entries.Count == 0) return 0;
 
-            // Return the most recent XP entry
-            return state.xp_history[state.xp_history.Count - 1].xp_gained;
+            return entries[entries.Count - 1].xp_gained;
         }
     }
 

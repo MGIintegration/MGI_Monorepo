@@ -190,35 +190,22 @@ public class ProgressionService : MonoBehaviour
     {
         try
         {
-            var filePath = FilePathResolver.GetProgressionPath(playerId, "progression_state.json");
+            var statePath = FilePathResolver.GetProgressionPath(playerId, "progression_state.json");
+            var historyPath = FilePathResolver.GetProgressionPath(playerId, "xp_history.jsonl");
             
-            if (!File.Exists(filePath))
-            {
-                return null;
-            }
-
-            var json = JSONNode.Parse(File.ReadAllText(filePath));
             var state = new PlayerProgressionState(playerId);
             
-            // Parse from JSON
-            state.current_xp = json["current_xp"].AsInt;
-            state.current_tier = json["current_tier"].Value;
-
-            // Parse XP history
-            state.xp_history = new List<XpHistoryEntry>();
-            foreach (KeyValuePair<string, JSONNode> kvp in json["xp_history"])
+            // Load current state (XP and tier) if it exists
+            // If progression_state.json doesn't exist, state starts with defaults (0 XP, rookie tier)
+            if (File.Exists(statePath))
             {
-                var historyNode = kvp.Value;
-                var entry = new XpHistoryEntry(playerId, 0, "")
-                {
-                    id = historyNode["id"].Value,
-                    player_id = historyNode["player_id"].Value,
-                    timestamp = historyNode["timestamp"].Value,
-                    xp_gained = historyNode["xp_gained"].AsInt,
-                    source = historyNode["source"].Value
-                };
-                state.xp_history.Add(entry);
+                var json = JSONNode.Parse(File.ReadAllText(statePath));
+                state.current_xp = json["current_xp"].AsInt;
+                state.current_tier = json["current_tier"].Value;
             }
+
+            // Load XP history for this player only (jsonl may contain legacy mixed entries)
+            state.xp_history = LoadXpHistoryForPlayer(historyPath, playerId);
 
             return state;
         }
@@ -234,28 +221,43 @@ public class ProgressionService : MonoBehaviour
     {
         try
         {
-            var filePath = FilePathResolver.GetProgressionPath(state.player_id, "progression_state.json");
+            var statePath = FilePathResolver.GetProgressionPath(state.player_id, "progression_state.json");
+            var historyPath = FilePathResolver.GetProgressionPath(state.player_id, "xp_history.jsonl");
+            
+            // Save current state (XP and tier) - overwrite
             var json = new JSONObject();
-
             json["player_id"] = state.player_id;
             json["current_xp"] = state.current_xp;
             json["current_tier"] = state.current_tier;
+            File.WriteAllText(statePath, json.ToString(2));
 
-            // Serialize XP history
-            var historyArray = new JSONArray();
-            foreach (var entry in state.xp_history)
+            // Append NEW XP history entries to JSONL (one entry per line)
+            // Load existing history count to know which entries to append
+            int existingEntryCount = 0;
+            if (File.Exists(historyPath))
             {
-                var entryJson = new JSONObject();
-                entryJson["id"] = entry.id;
-                entryJson["player_id"] = entry.player_id;
-                entryJson["timestamp"] = entry.timestamp;
-                entryJson["xp_gained"] = entry.xp_gained;
-                entryJson["source"] = entry.source;
-                historyArray.Add(entryJson);
+                var existingLines = File.ReadAllLines(historyPath);
+                existingEntryCount = existingLines.Length;
             }
-            json["xp_history"] = historyArray;
 
-            File.WriteAllText(filePath, json.ToString(2));
+            // Append only new entries
+            if (state.xp_history.Count > existingEntryCount)
+            {
+                using (var writer = File.AppendText(historyPath))
+                {
+                    for (int i = existingEntryCount; i < state.xp_history.Count; i++)
+                    {
+                        var entry = state.xp_history[i];
+                        var entryJson = new JSONObject();
+                        entryJson["id"] = entry.id;
+                        entryJson["player_id"] = entry.player_id;
+                        entryJson["timestamp"] = entry.timestamp;
+                        entryJson["xp_gained"] = entry.xp_gained;
+                        entryJson["source"] = entry.source;
+                        writer.WriteLine(entryJson.ToString());
+                    }
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -320,8 +322,40 @@ public class ProgressionService : MonoBehaviour
     }
 
     /// <summary>
-    /// Clears all player progression data from both cache and disk
-    /// Called at the start of a new session to ensure no old data persists
+    /// Clears progression state and XP history for one player (new season/session).
+    /// </summary>
+    public void ClearPlayerProgression(string playerId)
+    {
+        if (string.IsNullOrEmpty(playerId))
+        {
+            Debug.LogError("[ProgressionService] ClearPlayerProgression called with null/empty playerId");
+            return;
+        }
+
+        _progressionCache.Remove(playerId);
+
+        try
+        {
+            var progressionDir = Path.GetDirectoryName(
+                FilePathResolver.GetProgressionPath(playerId, "progression_state.json"));
+            if (!Directory.Exists(progressionDir)) return;
+
+            var stateFile = Path.Combine(progressionDir, "progression_state.json");
+            var historyFile = Path.Combine(progressionDir, "xp_history.jsonl");
+            if (File.Exists(stateFile)) File.Delete(stateFile);
+            if (File.Exists(historyFile)) File.Delete(historyFile);
+
+            Debug.Log($"[ProgressionService] Cleared progression data for {playerId}");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[ProgressionService] Failed to clear progression for {playerId}: {ex}");
+        }
+    }
+
+    /// <summary>
+    /// Clears all player progression data from both cache and disk.
+    /// Called at app/session start before a new season is created.
     /// </summary>
     public void ClearAllPlayerProgression()
     {
@@ -330,19 +364,28 @@ public class ProgressionService : MonoBehaviour
             // Clear the cache
             _progressionCache.Clear();
 
-            // Delete all progression files from disk
-            var progressionRootDir = Path.Combine(Application.streamingAssetsPath, "Progression");
+            // Delete all progression files from disk (persistentDataPath, not StreamingAssets)
+            var progressionRootDir = Path.Combine(Application.persistentDataPath, "mgi_state");
             if (Directory.Exists(progressionRootDir))
             {
-                // Find and delete all player progression files
+                // Find all player directories
                 var playerDirs = Directory.GetDirectories(progressionRootDir);
                 foreach (var playerDir in playerDirs)
                 {
-                    var progressionStateFile = Path.Combine(playerDir, "progression_state.json");
-                    if (File.Exists(progressionStateFile))
+                    var progressionDir = Path.Combine(playerDir, "progression");
+                    if (Directory.Exists(progressionDir))
                     {
-                        File.Delete(progressionStateFile);
-                        Debug.Log($"[ProgressionService] Deleted old progression file: {progressionStateFile}");
+                        var stateFile = Path.Combine(progressionDir, "progression_state.json");
+                        var historyFile = Path.Combine(progressionDir, "xp_history.jsonl");
+                        if (File.Exists(stateFile))
+                        {
+                            File.Delete(stateFile);
+                            Debug.Log($"[ProgressionService] Deleted progression state: {stateFile}");
+                        }
+                        if (File.Exists(historyFile))
+                        {
+                            File.Delete(historyFile);
+                        }
                     }
                 }
             }
@@ -417,5 +460,36 @@ public class ProgressionService : MonoBehaviour
     {
         // Return a shallow copy to avoid external modification
         return new Dictionary<string, PlayerProgressionState>(_progressionCache);
+    }
+
+    private static List<XpHistoryEntry> LoadXpHistoryForPlayer(string historyPath, string playerId)
+    {
+        var history = new List<XpHistoryEntry>();
+        if (!File.Exists(historyPath)) return history;
+
+        var lines = File.ReadAllLines(historyPath);
+        foreach (var line in lines)
+        {
+            if (string.IsNullOrWhiteSpace(line)) continue;
+
+            var json = JSONNode.Parse(line);
+            var entryPlayerId = json["player_id"].Value;
+            if (!string.IsNullOrEmpty(entryPlayerId) &&
+                !string.Equals(entryPlayerId, playerId, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            history.Add(new XpHistoryEntry(playerId, 0, "")
+            {
+                id = json["id"].Value,
+                player_id = string.IsNullOrEmpty(entryPlayerId) ? playerId : entryPlayerId,
+                timestamp = json["timestamp"].Value,
+                xp_gained = json["xp_gained"].AsInt,
+                source = json["source"].Value
+            });
+        }
+
+        return history;
     }
 }
