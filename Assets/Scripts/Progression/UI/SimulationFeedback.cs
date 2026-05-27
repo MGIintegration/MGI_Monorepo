@@ -72,7 +72,9 @@ public class SimulationFeedbackUI : MonoBehaviour
        
         titleText?.SetText($"MATCH SIMULATION RESULT - WEEK {wk}");
         xpEarnedText?.SetText($"XP Gained: {xp_earned}");
-        // Show current tier if we have progression data
+        resultText?.SetText(seasonManager.WasLastMatchWin ? "Result: WIN" : "Result: LOSS");
+        if (resultText != null)
+            resultText.color = seasonManager.WasLastMatchWin ? Color.green : Color.red;
         rewardText?.SetText($"Tier: {seasonManager.PlayerTier}");
 
 
@@ -100,22 +102,15 @@ public class SimulationFeedbackUI : MonoBehaviour
             // UI update based on freshly returned season state
             // pick an opponent (simple find first non-player)
             var player = seasonManager.PlayerTeam;
-            var opponent = updatedSeason.teams.Find(t => t.player_id != player?.player_id);
+            var opponent = updatedSeason.teams.Find(t => !t.is_player_team);
 
-            bool playerWon = false;
-            if (opponent != null && player != null)
-            {
-                // simple heuristic: compare wins (if backend provides wins)
-                int playerWins = player.stats != null ? player.stats.wins : 0;
-                int oppWins = opponent.stats != null ? opponent.stats.wins : 0;
-                playerWon = playerWins >= oppWins;
-            }
+            bool playerWon = seasonManager.WasLastMatchWin;
 
-            // show returned data
             titleText?.SetText($"MATCH SIMULATION RESULT - WEEK {updatedSeason.current_week}");
             opponentText?.SetText(opponent != null ? $"Opponent: {opponent.team_name}" : "Opponent: -");
             resultText?.SetText(playerWon ? "Result: WIN" : "Result: LOSS");
-            resultText.color = playerWon ? Color.green : Color.red;
+            if (resultText != null)
+                resultText.color = playerWon ? Color.green : Color.red;
 
             // xp displayed from SeasonManager progression (just updated)
             int xp_earned = seasonManager.LastXpGained;

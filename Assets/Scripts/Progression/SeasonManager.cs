@@ -165,15 +165,29 @@ public class SeasonManager : MonoBehaviour
     {
         get
         {
-            var playerId = PlayerTeam?.player_id;
-            if (string.IsNullOrEmpty(playerId)) return 0;
-
             var entries = XpHistoryEntries;
             if (entries.Count == 0) return 0;
 
             return entries[entries.Count - 1].xp_gained;
         }
     }
+
+    /// <summary>
+    /// True if the most recent match XP grant was a win (source: match_win).
+    /// </summary>
+    public bool WasLastMatchWin
+    {
+        get
+        {
+            var source = LastMatchXpSource;
+            return !string.IsNullOrEmpty(source)
+                && source.IndexOf("win", StringComparison.OrdinalIgnoreCase) >= 0
+                && source.IndexOf("loss", StringComparison.OrdinalIgnoreCase) < 0;
+        }
+    }
+
+    public string LastMatchXpSource =>
+        XpHistoryEntries.Count > 0 ? XpHistoryEntries[^1].source : null;
 
     // --- Backend Integration ---
     public void SimulateNextWeek(Action<SeasonSaveData> callback = null)

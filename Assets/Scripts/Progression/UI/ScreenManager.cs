@@ -153,16 +153,8 @@ public class ScreenManager : MonoBehaviour
     seasonManager.SimulateNextWeek(updatedSeason =>
     {
         
-        var player = seasonManager.PlayerTeam;
-        var opponent = updatedSeason.teams.Find(t => t.player_id != player?.player_id);
-        
-        bool playerWon = false;
-        if (opponent != null && player != null)
-        {
-            int playerWins = player.stats != null ? player.stats.wins : 0;
-            int oppWins = opponent.stats != null ? opponent.stats.wins : 0;
-            playerWon = playerWins >= oppWins;
-        }
+        var opponent = updatedSeason.teams.Find(t => !t.is_player_team);
+        bool playerWon = seasonManager.WasLastMatchWin;
 
         // Generate boosts first
         int offenseBoost = Random.Range(5, 15);

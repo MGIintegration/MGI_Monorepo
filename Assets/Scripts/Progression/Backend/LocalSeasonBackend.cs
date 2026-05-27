@@ -204,7 +204,7 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
                 }
             }
 
-            // Award XP to player team (stub implementation)
+            // Award match XP: played (5) + win bonus (+10) or loss bonus (+2)
             if (playerTeam != null)
             {
                 if (string.IsNullOrEmpty(playerTeam.player_id))
@@ -213,8 +213,7 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
                 }
                 else
                 {
-                    int baseXp = random.Next(5, 20); // 5-20 XP per week
-                    _progressionService?.AddXp(playerTeam.player_id, baseXp, "match_played", Guid.NewGuid().ToString());
+                    AwardMatchXp(playerTeam.player_id, currentSeason.season_id, currentSeason.current_week, playerWonThisWeek);
                 }
             }
             else
@@ -389,6 +388,21 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
     #endregion
 
     #region Helper Methods
+
+    /// <summary>
+    /// Single grant per match: 5 XP played + win (+10) or loss (+2) bonus.
+    /// </summary>
+    private void AwardMatchXp(string playerId, string seasonId, int week, bool playerWon)
+    {
+        var progression = EnsureProgressionService();
+        if (progression == null) return;
+
+        int totalXp = XP_MATCH_PLAYED + (playerWon ? XP_WIN : XP_LOSS);
+        string source = playerWon ? "match_win" : "match_loss";
+        string eventId = $"{seasonId}:week:{week}:match";
+
+        progression.AddXp(playerId, totalXp, source, eventId);
+    }
 
     private PlayerProgressionSaveData ConvertToLegacyFormat(PlayerProgressionState state)
     {

@@ -127,27 +127,13 @@ public class ProgressionUIController : MonoBehaviour
 
         _seasonManager.SimulateNextWeek(updatedData =>
         {
-            // Update feedback screen with new state
-            var playerTeam = updatedData.teams.FirstOrDefault(t => t.is_player_team);
-            if (playerTeam == null) return;
-
-            var playerProg = updatedData.player_progression
-                .FirstOrDefault(p => p.player_id == playerTeam.team_id || p.player_id == playerTeam.player_id);
-
-            if (playerProg == null || playerProg.xp_history == null || playerProg.xp_history.Count == 0)
-                return;
-
-            var lastEntry = playerProg.xp_history.Last();
-
-            string source = string.IsNullOrEmpty(lastEntry.source) ? "unknown" : lastEntry.source;
-            string xp = lastEntry.xp_gained.ToString();
-            
-
+            bool playerWon = _seasonManager.WasLastMatchWin;
+            int xpEarned = _seasonManager.LastXpGained;
 
             _simTitleLabel.text = $"🎮 MATCH RESULT - WEEK {updatedData.current_week}";
-            _simResultLabel.text = $"🏆 Result: {source.ToUpper()}";
-            _simXpGainLabel.text = $"📈 XP Earned: +{xp}";
-            _simOpponentLabel.text = "🆚 Opponent: TBD"; // replace if API sends opponent info
+            _simResultLabel.text = playerWon ? "🏆 Result: WIN!" : "🏆 Result: LOSS";
+            _simXpGainLabel.text = $"📈 XP Earned: +{xpEarned}";
+            _simOpponentLabel.text = "🆚 Opponent: TBD";
 
             ShowScreen("Screen_SimFeedback");
             UpdateAllUI();
