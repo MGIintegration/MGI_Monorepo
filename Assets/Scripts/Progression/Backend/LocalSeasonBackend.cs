@@ -162,6 +162,12 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
             if (currentSeason == null || currentSeason.teams == null)
                 throw new ArgumentNullException("currentSeason or currentSeason.teams is null");
 
+            if (currentSeason.current_week >= currentSeason.total_weeks)
+            {
+                onError?.Invoke($"Season complete: all {currentSeason.total_weeks} weeks have been simulated.");
+                return;
+            }
+
             currentSeason.current_week++;
 
             var random = new System.Random();

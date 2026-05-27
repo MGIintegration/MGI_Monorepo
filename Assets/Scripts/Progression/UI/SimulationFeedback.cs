@@ -86,6 +86,12 @@ public class SimulationFeedbackUI : MonoBehaviour
             return;
         }
 
+        if (!seasonManager.CanSimulateWeek)
+        {
+            if (btnSimNextWeek != null) btnSimNextWeek.interactable = false;
+            return;
+        }
+
         btnSimNextWeek.interactable = false;
 
         // Use SeasonManager to simulate — it will fetch progression and trigger OnSeasonDataUpdated

@@ -148,6 +148,8 @@ public class ScreenManager : MonoBehaviour
         return;
     }
 
+    if (!seasonManager.CanSimulateWeek) return;
+
     seasonManager.SimulateNextWeek(updatedSeason =>
     {
         

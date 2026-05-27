@@ -64,6 +64,9 @@ public class SeasonManager : MonoBehaviour
     public int CurrentWeek => seasonData?.current_week ?? 0;
     public int TotalWeeks => seasonData?.total_weeks ?? 0;
 
+    public bool CanSimulateWeek =>
+        seasonData != null && seasonData.current_week < seasonData.total_weeks;
+
     public List<TeamSaveData> Teams => seasonData?.teams ?? new List<TeamSaveData>();
     public TeamSaveData PlayerTeam => seasonData?.teams?.FirstOrDefault(t => t.is_player_team);
 
@@ -184,6 +187,12 @@ public class SeasonManager : MonoBehaviour
         if (backend == null)
         {
             Debug.LogError("❌ Cannot simulate week: Backend not initialized");
+            return;
+        }
+
+        if (!CanSimulateWeek)
+        {
+            Debug.LogWarning($"Cannot simulate week: season complete ({CurrentWeek}/{TotalWeeks} weeks played).");
             return;
         }
 
