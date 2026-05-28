@@ -307,6 +307,7 @@ public static class CoachesService
 
         string teamId = state.team_id;
 
+        // Read salary from the contract before removing it.
         var activeContracts = GetActiveContracts(playerId);
         var contract = activeContracts.FirstOrDefault(c =>
             string.Equals(NormalizeCoachType(c.coach_type), coachType, StringComparison.Ordinal));
@@ -319,7 +320,11 @@ public static class CoachesService
             return false;
         }
 
-        RemoveCoachContract(playerId, coachType);
+        if (!RemoveCoachContract(playerId, coachType))
+        {
+            Debug.LogError("[CoachesService] Failed to remove coach contract; refund and event suppressed to avoid inconsistent state.");
+            return false;
+        }
 
         if (refundAmount > 0)
             new EconomyService().AddCurrency(playerId, refundAmount, 0, CoachFiringRefundSource);
@@ -383,6 +388,7 @@ public static class CoachesService
             totalBonus += CalculateCoachRuleBonus(coach, rule);
         }
 
+        // Synergy bonus: only applies when all required coach types are hired.
         if (config.synergy_bonus != null)
         {
             foreach (var synergy in config.synergy_bonus)
@@ -515,6 +521,7 @@ public static class CoachesService
         public float overall_rating_calculated;
         public float salary;
         public int contract_length;
+        public int bonus_percentage;
         public string current_team_assigned_when_coach_is_hired;
         public string prev_team;
         public float run_defence;
@@ -540,6 +547,7 @@ public static class CoachesService
             overall_rating        = overall_rating_calculated,
             salary                = salary,
             contract_length       = contract_length,
+            bonus_percentage      = bonus_percentage,
             current_team          = current_team_assigned_when_coach_is_hired,
             prev_team             = prev_team,
             run_defence           = run_defence,
@@ -638,25 +646,6 @@ public static class CoachesService
         return upper == "ST" ? "S" : upper;
     }
 
-    private static void RemoveCoachContract(string playerId, string coachType)
-    {
-        string path = FilePathResolver.GetCoachesPath(playerId, "coach_contracts.json");
-        if (!File.Exists(path)) return;
-        try
-        {
-            var list = JsonUtility.FromJson<CoachContractList>(File.ReadAllText(path));
-            if (list?.contracts == null) return;
-            var contracts = new List<CoachContract>(list.contracts);
-            contracts.RemoveAll(c => string.Equals(NormalizeCoachType(c.coach_type), coachType, StringComparison.Ordinal));
-            list.contracts = contracts.ToArray();
-            TryWriteAllTextAtomic(path, JsonUtility.ToJson(list, true));
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"[CoachesService] Failed to remove coach contract: {e.Message}");
-        }
-    }
-
     private static string NormalizeCoachType(string coachType)
     {
         return coachType?.ToUpperInvariant();
@@ -681,6 +670,26 @@ public static class CoachesService
             case "O": state.offence_coach = coachId; break;
             case "D": state.defence_coach = coachId; break;
             case "S": state.special_teams_coach = coachId; break;
+        }
+    }
+
+    private static bool RemoveCoachContract(string playerId, string coachType)
+    {
+        string path = FilePathResolver.GetCoachesPath(playerId, "coach_contracts.json");
+        if (!File.Exists(path)) return true;
+        try
+        {
+            var list = JsonUtility.FromJson<CoachContractList>(File.ReadAllText(path));
+            if (list?.contracts == null) return true;
+            var contracts = new List<CoachContract>(list.contracts);
+            contracts.RemoveAll(c => string.Equals(NormalizeCoachType(c.coach_type), coachType, StringComparison.Ordinal));
+            list.contracts = contracts.ToArray();
+            return TryWriteAllTextAtomic(path, JsonUtility.ToJson(list, true));
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[CoachesService] Failed to remove coach contract: {e.Message}");
+            return false;
         }
     }
 
