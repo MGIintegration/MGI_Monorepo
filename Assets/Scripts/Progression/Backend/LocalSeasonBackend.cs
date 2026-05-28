@@ -208,7 +208,7 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
                 else
                 {
                     int baseXp = random.Next(5, 20); // 5-20 XP per week
-                    _progressionService?.AddXp(playerTeam.player_id, baseXp, "match_played", Guid.NewGuid().ToString(), 1f);
+                    _progressionService?.AddXp(playerTeam.player_id, baseXp, "match_played", Guid.NewGuid().ToString());
                 }
             }
             else
@@ -292,9 +292,7 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
                 playerId,
                 xpAmount,
                 source,
-                Guid.NewGuid().ToString(), // unique eventId
-                1f // default multiplier
-            );
+                Guid.NewGuid().ToString());
 
             SaveProgressionDataToJson();
 
@@ -370,9 +368,7 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
                 playerTeam.player_id,
                 xpReward,
                 "season_reward",
-                Guid.NewGuid().ToString(),
-                1f
-            );
+                Guid.NewGuid().ToString());
             SaveProgressionDataToJson();
             Debug.Log($"[LocalSeasonBackend] Season reward awarded: {xpReward} XP for {placement} place finish");
             onSuccess?.Invoke($"Awarded {xpReward} XP for {placement} place finish");

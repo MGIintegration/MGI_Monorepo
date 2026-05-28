@@ -195,8 +195,7 @@ public class CCASService : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the player's card collection.
-    /// Phase 1: returns empty list. File I/O added in step 4.2.
+    /// Returns the player's card collection from persistent <c>card_collection.json</c>.
     /// </summary>
     public IEnumerable<CardCollectionEntry> GetCollection(string playerId)
     {

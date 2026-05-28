@@ -70,5 +70,113 @@
     "type": "spend",
     "timestamp": "2026-04-21T19:57:33.8152500Z",
     "source": "pack_purchase"
+  },
+  {
+    "id": "e88ba505-afa3-4fb7-9f23-e53c89f6cf5e",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 2000,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-05-11T18:15:39.6560360Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "83dc88fc-0a98-4f17-b59a-59d0d21bab00",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 1000,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-05-11T18:15:45.4998700Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "7fb603b4-1100-4eef-9482-48a4b287a7a1",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 1500,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-05-11T18:15:50.7495980Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "fe914bbe-6925-41b0-84a0-7aa543915605",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 1000,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-05-11T18:17:54.1693850Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "b1e60be8-1e5b-4849-90af-158edde8fd51",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 1000,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-05-24T17:02:05.4492850Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "7e74de5b-7c0a-475c-9ad1-79616c51efd8",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 1500,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-05-24T17:02:08.7085510Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "5790988d-aa4c-4e38-965d-df21efcddcd3",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 1500,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-05-24T17:02:13.3418950Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "713fa066-9c0b-4cd7-b1dc-398634826702",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 1500,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-05-24T17:02:16.6753010Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "d89feb06-26b1-4040-a377-88d7436c3d74",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 1500,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-05-24T17:02:18.9412270Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "b7897e0b-6ccd-455a-a751-813106d8fd8f",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 1500,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-05-24T17:02:20.7754270Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "0a9fc2a7-fc4f-447c-8218-bdf9cd298c65",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 1500,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-05-24T17:02:22.8416780Z",
+    "source": "pack_purchase"
+  },
+  {
+    "id": "bcb9e0e4-f398-47b9-9579-5f837af4587f",
+    "player_id": "79FF378B-E4A4-58E9-8F56-03EC7CEB3377",
+    "amount": 1500,
+    "currency": "coins",
+    "type": "spend",
+    "timestamp": "2026-05-24T17:48:10.3415110Z",
+    "source": "pack_purchase"
   }
 ]

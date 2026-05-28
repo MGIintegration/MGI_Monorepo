@@ -92,7 +92,11 @@ public class ProgressionService : MonoBehaviour
     }
 
    
-    public void AddXp(string playerId, int baseXp, string source, string eventId, float multiplier = 1f)
+    /// <summary>
+    /// Records an XP grant. Callers pass the final amount to store (integration plan §2.2).
+    /// eventId prevents applying the same grant twice (e.g. CCAS pack opens).
+    /// </summary>
+    public void AddXp(string playerId, int xp, string source, string eventId)
     {
         if (string.IsNullOrEmpty(playerId))
         {
@@ -100,9 +104,9 @@ public class ProgressionService : MonoBehaviour
             return;
         }
 
-        if (baseXp <= 0)
+        if (xp <= 0)
         {
-            Debug.LogWarning($"[ProgressionService] AddXp called with non-positive amount: {baseXp}");
+            Debug.LogWarning($"[ProgressionService] AddXp called with non-positive amount: {xp}");
             return;
         }
 
@@ -113,28 +117,23 @@ public class ProgressionService : MonoBehaviour
             return;
         }
 
-        //DUPLICATE DETECTION
-        bool isDuplicate = state.xp_history.Exists(e => e.id == eventId);
-        if (isDuplicate)
+        // Idempotent grant: same eventId must not apply XP twice (e.g. CCAS pack re-open).
+        bool isDuplicateEvent = state.xp_history.Exists(e => e.id == eventId);
+        if (isDuplicateEvent)
         {
             Debug.Log($"[ProgressionService] Duplicate XP ignored: {eventId}");
             return;
         }
 
-        // APPLY MULTIPLIER
-        int finalXp = Mathf.RoundToInt(baseXp * multiplier);
-
-        // STORE EVENT
-        var historyEntry = new XpHistoryEntry(playerId, finalXp, source)
+        var historyEntry = new XpHistoryEntry(playerId, xp, source)
         {
             id = eventId
         };
 
         state.xp_history.Add(historyEntry);
 
-        // Update XP
         int oldXp = state.current_xp;
-        state.current_xp += finalXp;
+        state.current_xp += xp;
 
         // Recalculate tier
         string oldTier = state.current_tier;
@@ -146,7 +145,7 @@ public class ProgressionService : MonoBehaviour
         // Publish event
         PublishXpUpdatedEvent(playerId, oldXp, state.current_xp, oldTier, state.current_tier);
 
-        Debug.Log($"[ProgressionService] Added {finalXp} XP to {playerId} (source: {source}). Total: {state.current_xp}, Tier: {state.current_tier}");
+        Debug.Log($"[ProgressionService] Added {xp} XP to {playerId} (source: {source}). Total: {state.current_xp}, Tier: {state.current_tier}");
     }
 
 

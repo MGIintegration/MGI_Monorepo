@@ -109,7 +109,7 @@ public static class CoachesService
 {
     // In single-player the player id is fixed; wire to a proper PlayerService later.
     public const string LocalPlayerId = "local_player";
-    private const string CoachHiringSpendSource   = "coach_hiring";
+    private const string CoachHiringSpendSource = "coach_hiring";
     private const string CoachHiringRefundSource  = "coach_hiring_refund";
     private const string CoachFiringRefundSource  = "coach_firing_refund";
     private const string CoachBonusConfigFileName = "coaches_bonus_config.json";
@@ -194,7 +194,6 @@ public static class CoachesService
         }
 
         // 4. Check and deduct wallet via EconomyService
-        // salary in schema = millions/year; convert to weekly coin cost to match display
         int hireCost = Mathf.RoundToInt(coach.salary * 1_000_000f / 52f);
         var economy = new EconomyService();
         if (!economy.TrySpend(playerId, hireCost, 0, CoachHiringSpendSource, out _))
@@ -279,7 +278,7 @@ public static class CoachesService
 
     /// <summary>
     /// Removes the coach of the given type from the team's state and contracts,
-    /// then publishes a fire_coach event.
+    /// then refunds the weekly salary and publishes a fire_coach event.
     /// </summary>
     public static bool FireCoach(string coachType, string playerId = null)
     {
@@ -332,7 +331,7 @@ public static class CoachesService
 
         EventBus.Publish(new EventBus.EventEnvelope
         {
-            event_id  = Guid.NewGuid().ToString(),
+            event_id   = Guid.NewGuid().ToString(),
             event_type = "fire_coach",
             player_id  = playerId,
             timestamp  = DateTime.UtcNow.ToString("o"),
@@ -349,8 +348,9 @@ public static class CoachesService
     }
 
     /// <summary>
-    /// Returns the XP bonus percent for the given player and XP source.
-    /// Read-only lookup only: no file writes, no hiring changes, no XP application.
+    /// Returns the XP bonus multiplier (additive) for the given player and XP source.
+    /// Sums bonuses from all hired coaches whose rules match the source, then adds synergy.
+    /// Read-only: no file writes, no hiring changes, no XP application.
     /// </summary>
     public static float GetCoachXpBonusPercent(string playerId, string xpSource)
     {
@@ -362,7 +362,7 @@ public static class CoachesService
         if (state == null) return 0f;
 
         var config = LoadBonusConfig();
-        if (config == null)
+        if (config?.xp_bonus_rules == null)
         {
             Debug.LogWarning("[CoachesService] Coach XP bonus config could not be loaded.");
             return 0f;
@@ -370,29 +370,23 @@ public static class CoachesService
 
         float totalBonus = 0f;
 
-        // Sum bonus from every coach type that is hired and has a rule for this source.
-        if (config.xp_bonus_rules != null)
+        foreach (var typeEntry in config.xp_bonus_rules)
         {
-            foreach (var typeEntry in config.xp_bonus_rules)
-            {
-                if (typeEntry == null) continue;
+            if (typeEntry == null) continue;
 
-                var coachId = GetAssignedCoachId(state, typeEntry.coach_type);
-                if (string.IsNullOrEmpty(coachId)) continue;
+            var rule = typeEntry.source_rules?.FirstOrDefault(r =>
+                r != null &&
+                string.Equals(r.xp_source, normalizedXpSource, StringComparison.OrdinalIgnoreCase));
+            if (rule == null) continue;
 
-                var coach = GetCoachById(coachId);
-                if (coach == null) continue;
+            var coachId = GetAssignedCoachId(state, NormalizeCoachType(typeEntry.coach_type));
+            if (string.IsNullOrEmpty(coachId)) continue;
 
-                var rule = typeEntry.source_rules?.FirstOrDefault(r =>
-                    r != null &&
-                    string.Equals(r.xp_source, normalizedXpSource, StringComparison.OrdinalIgnoreCase));
-                if (rule == null) continue;
+            var coach = GetCoachById(coachId);
+            if (coach == null) continue;
 
-                totalBonus += CalculateCoachRuleBonus(coach, rule);
-            }
+            totalBonus += CalculateCoachRuleBonus(coach, rule);
         }
-
-        if (totalBonus == 0f) return 0f;
 
         // Synergy bonus: only applies when all required coach types are hired.
         if (config.synergy_bonus != null)
@@ -400,8 +394,8 @@ public static class CoachesService
             foreach (var synergy in config.synergy_bonus)
             {
                 if (synergy == null || synergy.required == null || synergy.required.Length == 0) continue;
-                if (!synergy.required.All(requiredType => HasAssignedCoachType(state, requiredType))) continue;
-                totalBonus += synergy.bonus;
+                if (synergy.required.All(t => HasAssignedCoachType(state, t)))
+                    totalBonus += synergy.bonus;
             }
         }
 

@@ -189,7 +189,16 @@ public class CoachHiringMarket : MonoBehaviour
 
     private void UpdateDatabaseCoachDisplay1(CoachDatabaseRecord coach)
     {
-        if (coach == null) return;
+        if (coach == null)
+        {
+            if (nameText1 != null)   nameText1.text   = "Name: —";
+            if (salaryText1 != null) salaryText1.text = "Salary: —";
+            if (ratingText1 != null) ratingText1.text = "Rating: —";
+            if (Type1 != null)       Type1.text       = "Type: —";
+            if (specialtiesContainer1 != null)
+                foreach (Transform child in specialtiesContainer1) Destroy(child.gameObject);
+            return;
+        }
 
         if (nameText1 != null)
             nameText1.text = "Name: " + coach.coach_name;
@@ -197,7 +206,7 @@ public class CoachHiringMarket : MonoBehaviour
         if (salaryText1 != null)
         {
             float weeklySalary = (coach.salary * 1000000f) / 52f;
-            salaryText1.text = "Salary: " + $"${weeklySalary:N0}/wk";
+            salaryText1.text = "Salary: " + $"${weeklySalary.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)}/wk";
         }
 
         if (ratingText1 != null)
@@ -211,7 +220,16 @@ public class CoachHiringMarket : MonoBehaviour
 
     private void UpdateDatabaseCoachDisplay2(CoachDatabaseRecord coach)
     {
-        if (coach == null) return;
+        if (coach == null)
+        {
+            if (nameText2 != null)   nameText2.text   = "Name: —";
+            if (salaryText2 != null) salaryText2.text = "Salary: —";
+            if (ratingText2 != null) ratingText2.text = "Rating: —";
+            if (Type2 != null)       Type2.text       = "Type: —";
+            if (specialtiesContainer2 != null)
+                foreach (Transform child in specialtiesContainer2) Destroy(child.gameObject);
+            return;
+        }
 
         if (nameText2 != null)
             nameText2.text = "Name: " + coach.coach_name;
@@ -219,7 +237,7 @@ public class CoachHiringMarket : MonoBehaviour
         if (salaryText2 != null)
         {
             float weeklySalary = (coach.salary * 1000000f) / 52f;
-            salaryText2.text = "Salary: " + $"${weeklySalary:N0}/wk";
+            salaryText2.text = "Salary: " + $"${weeklySalary.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)}/wk";
         }
 
         if (ratingText2 != null)
