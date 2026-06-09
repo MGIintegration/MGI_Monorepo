@@ -114,7 +114,7 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
             var playerTeam = new TeamSaveData
             {
                 team_id = Guid.NewGuid().ToString(),
-                player_id = "player_1",
+                player_id = "local_player",
                 team_name = playerTeamName,
                 rating = 1000,
                 is_player_team = true,
