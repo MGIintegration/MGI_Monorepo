@@ -355,7 +355,7 @@ public static class CoachesService
     public static float GetCoachXpBonusPercent(string playerId, string xpSource)
     {
         playerId ??= LocalPlayerId;
-        var normalizedXpSource = xpSource?.Trim();
+        var normalizedXpSource = NormalizeXpSourceForCoachBonus(xpSource);
         if (string.IsNullOrEmpty(normalizedXpSource)) return 0f;
 
         var state = GetTeamState(playerId);
@@ -400,6 +400,35 @@ public static class CoachesService
         }
 
         return totalBonus;
+    }
+
+    /// <summary>
+    /// Maps progression XP sources to coaches_bonus_config xp_source keys.
+    /// Returns null when coach per-source bonuses should not apply.
+    /// </summary>
+    private static string NormalizeXpSourceForCoachBonus(string xpSource)
+    {
+        if (string.IsNullOrWhiteSpace(xpSource))
+            return null;
+
+        var s = xpSource.Trim().ToLowerInvariant();
+
+        if (s.StartsWith("duplicate_card"))
+            return null;
+
+        if (s.Contains("match") && s.Contains("win"))
+            return "offensive_drill";
+        if (s.Contains("match") && s.Contains("loss"))
+            return "defensive_drill";
+
+        if (s.Contains("offensive") || s.Contains("offence") || s.Contains("offense_drill"))
+            return "offensive_drill";
+        if (s.Contains("defensive") || s.Contains("defence") || s.Contains("defense_drill"))
+            return "defensive_drill";
+        if (s.Contains("special_teams") || s.Contains("special_team"))
+            return "special_teams_drill";
+
+        return s;
     }
 
     // ── Private helpers ──────────────────────────────────────────────────────

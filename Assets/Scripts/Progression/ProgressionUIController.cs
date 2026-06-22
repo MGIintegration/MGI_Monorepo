@@ -123,29 +123,17 @@ public class ProgressionUIController : MonoBehaviour
 
     private void OnSimulateWeek()
     {
+        if (!_seasonManager.CanSimulateWeek) return;
+
         _seasonManager.SimulateNextWeek(updatedData =>
         {
-            // Update feedback screen with new state
-            var playerTeam = updatedData.teams.FirstOrDefault(t => t.is_player_team);
-            if (playerTeam == null) return;
-
-            var playerProg = updatedData.player_progression
-                .FirstOrDefault(p => p.player_id == playerTeam.team_id || p.player_id == playerTeam.player_id);
-
-            if (playerProg == null || playerProg.xp_history == null || playerProg.xp_history.Count == 0)
-                return;
-
-            var lastEntry = playerProg.xp_history.Last();
-
-            string source = string.IsNullOrEmpty(lastEntry.source) ? "unknown" : lastEntry.source;
-            string xp = lastEntry.xp_gained.ToString();
-            
-
+            bool playerWon = _seasonManager.WasLastMatchWin;
+            int xpEarned = _seasonManager.LastXpGained;
 
             _simTitleLabel.text = $"🎮 MATCH RESULT - WEEK {updatedData.current_week}";
-            _simResultLabel.text = $"🏆 Result: {source.ToUpper()}";
-            _simXpGainLabel.text = $"📈 XP Earned: +{xp}";
-            _simOpponentLabel.text = "🆚 Opponent: TBD"; // replace if API sends opponent info
+            _simResultLabel.text = playerWon ? "🏆 Result: WIN!" : "🏆 Result: LOSS";
+            _simXpGainLabel.text = $"📈 XP Earned: +{xpEarned}";
+            _simOpponentLabel.text = "🆚 Opponent: TBD";
 
             ShowScreen("Screen_SimFeedback");
             UpdateAllUI();
@@ -167,11 +155,16 @@ public class ProgressionUIController : MonoBehaviour
             return;
         }
 
-        int remaining = _seasonManager.TotalWeeks - _seasonManager.CurrentWeek;
+        int remaining = Mathf.Max(0, _seasonManager.TotalWeeks - _seasonManager.CurrentWeek);
         _hubWeekLabel.text = $"📅 Week: {_seasonManager.CurrentWeek}/{_seasonManager.TotalWeeks}";
 
         _hubStandingLabel.text = $"🏆 Standing: {_seasonManager.PlayerRank}th Place";
-        _hubMatchesLabel.text = $"🔁 Remaining Matches: {remaining}";
+        _hubMatchesLabel.text = _seasonManager.CanSimulateWeek
+            ? $"🔁 Remaining Matches: {remaining}"
+            : "🔁 Season complete";
+
+        if (_simulateWeekButton != null)
+            _simulateWeekButton.SetEnabled(_seasonManager.CanSimulateWeek);
 
         float xpProgress = (float)_seasonManager.PlayerXP / 1000f;
         _hubXpLabel.text = $"⭐ XP: {_seasonManager.PlayerXP} / 1000";
