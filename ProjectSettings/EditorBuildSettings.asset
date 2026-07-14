@@ -4,7 +4,28 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Title_Screen/TitleScreen.unity
+    guid: 03d44405b4e04597a1485a00afee37bc
+  - enabled: 1
+    path: Assets/Scenes/Title_Screen/CoachesTitleScreen.unity
+    guid: ebe78103e70a42f0b289733878e99a57
+  - enabled: 1
+    path: Assets/Scenes/CCAS/CCAS.unity
+    guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Facilities/FacilitiesOverview.unity
+    guid: b186685b87ec048bdbf148a0d8cf1a63
+  - enabled: 1
+    path: Assets/Scenes/Coaches/FMGCOACH.unity
+    guid: 3bc10e8b959ce44038f55bd32b95943b
+  - enabled: 1
+    path: Assets/Scenes/Coaches/CoachProfile.unity
+    guid: b6470230398094de9bae6e9082fa54d1
+  - enabled: 1
+    path: Assets/Scenes/Coaches/PerformanceAnalytics.unity
+    guid: 95cf4e609dc214fba98b27651e8a692a
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 289c1b55c9541489481df5cc06664110, type: 3}
   m_UseUCBPForAssetBundles: 0
