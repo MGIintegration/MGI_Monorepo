@@ -56,7 +56,7 @@ Thumbs.db
 *.sln.iml
 
 # UserSettings (optional - some teams commit this)
-# UserSettings/
+UserSettings/
 
 # Package manager
 Packages/packages-lock.json
@@ -69,4 +69,4 @@ mono_crash.*.json
 
 # Cursor (local developer config/state)
 .cursor/
-.cursorignore
+.cursorignoreAssets/StreamingAssets/Economy/
