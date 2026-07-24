@@ -2,7 +2,6 @@ using UnityEngine;
 using TMPro;
 using System.Linq;
 using System.Collections.Generic;
-using UnityEngine.Networking; // GET from backend
 using Newtonsoft.Json;        // com.unity.nuget.newtonsoft-json
 
 public enum FacilityType { WeightRoom, Rehab, Film }
@@ -19,11 +18,6 @@ public class FacilityDetailsHandler : MonoBehaviour
     public string weightRoomRes = "WeightRoom";
     public string rehabRes = "Rehab";
     public string filmRes = "Film";
-
-    [Header("Server config")]
-    public string apiBaseUrl = "http://localhost:5263/api";
-    public string statusPath = "/facilitystatus";
-    public string configPath = "/facilityconfig";
 
     [Header("IDs (currently reused for local refresh)")]
     public string teamId = FacilitiesService.DefaultPlayerId; // treated as playerId in local mode
@@ -90,87 +84,10 @@ public class FacilityDetailsHandler : MonoBehaviour
         playerFacilityId = pfId;
     }
 
-    public void ShowWeightRoomFromServer() { StartCoroutine(FetchLevelAndShow(FacilityType.WeightRoom)); }
-    public void ShowRehabFromServer() { StartCoroutine(FetchLevelAndShow(FacilityType.Rehab)); }
-    public void ShowFilmFromServer() { StartCoroutine(FetchLevelAndShow(FacilityType.Film)); }
-
-    public void RefreshFromServer() { StartCoroutine(FetchLevelAndShow(_activeFacility)); }
-
     public void ShowWeightRoom() { SwitchFacility(FacilityType.WeightRoom, currentLevel); }
     public void ShowRehab() { SwitchFacility(FacilityType.Rehab, currentLevel); }
     public void ShowFilm() { SwitchFacility(FacilityType.Film, currentLevel); }
     public void SetLevelFromButton(int level) { SetCurrentLevel(level); }
-
-    // -------------------- Server fetch (kept as-is) --------------------
-
-    System.Collections.IEnumerator TryFetchConfigFromServer(FacilityType type)
-    {
-        if (_configs.ContainsKey(type)) yield break;
-
-        string url = $"{apiBaseUrl.TrimEnd('/')}/{configPath.TrimStart('/')}?facilityType={type}";
-        using (var req = UnityWebRequest.Get(url))
-        {
-            yield return req.SendWebRequest();
-#if UNITY_2020_2_OR_NEWER
-            bool isError = req.result != UnityWebRequest.Result.Success;
-#else
-            bool isError = req.isNetworkError || req.isHttpError;
-#endif
-            if (isError)
-            {
-                Debug.LogWarning($"Config GET failed: {req.responseCode} {req.error} ({url}) — will fall back to Resources.");
-                yield break;
-            }
-
-            FacilityConfigRoot cfg = null;
-            try { cfg = JsonConvert.DeserializeObject<FacilityConfigRoot>(req.downloadHandler.text); }
-            catch (System.Exception ex)
-            {
-                Debug.LogWarning($"Config JSON parse error: {ex.Message} — falling back to Resources.");
-            }
-
-            if (cfg != null && cfg.levels != null && cfg.levels.Count > 0)
-                _configs[type] = cfg;
-        }
-    }
-
-    System.Collections.IEnumerator FetchLevelAndShow(FacilityType type)
-    {
-        yield return StartCoroutine(TryFetchConfigFromServer(type));
-
-        if (!_configs.ContainsKey(type))
-        {
-            Debug.LogError($"No config for {type}. Ensure server /facilityconfig or place JSON in Resources.");
-            yield break;
-        }
-
-        string url = $"{apiBaseUrl.TrimEnd('/')}/{statusPath.TrimStart('/')}?teamId={teamId}&playerFacilityId={playerFacilityId}";
-        using (var req = UnityWebRequest.Get(url))
-        {
-            yield return req.SendWebRequest();
-
-#if UNITY_2020_2_OR_NEWER
-            bool isError = req.result != UnityWebRequest.Result.Success;
-#else
-            bool isError = req.isNetworkError || req.isHttpError;
-#endif
-            if (isError)
-            {
-                Debug.LogWarning($"Status GET failed: {req.responseCode} {req.error} ({url})");
-                yield break;
-            }
-
-            FacilityStatusDto dto = null;
-            try { dto = JsonConvert.DeserializeObject<FacilityStatusDto>(req.downloadHandler.text); }
-            catch (System.Exception ex)
-            {
-                Debug.LogWarning($"Status JSON parse error: {ex.Message}");
-            }
-
-            int levelFromServer = (dto != null && dto.CurrentLevel > 0) ? dto.CurrentLevel : currentLevel;
-            SwitchFacility(type, levelFromServer);
-        }
-    }
 
     // -------------------- Core binding --------------------
 
@@ -379,14 +296,6 @@ public class FacilityDetailsHandler : MonoBehaviour
     }
 
     // -------------------- DTOs / Models --------------------
-
-    [System.Serializable]
-    public class FacilityStatusDto
-    {
-        public string TeamId;
-        public string PlayerFacilityId;
-        public int CurrentLevel;
-    }
 
     [System.Serializable]
     public class FacilityConfigRoot
