@@ -325,7 +325,7 @@ public class FacilityDetailsHandler : MonoBehaviour
         return PrettyKey(first.Key) + ": " + PrettyValue(first.Key, first.Value);
     }
 
-    string FormatWeeklyBoost(Dictionary<string, float> effects)
+    public static string FormatWeeklyBoost(Dictionary<string, float> effects)
     {
         if (effects == null) return "-";
 
@@ -347,7 +347,7 @@ public class FacilityDetailsHandler : MonoBehaviour
         return parts.Count > 0 ? string.Join(", ", parts) : "-";
     }
 
-    string PrettyKey(string raw)
+    public static string PrettyKey(string raw)
     {
         var chars = new List<char>(raw.Length + 4);
         for (int i = 0; i < raw.Length; i++)
@@ -359,7 +359,7 @@ public class FacilityDetailsHandler : MonoBehaviour
         return new string(chars.ToArray());
     }
 
-    string PrettyValue(string key, float v)
+    public static string PrettyValue(string key, float v)
     {
         if (key.EndsWith("Multiplier")) return $"{v:0.00}x";
 
