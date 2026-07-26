@@ -1,17 +1,46 @@
 using UnityEngine;
 using TMPro;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 
 public class BracketUI : MonoBehaviour
 {
     [Header("UI References")]
     public TextMeshProUGUI titleText;
-    public Transform tableParent;      
-    public GameObject rowPrefab;       
+    public Transform tableParent;
+    public GameObject rowPrefab;
+
+    private SeasonManager subscribedManager;
 
     void OnEnable()
     {
+        RefreshBracket();
+        StartCoroutine(SubscribeToSeasonManager());
+    }
+
+    void OnDisable()
+    {
+        StopAllCoroutines();
+        if (subscribedManager != null)
+        {
+            subscribedManager.OnSeasonDataUpdated -= RefreshBracket;
+            subscribedManager = null;
+        }
+    }
+
+    // Self-heals the race where the bracket is opened before SeasonManager's
+    // async season data finishes loading: waits for the instance, subscribes
+    // to its data-ready event, and refreshes again in case data arrived
+    // while we were waiting.
+    private IEnumerator SubscribeToSeasonManager()
+    {
+        while (SeasonManager.Instance == null)
+            yield return null;
+
+        subscribedManager = SeasonManager.Instance;
+        subscribedManager.OnSeasonDataUpdated += RefreshBracket;
+
         RefreshBracket();
     }
 
