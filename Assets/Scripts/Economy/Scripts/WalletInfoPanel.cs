@@ -203,4 +203,5 @@ public class WalletInfoPanel : MonoBehaviour
 
     // 🧠 Public getter for other UIs (like TopBar_Economy)
     public int GetCoins() => coins;
+    public int GetGems() => gems;
 }

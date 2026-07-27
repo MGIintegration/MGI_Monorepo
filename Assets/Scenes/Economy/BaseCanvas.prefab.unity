@@ -447,6 +447,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coinsText: {fileID: 1409004081}
+  gemsText: {fileID: 0}
   walletInfoPanel: {fileID: 853654613}
 --- !u!1001 &32035816
 PrefabInstance:
@@ -635,7 +636,7 @@ MonoBehaviour:
     m_Right: 40
     m_Top: 40
     m_Bottom: 40
-  m_ChildAlignment: 0
+  m_ChildAlignment: 4
   m_Spacing: 20
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
@@ -1955,7 +1956,7 @@ MonoBehaviour:
     m_Right: 60
     m_Top: 60
     m_Bottom: 60
-  m_ChildAlignment: 0
+  m_ChildAlignment: 4
   m_Spacing: 28
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
@@ -3339,10 +3340,8 @@ MonoBehaviour:
   spendCoins: 100
   spendGems: 5
   spendCoachingCredits: 2
-  recentTxLimit: 25
   addPreset: 2
   spendPreset: 0
-  rawFileTarget: 0
 --- !u!4 &1169076081
 Transform:
   m_ObjectHideFlags: 0
@@ -6213,6 +6212,22 @@ PrefabInstance:
       value: 'Coins:'
       objectReference: {fileID: 0}
     - target: {fileID: 8532144471687148516, guid: 705779cdc8f874e6bb3f989e8c8fdaf8, type: 3}
+      propertyPath: m_fontSize
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 8532144471687148516, guid: 705779cdc8f874e6bb3f989e8c8fdaf8, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 8532144471687148516, guid: 705779cdc8f874e6bb3f989e8c8fdaf8, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8532144471687148516, guid: 705779cdc8f874e6bb3f989e8c8fdaf8, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8532144471687148516, guid: 705779cdc8f874e6bb3f989e8c8fdaf8, type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
       objectReference: {fileID: 0}
@@ -6303,6 +6318,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coinsText: {fileID: 0}
+  gemsText: {fileID: 0}
   walletInfoPanel: {fileID: 853654613}
 --- !u!1001 &2026291074
 PrefabInstance:

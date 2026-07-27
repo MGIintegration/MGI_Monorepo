@@ -11,6 +11,7 @@ public class AcquisitionHubController : MonoBehaviour
 {
     [Header("UI References")]
     public TMP_Text coinsText;
+    public TMP_Text gemsText;
     public TMP_Text xpText;
 
     [Header("Buttons")]
@@ -163,10 +164,15 @@ public class AcquisitionHubController : MonoBehaviour
     {
         string playerId = PlayerPrefs.GetString("player_id", SystemInfo.deviceUniqueIdentifier);
 
-        if (coinsText != null)
+        if (coinsText != null || gemsText != null)
         {
             var wallet = new EconomyService().GetWallet(playerId, true);
-            coinsText.text = wallet != null ? $"Coins: {wallet.coins}" : "Coins: ?";
+
+            if (coinsText != null)
+                coinsText.text = wallet != null ? $"Coins: {wallet.coins}" : "Coins: ?";
+
+            if (gemsText != null)
+                gemsText.text = wallet != null ? $"Gems: {wallet.gems}" : "Gems: ?";
         }
 
         if (xpText != null)
