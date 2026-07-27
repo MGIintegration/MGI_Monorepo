@@ -1985,7 +1985,7 @@ MonoBehaviour:
     - key: Total Cost
       value: $48,000
   loadFromDatabase: 1
-  useAPI: 1
+  useAPI: 0
   apiBaseUrl: http://localhost:5175/api/coach
   specificCoachId: 
   coachNameText: {fileID: 98109163}
