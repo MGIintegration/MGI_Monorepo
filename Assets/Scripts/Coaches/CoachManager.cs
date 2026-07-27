@@ -81,7 +81,7 @@ public class CoachManager : MonoBehaviour
         if (mainScreenBudgetText == null) return;
         var wallet = new EconomyService().GetWallet(CoachesService.LocalPlayerId);
         mainScreenBudgetText.text = wallet != null
-            ? $"WEEKLY BUDGET: {wallet.coins.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)} COINS"
+            ? $"WEEKLY BUDGET: {wallet.coins.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)} COINS | {wallet.gems.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)} GEMS"
             : "WEEKLY BUDGET: --";
     }
 

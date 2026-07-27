@@ -124,7 +124,7 @@ public class CoachHiringMarket : MonoBehaviour
         if (budgetText == null) return;
         var wallet = new EconomyService().GetWallet(CoachesService.LocalPlayerId);
         budgetText.text = wallet != null
-            ? $"Budget: {wallet.coins.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)} coins"
+            ? $"Budget: {wallet.coins.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)} coins | {wallet.gems.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)} gems"
             : "Budget: --";
     }
 

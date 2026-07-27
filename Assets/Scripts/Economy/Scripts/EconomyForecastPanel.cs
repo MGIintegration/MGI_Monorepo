@@ -87,9 +87,9 @@ public class EconomyForecastPanel : MonoBehaviour
             snapshot = EconomyForecastService.CreateZeroSnapshot();
         }
 
-        if (earningsText) earningsText.text = $"Earnings: {snapshot.earnings:N0}";
-        if (expensesText) expensesText.text = $"Expenses: {snapshot.totalExpenses:N0}";
-        if (netDeltaText) netDeltaText.text = $"Net Delta: {snapshot.netDelta:+#;-#;0}";
+        if (earningsText) earningsText.text = $"Earnings: {snapshot.earnings:N0} Coins | {snapshot.gemsEarnings:N0} Gems";
+        if (expensesText) expensesText.text = $"Expenses: {snapshot.totalExpenses:N0} Coins | {snapshot.gemsExpenses:N0} Gems";
+        if (netDeltaText) netDeltaText.text = $"Net Delta: {snapshot.netDelta:+#;-#;0} Coins | {snapshot.gemsNetDelta:+#;-#;0} Gems";
 
         if (weeklyForecastUI != null)
         {
@@ -148,6 +148,9 @@ internal sealed class EconomyForecastSnapshot
     public int totalExpenses;
     public int netDelta;
     public int projectedBalance;
+    public int gemsEarnings;
+    public int gemsExpenses;
+    public int gemsNetDelta;
 }
 
 internal sealed class EconomyForecastService
@@ -171,6 +174,11 @@ internal sealed class EconomyForecastService
         public int? base_income;
         public Dictionary<string, int> base_bonuses;
         public Dictionary<string, int> base_expenses;
+        public int gems_income;
+        public int gems_salary;
+        public Dictionary<string, int> gems_bonuses;
+        public Dictionary<string, int> gems_expenses;
+        public List<ForecastWeek> gems_forecast;
     }
 
     [Serializable]
@@ -199,7 +207,10 @@ internal sealed class EconomyForecastService
             earnings = 0,
             totalExpenses = 0,
             netDelta = 0,
-            projectedBalance = 0
+            projectedBalance = 0,
+            gemsEarnings = 0,
+            gemsExpenses = 0,
+            gemsNetDelta = 0
         };
     }
 
@@ -238,11 +249,17 @@ internal sealed class EconomyForecastService
             SeedBaseValuesIfMissing(forecastFile);
 
             var liveWallet = _economyService.GetWallet(effectivePlayerId, createIfMissing: false);
-            var recentCoinTransactions = _economyService
+            var recentTransactions = _economyService
                 .GetRecentTransactions(effectivePlayerId, LiveTransactionLimit)
-                .Where(transaction =>
-                    transaction != null &&
-                    string.Equals(transaction.currency, "coins", StringComparison.Ordinal))
+                .Where(transaction => transaction != null)
+                .ToList();
+
+            var recentCoinTransactions = recentTransactions
+                .Where(transaction => string.Equals(transaction.currency, "coins", StringComparison.Ordinal))
+                .ToList();
+
+            var recentGemTransactions = recentTransactions
+                .Where(transaction => string.Equals(transaction.currency, "gems", StringComparison.Ordinal))
                 .ToList();
 
             var earnedCoins = recentCoinTransactions
@@ -253,15 +270,35 @@ internal sealed class EconomyForecastService
                 .Where(transaction => string.Equals(transaction.type, "spend", StringComparison.Ordinal))
                 .Sum(transaction => Mathf.Abs(transaction.amount));
 
+            var earnedGems = recentGemTransactions
+                .Where(transaction => string.Equals(transaction.type, "earn", StringComparison.Ordinal))
+                .Sum(transaction => Mathf.Abs(transaction.amount));
+
+            var spentGems = recentGemTransactions
+                .Where(transaction => string.Equals(transaction.type, "spend", StringComparison.Ordinal))
+                .Sum(transaction => Mathf.Abs(transaction.amount));
+
             var currentBalance = liveWallet?.coins ?? 0;
-            if (IsFreshStartState(liveWallet, recentCoinTransactions))
+            var currentGemsBalance = liveWallet?.gems ?? 0;
+            if (IsFreshStartState(liveWallet, recentTransactions))
             {
                 currentBalance = 0;
                 earnedCoins = 0;
                 spentCoins = 0;
+                currentGemsBalance = 0;
+                earnedGems = 0;
+                spentGems = 0;
             }
 
-            ApplyLiveValues(forecastFile, effectivePlayerId, currentBalance, earnedCoins, spentCoins);
+            ApplyLiveValues(
+                forecastFile,
+                effectivePlayerId,
+                currentBalance,
+                earnedCoins,
+                spentCoins,
+                currentGemsBalance,
+                earnedGems,
+                spentGems);
             WriteForecastFilesIfChanged(effectivePlayerId, forecastFile);
             return true;
         }
@@ -309,6 +346,20 @@ internal sealed class EconomyForecastService
             ? forecastFile.current_balance
             : selectedWeek.balance;
 
+        var selectedGemsWeek = forecastFile.gems_forecast
+            ?.OrderBy(entry => entry.week)
+            .FirstOrDefault() ?? new ForecastWeek { week = weekNumber, net_change = 0, balance = 0 };
+
+        var actualGemsBonus = ReadWeekValue(forecastFile.gems_bonuses, weekKey);
+        var actualGemsOperatingExpense = ReadWeekValue(forecastFile.gems_expenses, weekKey);
+        var gemsEarnings = forecastFile.gems_income + actualGemsBonus;
+        var gemsTotalExpenses = forecastFile.gems_salary + actualGemsOperatingExpense;
+        var gemsNetDelta = selectedGemsWeek.net_change;
+        if (gemsNetDelta == 0 && (gemsEarnings != 0 || gemsTotalExpenses != 0))
+        {
+            gemsNetDelta = gemsEarnings - gemsTotalExpenses;
+        }
+
         return new EconomyForecastSnapshot
         {
             week = weekNumber,
@@ -320,7 +371,10 @@ internal sealed class EconomyForecastService
             earnings = earnings,
             totalExpenses = totalExpenses,
             netDelta = netDelta,
-            projectedBalance = projectedBalance
+            projectedBalance = projectedBalance,
+            gemsEarnings = gemsEarnings,
+            gemsExpenses = gemsTotalExpenses,
+            gemsNetDelta = gemsNetDelta
         };
     }
 
@@ -396,6 +450,21 @@ internal sealed class EconomyForecastService
             forecastFile.forecast = new List<ForecastWeek>();
         }
 
+        if (forecastFile.gems_bonuses == null)
+        {
+            forecastFile.gems_bonuses = new Dictionary<string, int>();
+        }
+
+        if (forecastFile.gems_expenses == null)
+        {
+            forecastFile.gems_expenses = new Dictionary<string, int>();
+        }
+
+        if (forecastFile.gems_forecast == null)
+        {
+            forecastFile.gems_forecast = new List<ForecastWeek>();
+        }
+
         if (forecastFile.alerts == null)
         {
             forecastFile.alerts = new List<string>();
@@ -435,7 +504,10 @@ internal sealed class EconomyForecastService
         string playerId,
         int currentBalance,
         int earnedCoins,
-        int spentCoins)
+        int spentCoins,
+        int currentGemsBalance,
+        int earnedGems,
+        int spentGems)
     {
         if (forecastFile == null)
         {
@@ -451,6 +523,7 @@ internal sealed class EconomyForecastService
         }
 
         var netDelta = earnedCoins - spentCoins;
+        var gemsNetDelta = earnedGems - spentGems;
 
         forecastFile.player_id = playerId;
         forecastFile.current_balance = currentBalance;
@@ -467,6 +540,21 @@ internal sealed class EconomyForecastService
                 week = week,
                 net_change = week == currentWeek ? netDelta : 0,
                 balance = currentBalance
+            })
+            .ToList();
+
+        forecastFile.gems_income = earnedGems;
+        forecastFile.gems_salary = 0;
+        forecastFile.gems_bonuses = orderedWeekNumbers.ToDictionary(week => week.ToString(), week => 0);
+        forecastFile.gems_expenses = orderedWeekNumbers.ToDictionary(
+            week => week.ToString(),
+            week => week == currentWeek ? spentGems : 0);
+        forecastFile.gems_forecast = orderedWeekNumbers
+            .Select(week => new ForecastWeek
+            {
+                week = week,
+                net_change = week == currentWeek ? gemsNetDelta : 0,
+                balance = currentGemsBalance
             })
             .ToList();
     }
