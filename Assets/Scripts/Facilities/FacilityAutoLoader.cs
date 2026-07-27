@@ -11,9 +11,9 @@ public class FacilityAutoLoader : MonoBehaviour
 
         switch (type)
         {
-            case FacilityType.WeightRoom: details.ShowWeightRoomFromServer(); break;
-            case FacilityType.Rehab: details.ShowRehabFromServer(); break;
-            case FacilityType.Film: details.ShowFilmFromServer(); break;
+            case FacilityType.WeightRoom: details.ShowWeightRoom(); break;
+            case FacilityType.Rehab: details.ShowRehab(); break;
+            case FacilityType.Film: details.ShowFilm(); break;
         }
     }
 }
