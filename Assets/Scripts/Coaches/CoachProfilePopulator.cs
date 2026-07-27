@@ -97,7 +97,7 @@ public class CoachProfilePopulator : MonoBehaviour
 
     [Header("Database Integration")]
     [SerializeField] private bool loadFromDatabase = true;
-    [SerializeField] private bool useAPI = true; // New API integration flag
+    [SerializeField] private bool useAPI = false; // New API integration flag
     [SerializeField] private string apiBaseUrl = "http://localhost:5175/api/coach";
     [SerializeField] private string specificCoachId = ""; // For loading specific coach by ID
 

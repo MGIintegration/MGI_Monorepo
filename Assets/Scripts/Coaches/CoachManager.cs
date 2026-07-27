@@ -29,7 +29,7 @@ public class CoachManager : MonoBehaviour
     [Header("API Configuration")]
     [SerializeField] private string baseURL = "http://localhost:5175";
     [SerializeField] private string teamId = "4d1c8be1-c9f0-4f0f-9e91-b424d8343f86"; // Default team ID
-    [SerializeField] private bool loadFromAPI = true; // Toggle for API vs JSON fallback
+    [SerializeField] private bool loadFromAPI = false; // Toggle for API vs JSON fallback
     private bool isAPIAvailable = false;
 
     private IDisposable hireSubscription;
