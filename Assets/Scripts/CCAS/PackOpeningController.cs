@@ -9,6 +9,7 @@ public class PackOpeningController : MonoBehaviour
 {
     [Header("Navigation")]
     public Button continueButton;
+    public Button backToHubButton;
     public GameObject packPanel;
     public GameObject dropHistoryPanel;
 
@@ -35,15 +36,21 @@ public class PackOpeningController : MonoBehaviour
     void Start()
     {
         if (continueButton != null)
-        {
-            continueButton.onClick.AddListener(() =>
-            {
+            continueButton.onClick.AddListener(OnContinueClicked);
 
-                FindFirstObjectByType<AcquisitionHubController>()?.ShowHistory();
-                dropHistoryController?.RefreshDropHistory();
+        if (backToHubButton != null)
+            backToHubButton.onClick.AddListener(OnBackToHubClicked);
+    }
 
-            });
-        }
+    private void OnContinueClicked()
+    {
+        FindFirstObjectByType<AcquisitionHubController>()?.ShowHistory();
+        dropHistoryController?.RefreshDropHistory();
+    }
+
+    private void OnBackToHubClicked()
+    {
+        FindFirstObjectByType<AcquisitionHubController>()?.ShowHub();
     }
 
     public void OpenPackOfType(string key)
