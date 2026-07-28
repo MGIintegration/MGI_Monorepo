@@ -11,6 +11,7 @@ public class ScreenManager : MonoBehaviour
     public GameObject screenBracket;
     public GameObject screenXP;
     public GameObject screenSimFeedback;
+    public GameObject screenRewards;
 
     [Header("Hub UI References")]
     public TextMeshProUGUI xpText;
@@ -31,6 +32,7 @@ public class ScreenManager : MonoBehaviour
     [Header("Optional References (if available)")]
     public BracketUI bracketUI;
     public XPUI xpUI;
+    public RewardsUI rewardsUI;
 
     private SeasonManager seasonManager;
 
@@ -83,6 +85,12 @@ public class ScreenManager : MonoBehaviour
         xpUI?.RefreshXPHistory();
     }
 
+    public void ShowRewards()
+    {
+        ShowScreen(screenRewards);
+        rewardsUI?.RefreshRewards();
+    }
+
     public void ShowSimFeedback()
     {
 
@@ -98,6 +106,7 @@ public class ScreenManager : MonoBehaviour
         if (screenBracket != null) screenBracket.SetActive(false);
         if (screenXP != null) screenXP.SetActive(false);
         if (screenSimFeedback != null) screenSimFeedback.SetActive(false);
+        if (screenRewards != null) screenRewards.SetActive(false);
 
         screen.SetActive(true);
     }
