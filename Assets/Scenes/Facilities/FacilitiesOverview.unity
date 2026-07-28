@@ -940,6 +940,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63ae808d76ebd42088e347bf85149274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  facilitiesOverviewPanel: {fileID: 0}
+  weeklyReportPanel: {fileID: 0}
 --- !u!114 &99052806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -976,6 +978,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98e717aa6a21d4b9e8b7bae64ce0f08b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  modalPanel: {fileID: 101244364}
+  upgradeToastPanel: {fileID: 0}
+  facilityDetailPanelToReturn: {fileID: 265754114}
+  toastController: {fileID: 0}
+  confirmButton: {fileID: 1184478329}
+  cancelButton: {fileID: 1184478328}
 --- !u!1 &109816117 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4950629350796841481, guid: 2d5722113b86640b0a18e6d8e29dfafa, type: 3}
@@ -1127,7 +1135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: local_player
-  facilityTypeId: 
+  facilityTypeId: film_room
   upgradeButton: {fileID: 0}
 --- !u!1 &196976380
 GameObject:
@@ -1408,6 +1416,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63ae808d76ebd42088e347bf85149274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  facilitiesOverviewPanel: {fileID: 0}
+  weeklyReportPanel: {fileID: 0}
 --- !u!114 &265754117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1882,6 +1892,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63ae808d76ebd42088e347bf85149274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  facilitiesOverviewPanel: {fileID: 0}
+  weeklyReportPanel: {fileID: 0}
 --- !u!114 &333270315
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2209,9 +2221,6 @@ MonoBehaviour:
   weightRoomRes: WeightRoom
   rehabRes: Rehab
   filmRes: Film
-  apiBaseUrl: http://localhost:5263/api
-  statusPath: /facilitystatus
-  configPath: /facilityconfig
   teamId: d4e5f6a7-b8c9-0123-4567-890abcdef012
   playerFacilityId: f3a4b5c6-d7e8-9012-3456-789012345678
   defaultFacility: 0
@@ -2841,7 +2850,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: local_player
-  facilityTypeId: 
+  facilityTypeId: weight_room
   upgradeButton: {fileID: 0}
 --- !u!1 &529349921 stripped
 GameObject:
@@ -2865,6 +2874,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98e717aa6a21d4b9e8b7bae64ce0f08b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  modalPanel: {fileID: 529349921}
+  upgradeToastPanel: {fileID: 0}
+  facilityDetailPanelToReturn: {fileID: 333270312}
+  toastController: {fileID: 0}
+  confirmButton: {fileID: 1434807040}
+  cancelButton: {fileID: 1434807039}
 --- !u!1 &545913237
 GameObject:
   m_ObjectHideFlags: 0
@@ -3477,6 +3492,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58a1eb19c4a4143778bec6a0b013e7b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  toastPanel: {fileID: 0}
+  toastText: {fileID: 0}
 --- !u!1 &584370197
 GameObject:
   m_ObjectHideFlags: 0
@@ -3715,6 +3732,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2bce3b6f27b54844b7a95dd59f43b01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  facilitiesOverviewPanel: {fileID: 1025170838}
+  weeklyReportPanel: {fileID: 1245630757}
 --- !u!1 &608061530
 GameObject:
   m_ObjectHideFlags: 0
@@ -3900,8 +3919,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73e08c1d447ba2440a2e583d5b85abda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  apiBaseUrl: http://localhost:5263/api
-  endpointPath: /weeklysnapshot
   teamId: d4e5f6a7-b8c9-0123-4567-890abcdef012
   outputText: {fileID: 1128631151}
   autoRefreshOnEnable: 1
@@ -4864,6 +4881,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2eee92f5fe5d416b8b4243e6adc7ea4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rehabPanel: {fileID: 99052800}
+  filmPanel: {fileID: 265754114}
+  weightPanel: {fileID: 333270312}
+  borderHighlight: {fileID: 0}
 --- !u!1 &817687671
 GameObject:
   m_ObjectHideFlags: 0
@@ -5924,6 +5945,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2eee92f5fe5d416b8b4243e6adc7ea4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rehabPanel: {fileID: 99052800}
+  filmPanel: {fileID: 265754114}
+  weightPanel: {fileID: 333270312}
+  borderHighlight: {fileID: 0}
 --- !u!1 &937905244
 GameObject:
   m_ObjectHideFlags: 0
@@ -5979,9 +6004,6 @@ MonoBehaviour:
   weightRoomRes: 
   rehabRes: Rehab
   filmRes: 
-  apiBaseUrl: http://localhost:5263/api
-  statusPath: /facilitystatus
-  configPath: /facilityconfig
   teamId: d4e5f6a7-b8c9-0123-4567-890abcdef012
   playerFacilityId: d1e2f3a4-b5c6-7890-1234-567890123456
   defaultFacility: 1
@@ -6240,7 +6262,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: local_player
-  facilityTypeId: 
+  facilityTypeId: rehab_center
   upgradeButton: {fileID: 0}
 --- !u!1 &971240371
 GameObject:
@@ -7766,6 +7788,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58a1eb19c4a4143778bec6a0b013e7b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  toastPanel: {fileID: 0}
+  toastText: {fileID: 0}
 --- !u!1 &1183892031
 GameObject:
   m_ObjectHideFlags: 0
@@ -8377,6 +8401,28 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 101244368}
   m_SourcePrefab: {fileID: 100100000, guid: 5ef18d7c646b446eb933a5030b6aff34, type: 3}
+--- !u!114 &1184478328 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 337214899330979987, guid: 5ef18d7c646b446eb933a5030b6aff34, type: 3}
+  m_PrefabInstance: {fileID: 1184478327}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1184478329 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2372089407154775228, guid: 5ef18d7c646b446eb933a5030b6aff34, type: 3}
+  m_PrefabInstance: {fileID: 1184478327}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1184962630
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9093,9 +9139,6 @@ MonoBehaviour:
   weightRoomRes: WeightRoom
   rehabRes: Rehab
   filmRes: Film
-  apiBaseUrl: http://localhost:5263/api
-  statusPath: /facilitystatus
-  configPath: /facilityconfig
   teamId: d4e5f6a7-b8c9-0123-4567-890abcdef012
   playerFacilityId: e2f3a4b5-c6d7-8901-2345-678901234567
   defaultFacility: 2
@@ -9864,7 +9907,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: local_player
-  facilityTypeId: 
+  facilityTypeId: rehab_center
   upgradeButton: {fileID: 0}
 --- !u!1001 &1357216656
 PrefabInstance:
@@ -10314,7 +10357,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: local_player
-  facilityTypeId: 
+  facilityTypeId: rehab_center
   upgradeButton: {fileID: 0}
 --- !u!1001 &1409954762
 PrefabInstance:
@@ -11072,6 +11115,28 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 529349925}
   m_SourcePrefab: {fileID: 100100000, guid: 5ef18d7c646b446eb933a5030b6aff34, type: 3}
+--- !u!114 &1434807039 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 337214899330979987, guid: 5ef18d7c646b446eb933a5030b6aff34, type: 3}
+  m_PrefabInstance: {fileID: 1434807038}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1434807040 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2372089407154775228, guid: 5ef18d7c646b446eb933a5030b6aff34, type: 3}
+  m_PrefabInstance: {fileID: 1434807038}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1452526640 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 212177401192794709, guid: e47ab310ec3654ab0bcb65b9a59a1395, type: 3}
@@ -11321,6 +11386,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98e717aa6a21d4b9e8b7bae64ce0f08b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  modalPanel: {fileID: 1483559063}
+  upgradeToastPanel: {fileID: 0}
+  facilityDetailPanelToReturn: {fileID: 99052800}
+  toastController: {fileID: 0}
+  confirmButton: {fileID: 6014685186342702618}
+  cancelButton: {fileID: 6014685186342702617}
 --- !u!1 &1493806912
 GameObject:
   m_ObjectHideFlags: 0
@@ -12476,7 +12547,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: local_player
-  facilityTypeId: 
+  facilityTypeId: weight_room
   upgradeButton: {fileID: 0}
 --- !u!1 &1613262853
 GameObject:
@@ -13460,7 +13531,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: local_player
-  facilityTypeId: 
+  facilityTypeId: film_room
   upgradeButton: {fileID: 0}
 --- !u!1 &1788750066
 GameObject:
@@ -14632,6 +14703,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2eee92f5fe5d416b8b4243e6adc7ea4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rehabPanel: {fileID: 99052800}
+  filmPanel: {fileID: 265754114}
+  weightPanel: {fileID: 333270312}
+  borderHighlight: {fileID: 0}
 --- !u!114 &1899152177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14683,9 +14758,6 @@ MonoBehaviour:
   weightRoomRes: WeightRoom
   rehabRes: Rehab
   filmRes: Film
-  apiBaseUrl: http://localhost:5263/api
-  statusPath: /facilitystatus
-  configPath: /facilityconfig
   teamId: d4e5f6a7-b8c9-0123-4567-890abcdef012
   playerFacilityId: d1e2f3a4-b5c6-7890-1234-567890123456
   defaultFacility: 1
@@ -15098,6 +15170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db7d03e5d7db54ca2968814c6ef875ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  simulationPreviewPanel: {fileID: 0}
 --- !u!1001 &1973238735
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15268,6 +15341,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58a1eb19c4a4143778bec6a0b013e7b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  toastPanel: {fileID: 0}
+  toastText: {fileID: 0}
 --- !u!1 &2031005156
 GameObject:
   m_ObjectHideFlags: 0
@@ -15317,7 +15392,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: local_player
-  facilityTypeId: 
+  facilityTypeId: weight_room
   upgradeButton: {fileID: 0}
 --- !u!224 &2039151993 stripped
 RectTransform:
@@ -15822,7 +15897,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: local_player
-  facilityTypeId: 
+  facilityTypeId: film_room
   upgradeButton: {fileID: 0}
 --- !u!1 &2118137411
 GameObject:
@@ -17697,6 +17772,28 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1483559067}
   m_SourcePrefab: {fileID: 100100000, guid: 5ef18d7c646b446eb933a5030b6aff34, type: 3}
+--- !u!114 &6014685186342702617 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 337214899330979987, guid: 5ef18d7c646b446eb933a5030b6aff34, type: 3}
+  m_PrefabInstance: {fileID: 6014685186342702616}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6014685186342702618 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2372089407154775228, guid: 5ef18d7c646b446eb933a5030b6aff34, type: 3}
+  m_PrefabInstance: {fileID: 6014685186342702616}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!222 &6042338491806119754
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -18077,9 +18174,6 @@ MonoBehaviour:
   weightRoomRes: WeightRoom
   rehabRes: Rehab
   filmRes: Film
-  apiBaseUrl: http://localhost:5263/api
-  statusPath: /facilitystatus
-  configPath: /facilityconfig
   teamId: d4e5f6a7-b8c9-0123-4567-890abcdef012
   playerFacilityId: d1e2f3a4-b5c6-7890-1234-567890123456
   defaultFacility: 2
@@ -18333,9 +18427,6 @@ MonoBehaviour:
   weightRoomRes: WeightRoom
   rehabRes: Rehab
   filmRes: Film
-  apiBaseUrl: http://localhost:5263/api
-  statusPath: /facilitystatus
-  configPath: /facilityconfig
   teamId: d4e5f6a7-b8c9-0123-4567-890abcdef012
   playerFacilityId: d1e2f3a4-b5c6-7890-1234-567890123456
   defaultFacility: 0
