@@ -15,6 +15,9 @@ public class UpgradeModalController : MonoBehaviour
     [SerializeField] private Button confirmButton;
     [SerializeField] private Button cancelButton;
 
+    [Header("Upgrade Logic")]
+    [SerializeField] private FacilityUpgradeHandler upgradeHandler;
+
     void Start()
     {
         confirmButton.onClick.AddListener(HandleConfirm);
@@ -30,12 +33,21 @@ public class UpgradeModalController : MonoBehaviour
 
     private void HandleConfirm()
     {
+        bool success = upgradeHandler != null && upgradeHandler.OnUpgradeButtonClick();
+
         modalPanel.SetActive(false);
 
-        if (toastController != null)
-            toastController.ShowToast("🏋️ Upgrade Complete: +1.3 STR/week!");
-        else if (upgradeToastPanel != null)
-            upgradeToastPanel.SetActive(true);
+        if (success)
+        {
+            if (toastController != null)
+                toastController.ShowToast("🏋️ Upgrade Complete: +1.3 STR/week!");
+            else if (upgradeToastPanel != null)
+                upgradeToastPanel.SetActive(true);
+        }
+        else if (facilityDetailPanelToReturn != null)
+        {
+            facilityDetailPanelToReturn.SetActive(true);
+        }
     }
 
     private void HandleCancel()
