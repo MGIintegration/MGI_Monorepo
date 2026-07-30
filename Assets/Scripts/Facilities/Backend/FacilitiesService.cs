@@ -279,6 +279,27 @@ public class FacilitiesService
         return 1f;
     }
 
+    public bool ResetFacilityState(string playerId)
+    {
+        if (string.IsNullOrWhiteSpace(playerId))
+        {
+            playerId = DefaultPlayerId;
+        }
+
+        var state = CreateDefaultPlayerFacilityState(playerId);
+        state.facilities ??= new Dictionary<string, PlayerFacilityProgress>();
+        EnsureKnownFacilityProgress(state);
+
+        var root = new PlayerFacilitiesRoot
+        {
+            player_facilities = new List<PlayerFacilityState> { state }
+        };
+
+        SavePlayerFacilitiesRoot(playerId, root);
+        Debug.Log($"[FacilitiesService] Reset facility state for '{playerId}'.");
+        return true;
+    }
+
     public bool IsValidFacilityType(string facilityTypeId)
     {
         return !string.IsNullOrWhiteSpace(facilityTypeId)

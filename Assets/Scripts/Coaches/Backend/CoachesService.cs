@@ -246,6 +246,45 @@ public static class CoachesService
     }
 
     /// <summary>Returns the current runtime team state for this player, or null if none exists yet.</summary>
+    public static bool ResetPlayerCoachState(string playerId = null)
+    {
+        playerId ??= LocalPlayerId;
+
+        foreach (var fileName in new[] { "teams.json", "coach_contracts.json" })
+        {
+            var path = FilePathResolver.GetCoachesPath(playerId, fileName);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+
+        var resetState = new TeamState
+        {
+            player_id = playerId,
+            team_id = string.Empty,
+            offence_coach = string.Empty,
+            defence_coach = string.Empty,
+            special_teams_coach = string.Empty
+        };
+
+        var resetContracts = new CoachContractList();
+
+        bool teamSaved = SaveTeamState(playerId, resetState);
+        bool contractsSaved = TryWriteAllTextAtomic(
+            FilePathResolver.GetCoachesPath(playerId, "coach_contracts.json"),
+            JsonUtility.ToJson(resetContracts, true));
+
+        if (!teamSaved || !contractsSaved)
+        {
+            Debug.LogError($"[CoachesService] Failed to create reset state files for '{playerId}'.");
+            return false;
+        }
+
+        Debug.Log($"[CoachesService] Reset coach state for '{playerId}'.");
+        return true;
+    }
+
     public static TeamState GetTeamState(string playerId = null)
     {
         return LoadTeamState(playerId ?? LocalPlayerId);
