@@ -162,7 +162,7 @@ public class AcquisitionHubController : MonoBehaviour
     /// </summary>
     private void RefreshEconomyAndProgressionLabels()
     {
-        string playerId = PlayerPrefs.GetString("player_id", SystemInfo.deviceUniqueIdentifier);
+        string playerId = PlayerIdProvider.Get();
 
         if (coinsText != null || gemsText != null)
         {
