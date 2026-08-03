@@ -12,7 +12,10 @@ public class FacilityDetailsHandler : MonoBehaviour
     public TMP_Text currentLevelText;
     public TMP_Text multiplierText;
     public TMP_Text weeklyBoostText;
-    public TMP_Text nextBlockText;
+    public TMP_Text nextLevelText;
+    public TMP_Text nextMultiplierText;
+    public TMP_Text nextBoostText;
+    public TMP_Text costText;
 
     [Header("Local JSON filenames in Resources (no .json)")]
     public string weightRoomRes = "WeightRoom";
@@ -131,20 +134,19 @@ public class FacilityDetailsHandler : MonoBehaviour
             if (weeklyBoostText) weeklyBoostText.text = "Weekly Boost: " + FormatWeeklyBoost(cur.effects);
         }
 
-        if (nextBlockText)
+        if (next != null)
         {
-            if (next != null)
-            {
-                nextBlockText.text =
-                    $"Next: Level {next.level}\n" +
-                    $"{FormatMultiplier(next.effects)}\n" +
-                    $"Weekly Boost: {FormatWeeklyBoost(next.effects)}\n" +
-                    $"Cost: ${next.upgradeCost:n0}";
-            }
-            else
-            {
-                nextBlockText.text = "Max level reached";
-            }
+            if (nextLevelText) nextLevelText.text = $"Next: Level {next.level}";
+            if (nextMultiplierText) nextMultiplierText.text = FormatMultiplier(next.effects);
+            if (nextBoostText) nextBoostText.text = "Weekly Boost: " + FormatWeeklyBoost(next.effects);
+            if (costText) costText.text = $"Cost: ${next.upgradeCost:n0}";
+        }
+        else
+        {
+            if (nextLevelText) nextLevelText.text = "Max level reached";
+            if (nextMultiplierText) nextMultiplierText.text = "";
+            if (nextBoostText) nextBoostText.text = "";
+            if (costText) costText.text = "";
         }
     }
 

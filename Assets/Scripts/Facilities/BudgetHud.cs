@@ -11,12 +11,9 @@ public class BudgetHud : MonoBehaviour
     [Header("IDs")]
     public string teamId;
 
-    [Header("Fallback display")]
-    public int fallbackBudget = 80000;
-    public float fallbackRecoveryBoostPercent = 10f;
-
     private BudgetHudMiddleware budgetHudMiddleware;
     private bool hasStarted;
+    private System.IDisposable walletUpdatedSubscription;
 
     void Awake()
     {
@@ -28,13 +25,26 @@ public class BudgetHud : MonoBehaviour
 
     void OnEnable()
     {
+        walletUpdatedSubscription = EventBus.Subscribe("wallet_updated", OnWalletUpdated);
+
         if (hasStarted)
             Refresh();
+    }
+
+    void OnDisable()
+    {
+        walletUpdatedSubscription?.Dispose();
+        walletUpdatedSubscription = null;
     }
 
     void Start()
     {
         hasStarted = true;
+        Refresh();
+    }
+
+    private void OnWalletUpdated(EventBus.EventEnvelope evt)
+    {
         Refresh();
     }
 
@@ -44,12 +54,6 @@ public class BudgetHud : MonoBehaviour
 
         if (!result.Success)
         {
-            if (result.MissingBudgetFile)
-            {
-                ApplyFallbackDisplay();
-                return;
-            }
-
             Debug.LogError("[BudgetHud] " + result.Message);
 
             if (budgetText)
@@ -71,17 +75,5 @@ public class BudgetHud : MonoBehaviour
         {
             recoveryBoostText.text = $"RECOVERY BOOST: +{result.RecoveryBoostPercent:0.#}%";
         }
-    }
-
-    private void ApplyFallbackDisplay()
-    {
-        if (budgetText && string.IsNullOrWhiteSpace(budgetText.text))
-        {
-            var usd = fallbackBudget.ToString("C0", CultureInfo.GetCultureInfo("en-US"));
-            budgetText.text = $"FACILITY BUDGET: {usd}";
-        }
-
-        if (recoveryBoostText && string.IsNullOrWhiteSpace(recoveryBoostText.text))
-            recoveryBoostText.text = $"RECOVERY BOOST: +{fallbackRecoveryBoostPercent:0.#}%";
     }
 }

@@ -1,79 +1,36 @@
-using System.IO;
-using Newtonsoft.Json;
-using UnityEngine;
-
 public class BudgetHudMiddleware
 {
-    private const string BudgetFileName = "teamBudget.json";
+    private readonly EconomyService economyService;
+    private readonly FacilitiesService facilitiesService;
 
-    public BudgetHudResult TryGetBudget(string teamId)
+    public BudgetHudMiddleware()
     {
-        if (string.IsNullOrWhiteSpace(teamId))
-        {
-            return new BudgetHudResult
-            {
-                Success = false,
-                Message = "TeamId is required."
-            };
-        }
-
-        string path = Path.Combine(Application.persistentDataPath, BudgetFileName);
-
-        if (!File.Exists(path))
-        {
-            return new BudgetHudResult
-            {
-                Success = false,
-                MissingBudgetFile = true,
-                Message = $"Budget file not found at {path}"
-            };
-        }
-
-        try
-        {
-            string json = File.ReadAllText(path);
-            var dto = JsonConvert.DeserializeObject<BudgetDto>(json);
-
-            if (dto == null)
-            {
-                return new BudgetHudResult
-                {
-                    Success = false,
-                    Message = "Budget JSON was null."
-                };
-            }
-
-            if (dto.TeamId != teamId)
-            {
-                return new BudgetHudResult
-                {
-                    Success = false,
-                    Message = $"Budget data does not match teamId '{teamId}'."
-                };
-            }
-
-            return new BudgetHudResult
-            {
-                Success = true,
-                Budget = dto.Budget,
-                RecoveryBoostPercent = dto.RecoveryBoostPercent,
-                Message = "Budget loaded successfully."
-            };
-        }
-        catch (System.Exception ex)
-        {
-            return new BudgetHudResult
-            {
-                Success = false,
-                Message = $"Failed to read budget data. {ex.Message}"
-            };
-        }
+        economyService = new EconomyService();
+        facilitiesService = new FacilitiesService();
     }
 
-    private class BudgetDto
+    public BudgetHudResult TryGetBudget(string playerId)
     {
-        public string TeamId;
-        public decimal Budget;
-        public float RecoveryBoostPercent;
+        if (string.IsNullOrWhiteSpace(playerId))
+        {
+            playerId = FacilitiesService.DefaultPlayerId;
+        }
+
+        var wallet = economyService.GetWallet(playerId);
+        var rehabEffects = facilitiesService.GetFacilityEffects(playerId, "rehab_center");
+
+        float recoveryBoostPercent = 0f;
+        if (rehabEffects.TryGetValue("InjuryRecoveryMultiplier", out var multiplier))
+        {
+            recoveryBoostPercent = (multiplier - 1f) * 100f;
+        }
+
+        return new BudgetHudResult
+        {
+            Success = true,
+            Budget = wallet.coins,
+            RecoveryBoostPercent = recoveryBoostPercent,
+            Message = "Budget loaded from EconomyService/FacilitiesService."
+        };
     }
 }

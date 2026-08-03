@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +16,7 @@ public class FacilityUpgradeHandler : MonoBehaviour
         facilitiesService = new FacilitiesService();
     }
 
-    public void OnUpgradeButtonClick()
+    public bool OnUpgradeButtonClick()
     {
         Debug.Log($"Upgrade button clicked for facilityTypeId: {facilityTypeId}");
 
@@ -28,17 +29,22 @@ public class FacilityUpgradeHandler : MonoBehaviour
         {
             Debug.Log($"Upgrade Successful: {facilityTypeId} is now level {newState.level}");
 
-            var detailsHandler = FindFirstObjectByType<FacilityDetailsHandler>();
+            var matchingHandlers = FindObjectsByType<FacilityDetailsHandler>(FindObjectsSortMode.None)
+                .Where(h => h.playerFacilityId == facilityTypeId)
+                .ToList();
 
-            if (detailsHandler != null)
+            if (matchingHandlers.Count > 0)
             {
-                detailsHandler.SetIds(playerId, facilityTypeId);
-                detailsHandler.RefreshFromLocalState();
-                Debug.Log("FacilityDetailsHandler refreshed from local state after upgrade.");
+                foreach (var detailsHandler in matchingHandlers)
+                {
+                    detailsHandler.SetIds(playerId, facilityTypeId);
+                    detailsHandler.RefreshFromLocalState();
+                }
+                Debug.Log($"Refreshed {matchingHandlers.Count} FacilityDetailsHandler instance(s) for {facilityTypeId}.");
             }
             else
             {
-                Debug.LogWarning("FacilityDetailsHandler not found in scene.");
+                Debug.LogWarning($"No FacilityDetailsHandler found for facilityTypeId '{facilityTypeId}'.");
             }
         }
         else
@@ -48,5 +54,7 @@ public class FacilityUpgradeHandler : MonoBehaviour
 
         if (upgradeButton != null)
             upgradeButton.interactable = true;
+
+        return success;
     }
 }
