@@ -16,6 +16,9 @@ public class BoosterMarketAuto : MonoBehaviour
     public GameObject packButtonPrefab;
     public Transform contentParent;
 
+    [Header("Navigation")]
+    public Button backToHubButton;
+
     [Header("Optional UI Feedback")]
     [Tooltip("Assign the InsufficientFundsText TMP object on the Booster Market panel.")]
     public TMP_Text insufficientFundsText;
@@ -26,6 +29,14 @@ public class BoosterMarketAuto : MonoBehaviour
 
     void Start()
     {
+        if (backToHubButton != null)
+        {
+            backToHubButton.onClick.AddListener(() =>
+            {
+                FindFirstObjectByType<AcquisitionHubController>()?.ShowHub();
+            });
+        }
+
         GeneratePackButtons();
     }
 
@@ -76,7 +87,7 @@ public class BoosterMarketAuto : MonoBehaviour
             return;
         }
 
-        string playerId = PlayerPrefs.GetString("player_id", SystemInfo.deviceUniqueIdentifier);
+        string playerId = PlayerIdProvider.Get();
 
         var service = CCASService.Instance;
         if (service == null)
