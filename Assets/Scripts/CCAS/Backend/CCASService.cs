@@ -52,8 +52,7 @@ public class CCASService : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(playerId))
         {
-            Debug.LogWarning("[CCASService] OpenPack called with empty playerId.");
-            return PackResult.Failure("invalid_player");
+            playerId = PlayerIdProvider.Get();
         }
 
         // Spend via EconomyService first (authoritative)

@@ -97,7 +97,7 @@ public class PackOpeningController : MonoBehaviour
             var service = CCASService.Instance;
             if (service != null)
             {
-                string playerId = PlayerPrefs.GetString("player_id", SystemInfo.deviceUniqueIdentifier);
+                string playerId = PlayerIdProvider.Get();
                 serviceResult = service.OpenPack(playerId, packType);
                 if (serviceResult == null || !serviceResult.success)
                 {
@@ -193,7 +193,7 @@ public class PackOpeningController : MonoBehaviour
 
     void PublishBuyPackEvent(string packTypeKey, int costCoins, List<Card> cards)
     {
-        string playerId = PlayerPrefs.GetString("player_id", SystemInfo.deviceUniqueIdentifier);
+        string playerId = PlayerIdProvider.Get();
 
         // Read duplicate history before this pull — same snapshot TelemetryLogger uses
         var pullCounts = TelemetryLogger.Instance?.BuildCardPullCountsFromHistory()
