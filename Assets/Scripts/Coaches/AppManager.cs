@@ -20,6 +20,7 @@ public class AppManager : MonoBehaviour
     public Button fireOffenseCoachButton;
     public Button viewDefenseCoachButton;
     public Button fireDefenseCoachButton;
+    public Button viewSpecialCoachButton;
     public Button hiringCoachMarketButton;
     public Button performanceButton;
     public Button historyButton;
@@ -80,6 +81,20 @@ public class AppManager : MonoBehaviour
             });
         if (fireDefenseCoachButton != null)
             fireDefenseCoachButton.onClick.AddListener(() => Debug.Log("Fire defence coach button was clicked"));
+        if (viewSpecialCoachButton != null)
+            viewSpecialCoachButton.onClick.AddListener(() =>
+            {
+                var state = CoachesService.GetTeamState();
+                if (string.IsNullOrEmpty(state?.special_teams_coach)) return;
+                var coach = CoachesService.GetCoachById(state.special_teams_coach);
+                if (coach == null)
+                {
+                    Debug.LogWarning($"[AppManager] Special teams coach '{state.special_teams_coach}' not found in catalog.");
+                }
+                var populator = coachDetailsScreen?.GetComponentInChildren<CoachProfilePopulator>(true);
+                populator?.PopulateFromRecord(coach);
+                ShowScreen(coachDetailsScreen);
+            });
         if (hiringCoachMarketButton != null)
             hiringCoachMarketButton.onClick.AddListener(() => ShowScreen(coachHiringScreen));
         if (performanceButton != null)
