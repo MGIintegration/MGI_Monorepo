@@ -29,6 +29,11 @@ public class AcquisitionHubController : MonoBehaviour
 
     void Start()
     {
+        if (PlayerWallet.Instance != null)
+        {
+            PlayerWallet.Instance.OnChanged += RefreshEconomyAndProgressionLabels;
+        }
+
         RefreshEconomyAndProgressionLabels();
 
         if (goToMarketButton != null)
@@ -70,6 +75,11 @@ public class AcquisitionHubController : MonoBehaviour
 
     void OnDestroy()
     {
+        if (PlayerWallet.Instance != null)
+        {
+            PlayerWallet.Instance.OnChanged -= RefreshEconomyAndProgressionLabels;
+        }
+
         _buyPackSub?.Dispose();
     }
 
@@ -160,19 +170,26 @@ public class AcquisitionHubController : MonoBehaviour
     /// <summary>
     /// Updates the XP label on the hub using the player's total duplicate XP.
     /// </summary>
-    private void RefreshEconomyAndProgressionLabels()
+    public void RefreshEconomyAndProgressionLabels()
     {
-        string playerId = PlayerIdProvider.Get();
+        string playerId = ResolvePlayerId();
 
         if (coinsText != null || gemsText != null)
         {
-            var wallet = new EconomyService().GetWallet(playerId, true);
+            var ccasWallet = PlayerWallet.Instance;
+            var economyWallet = new EconomyService().GetWallet(playerId, true);
 
             if (coinsText != null)
-                coinsText.text = wallet != null ? $"Coins: {wallet.coins}" : "Coins: ?";
+            {
+                var coinValue = ccasWallet != null ? ccasWallet.coins : (economyWallet != null ? economyWallet.coins : 0);
+                coinsText.text = $"Coins: {coinValue}";
+            }
 
             if (gemsText != null)
-                gemsText.text = wallet != null ? $"Gems: {wallet.gems}" : "Gems: ?";
+            {
+                var gemValue = economyWallet != null ? economyWallet.gems : 0;
+                gemsText.text = $"Gems: {gemValue}";
+            }
         }
 
         if (xpText != null)
@@ -183,5 +200,18 @@ public class AcquisitionHubController : MonoBehaviour
                 ? $"XP: {state.current_xp}"
                 : $"XP: {PlayerPrefs.GetInt("player_xp", 0)}";
         }
+    }
+
+    private string ResolvePlayerId()
+    {
+        var savedPlayerId = PlayerPrefs.GetString("player_id", string.Empty);
+        if (string.IsNullOrWhiteSpace(savedPlayerId))
+        {
+            savedPlayerId = "local_player";
+            PlayerPrefs.SetString("player_id", savedPlayerId);
+            PlayerPrefs.Save();
+        }
+
+        return savedPlayerId;
     }
 }

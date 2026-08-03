@@ -61,6 +61,13 @@ public class PlayerWallet : MonoBehaviour
         OnChanged?.Invoke();
     }
 
+    public void ResetWallet()
+    {
+        coins = 500;
+        SaveWallet();
+        OnChanged?.Invoke();
+    }
+
     // ----------------------------------------------------------
     // Persistence (Optional)
     // ----------------------------------------------------------

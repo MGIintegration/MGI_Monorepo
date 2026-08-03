@@ -169,6 +169,27 @@ public class EconomyService
         PublishWalletUpdated(playerId, source, wallet);
     }
 
+    public bool ResetWallet(string playerId)
+    {
+        if (string.IsNullOrWhiteSpace(playerId))
+        {
+            Debug.LogWarning("[EconomyService] ResetWallet called with empty playerId.");
+            return false;
+        }
+
+        var wallet = CreateDefaultWallet(playerId);
+        var walletPath = GetCanonicalEconomyFilePath(playerId, WalletFileName);
+        var transactionsPath = GetCanonicalEconomyFilePath(playerId, TransactionsFileName);
+
+        WriteJsonAtomic(walletPath, wallet);
+        WriteJsonAtomic(transactionsPath, new List<WalletTransaction>());
+        MirrorEditorDebugWallet(wallet);
+        MirrorEditorDebugTransactions(new List<WalletTransaction>());
+        TrySynchronizeForecast(playerId);
+        PublishWalletUpdated(playerId, "reset_wallet", wallet);
+        return true;
+    }
+
     public IEnumerable<WalletTransaction> GetRecentTransactions(string playerId, int limit)
     {
         if (string.IsNullOrWhiteSpace(playerId) || limit <= 0)
