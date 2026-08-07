@@ -3106,7 +3106,7 @@ MonoBehaviour:
   weightRoomRes: WeightRoom
   rehabRes: Rehab
   filmRes: Film
-  teamId: d4e5f6a7-b8c9-0123-4567-890abcdef012
+  teamId: local_player
   playerFacilityId: weight_room
   defaultFacility: 0
   currentLevel: 1
@@ -8902,7 +8902,7 @@ MonoBehaviour:
   weightRoomRes: 
   rehabRes: Rehab
   filmRes: 
-  teamId: d4e5f6a7-b8c9-0123-4567-890abcdef012
+  teamId: local_player
   playerFacilityId: rehab_center
   defaultFacility: 1
   currentLevel: 1
@@ -12801,7 +12801,7 @@ MonoBehaviour:
   weightRoomRes: WeightRoom
   rehabRes: Rehab
   filmRes: Film
-  teamId: d4e5f6a7-b8c9-0123-4567-890abcdef012
+  teamId: local_player
   playerFacilityId: film_room
   defaultFacility: 2
   currentLevel: 1
@@ -19601,7 +19601,7 @@ MonoBehaviour:
   weightRoomRes: WeightRoom
   rehabRes: Rehab
   filmRes: Film
-  teamId: d4e5f6a7-b8c9-0123-4567-890abcdef012
+  teamId: local_player
   playerFacilityId: rehab_center
   defaultFacility: 1
   currentLevel: 1
@@ -23969,7 +23969,7 @@ MonoBehaviour:
   weightRoomRes: WeightRoom
   rehabRes: Rehab
   filmRes: Film
-  teamId: d4e5f6a7-b8c9-0123-4567-890abcdef012
+  teamId: local_player
   playerFacilityId: film_room
   defaultFacility: 2
   currentLevel: 1
@@ -24225,7 +24225,7 @@ MonoBehaviour:
   weightRoomRes: WeightRoom
   rehabRes: Rehab
   filmRes: Film
-  teamId: d4e5f6a7-b8c9-0123-4567-890abcdef012
+  teamId: local_player
   playerFacilityId: weight_room
   defaultFacility: 0
   currentLevel: 1

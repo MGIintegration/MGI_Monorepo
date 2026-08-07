@@ -60,7 +60,7 @@ public class FacilityDetailsHandler : MonoBehaviour
             _activeFacility = defaultFacility;
             _activeConfig = def;
             currentLevel = Mathf.Clamp(currentLevel, 1, _activeConfig.levels.Max(l => l.level));
-            BindUI();
+            RefreshFromLocalState();
         }
         else if (_configs.Count > 0)
         {
@@ -68,7 +68,7 @@ public class FacilityDetailsHandler : MonoBehaviour
             _activeFacility = first.Key;
             _activeConfig = first.Value;
             currentLevel = Mathf.Clamp(currentLevel, 1, _activeConfig.levels.Max(l => l.level));
-            BindUI();
+            RefreshFromLocalState();
         }
         else
         {
