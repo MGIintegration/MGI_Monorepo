@@ -18,43 +18,49 @@ public class SimulationFeedbackUI : MonoBehaviour
     public Button btnSimNextWeek;
     public Button btnBackToHub;
 
-    private SeasonManager seasonManager;
+    // SeasonManager is a singleton that's safe to read anytime once it exists.
+    // Resolving it live (instead of caching a reference set by a coroutine) avoids
+    // a startup race: if this GameObject gets deactivated by ScreenManager.Start()
+    // before the old wait-and-cache coroutine resolved, the cached reference was
+    // left permanently null and OnSimulateNextWeek() would silently no-op forever.
+    private SeasonManager seasonManager => SeasonManager.Instance;
     private ScreenManager screenManager;
+    private SeasonManager subscribedManager;
 
     void OnEnable()
     {
-        // Subscribe when SeasonManager becomes available
-        StartCoroutine(WaitForManagersAndSubscribe());
+        screenManager = FindObjectOfType<ScreenManager>();
+
+        if (btnBackToHub != null)
+        {
+            btnBackToHub.onClick.RemoveAllListeners();
+            btnBackToHub.onClick.AddListener(() => screenManager?.ShowHub());
+        }
+
+        RefreshUsingSeasonData();
+        StartCoroutine(SubscribeToSeasonManager());
     }
 
     void OnDisable()
     {
-        if (seasonManager != null)
-            seasonManager.OnSeasonDataUpdated -= OnSeasonDataUpdated;
+        StopAllCoroutines();
+        if (subscribedManager != null)
+        {
+            subscribedManager.OnSeasonDataUpdated -= OnSeasonDataUpdated;
+            subscribedManager = null;
+        }
     }
 
- private IEnumerator WaitForManagersAndSubscribe()
-{
-    // find ScreenManager quickly
-    screenManager = FindObjectOfType<ScreenManager>();
-
-    // wait for SeasonManager singleton to be ready
-    while (SeasonManager.Instance == null)
-        yield return null;
-
-    seasonManager = SeasonManager.Instance;
-    seasonManager.OnSeasonDataUpdated += OnSeasonDataUpdated;
-
-  
-    if (btnBackToHub != null)
+    private IEnumerator SubscribeToSeasonManager()
     {
-        btnBackToHub.onClick.RemoveAllListeners();
-        btnBackToHub.onClick.AddListener(() => screenManager?.ShowHub());
-    }
+        while (SeasonManager.Instance == null)
+            yield return null;
 
-    // initial refresh
-    RefreshUsingSeasonData();
-}
+        subscribedManager = SeasonManager.Instance;
+        subscribedManager.OnSeasonDataUpdated += OnSeasonDataUpdated;
+
+        RefreshUsingSeasonData();
+    }
 
     private void OnSeasonDataUpdated()
     {
