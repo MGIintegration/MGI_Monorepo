@@ -251,12 +251,20 @@ public class ProgressionService : MonoBehaviour
         {
             var statePath = FilePathResolver.GetProgressionPath(playerId, "progression_state.json");
             var historyPath = FilePathResolver.GetProgressionPath(playerId, "xp_history.jsonl");
-            
+
+            bool stateExists = File.Exists(statePath);
+            bool historyExists = File.Exists(historyPath);
+            if (!stateExists && !historyExists)
+            {
+                // Nothing on disk for this player - let GetState's createIfMissing decide what happens next.
+                return null;
+            }
+
             var state = new PlayerProgressionState(playerId);
-            
+
             // Load current state (XP and tier) if it exists
             // If progression_state.json doesn't exist, state starts with defaults (0 XP, rookie tier)
-            if (File.Exists(statePath))
+            if (stateExists)
             {
                 var json = JSONNode.Parse(File.ReadAllText(statePath));
                 state.current_xp = json["current_xp"].AsInt;
