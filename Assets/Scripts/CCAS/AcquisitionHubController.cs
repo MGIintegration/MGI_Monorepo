@@ -26,14 +26,10 @@ public class AcquisitionHubController : MonoBehaviour
     public GameObject myPacksPanel;
 
     private IDisposable _buyPackSub;
+    private IDisposable _walletUpdatedSub;
 
     void Start()
     {
-        if (PlayerWallet.Instance != null)
-        {
-            PlayerWallet.Instance.OnChanged += RefreshEconomyAndProgressionLabels;
-        }
-
         RefreshEconomyAndProgressionLabels();
 
         if (goToMarketButton != null)
@@ -68,6 +64,13 @@ public class AcquisitionHubController : MonoBehaviour
             PlayerPrefs.SetInt("ccas_has_pack_history", 1);
             PlayerPrefs.Save();
             RefreshMyPacksButton("buy_pack event");
+            RefreshEconomyAndProgressionLabels();
+        });
+
+        _walletUpdatedSub = EventBus.Subscribe("wallet_updated", env =>
+        {
+            if (env.player_id == ResolvePlayerId())
+                RefreshEconomyAndProgressionLabels();
         });
 
         ShowHub();
@@ -75,12 +78,8 @@ public class AcquisitionHubController : MonoBehaviour
 
     void OnDestroy()
     {
-        if (PlayerWallet.Instance != null)
-        {
-            PlayerWallet.Instance.OnChanged -= RefreshEconomyAndProgressionLabels;
-        }
-
         _buyPackSub?.Dispose();
+        _walletUpdatedSub?.Dispose();
     }
 
     private void OnMyPacksClicked()
@@ -176,12 +175,11 @@ public class AcquisitionHubController : MonoBehaviour
 
         if (coinsText != null || gemsText != null)
         {
-            var ccasWallet = PlayerWallet.Instance;
             var economyWallet = new EconomyService().GetWallet(playerId, true);
 
             if (coinsText != null)
             {
-                var coinValue = ccasWallet != null ? ccasWallet.coins : (economyWallet != null ? economyWallet.coins : 0);
+                var coinValue = economyWallet != null ? economyWallet.coins : 0;
                 coinsText.text = $"Coins: {coinValue}";
             }
 

@@ -66,6 +66,9 @@ public class CCASService : MonoBehaviour
         if (cards == null || cards.Count == 0)
         {
             Debug.LogWarning($"[CCASService] PullCards returned empty for {packTypeId}");
+            // Economy has already accepted the charge. Returning the same amount
+            // keeps a catalog/runtime failure from costing the player a pack.
+            _economy.AddCurrency(playerId, packType.cost, 0, "pack_purchase_refund_catalog_error");
             return PackResult.Failure("catalog_error");
         }
 
@@ -202,6 +205,86 @@ public class CCASService : MonoBehaviour
         return collection.entries.Where(e => e != null && e.player_id == playerId).ToList();
     }
 
+    /// <summary>
+    /// Returns the player's persisted pack-opening history. This is a read-only
+    /// helper for CCAS UI, test harnesses, and diagnostics.
+    /// </summary>
+    public IEnumerable<PackDropHistoryEntry> GetPackDropHistory(string playerId)
+    {
+        var history = LoadPackDropHistory(playerId);
+        return history.entries.Where(e => e != null && e.player_id == playerId).ToList();
+    }
+
+    /// <summary>
+    /// Resets CCAS-owned runtime state for one player. Intended for development,
+    /// automated tests, and debug tooling; it never modifies Economy or
+    /// Progression state owned by other services.
+    /// </summary>
+    public bool ResetPlayerState(string playerId)
+    {
+        if (string.IsNullOrWhiteSpace(playerId))
+        {
+            Debug.LogWarning("[CCASService] ResetPlayerState called with empty playerId.");
+            return false;
+        }
+
+        try
+        {
+            SaveCardCollection(playerId, new CardCollectionFile());
+            SavePackDropHistory(playerId, new PackDropHistoryFile());
+            TelemetryLogger.Instance?.ClearHistoryForPlayer(playerId);
+            Debug.Log($"[CCASService] Reset CCAS state for player {playerId}");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[CCASService] Failed to reset CCAS state: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Replaces one player's CCAS collection with deterministic entries for
+    /// development and automated workflow tests. Pack history is deliberately
+    /// left untouched so callers can seed only the state they need.
+    /// </summary>
+    public bool SeedCollectionForTesting(string playerId, IEnumerable<CardCollectionEntry> entries)
+    {
+        if (string.IsNullOrWhiteSpace(playerId))
+        {
+            Debug.LogWarning("[CCASService] SeedCollectionForTesting called with empty playerId.");
+            return false;
+        }
+
+        try
+        {
+            var seeded = new CardCollectionFile
+            {
+                entries = (entries ?? Enumerable.Empty<CardCollectionEntry>())
+                    .Where(e => e != null && !string.IsNullOrWhiteSpace(e.card_id))
+                    .Select(e => new CardCollectionEntry
+                    {
+                        player_id = playerId,
+                        card_id = e.card_id,
+                        quantity = Mathf.Max(0, e.quantity),
+                        first_acquired_at = string.IsNullOrWhiteSpace(e.first_acquired_at)
+                            ? DateTime.UtcNow.ToString("o")
+                            : e.first_acquired_at
+                    })
+                    .ToList()
+            };
+
+            SaveCardCollection(playerId, seeded);
+            Debug.Log($"[CCASService] Seeded {seeded.entries.Count} CCAS collection entries for player {playerId}");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[CCASService] Failed to seed CCAS collection: {ex.Message}");
+            return false;
+        }
+    }
+
     [System.Serializable] private class BuyPackCost             { public int coins; public int gems; }
     [System.Serializable] private class BuyPackCardEntry        { public string card_id; public string rarity; public bool is_duplicate; public int xp_awarded; }
     [System.Serializable] private class BuyPackPayload          { public string pack_type_id; public BuyPackCost cost_paid; public List<BuyPackCardEntry> cards_pulled; }
@@ -274,27 +357,34 @@ public class CCASService : MonoBehaviour
     {
         if (entry == null) return;
 
-        var path = FilePathResolver.GetCCASPath(playerId, PackDropHistoryFileName);
-        PackDropHistoryFile existing;
-
-        if (File.Exists(path))
-        {
-            try
-            {
-                existing = JsonConvert.DeserializeObject<PackDropHistoryFile>(File.ReadAllText(path)) ?? new PackDropHistoryFile();
-            }
-            catch
-            {
-                existing = new PackDropHistoryFile();
-            }
-        }
-        else
-        {
-            existing = new PackDropHistoryFile();
-        }
+        var existing = LoadPackDropHistory(playerId);
 
         existing.entries.Add(entry);
-        WriteJsonAtomic(path, existing);
+        SavePackDropHistory(playerId, existing);
+    }
+
+    private static PackDropHistoryFile LoadPackDropHistory(string playerId)
+    {
+        var path = FilePathResolver.GetCCASPath(playerId, PackDropHistoryFileName);
+        if (!File.Exists(path))
+            return new PackDropHistoryFile();
+
+        try
+        {
+            return JsonConvert.DeserializeObject<PackDropHistoryFile>(File.ReadAllText(path))
+                   ?? new PackDropHistoryFile();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"[CCASService] Failed to read pack history: {ex.Message}");
+            return new PackDropHistoryFile();
+        }
+    }
+
+    private static void SavePackDropHistory(string playerId, PackDropHistoryFile file)
+    {
+        var path = FilePathResolver.GetCCASPath(playerId, PackDropHistoryFileName);
+        WriteJsonAtomic(path, file ?? new PackDropHistoryFile());
     }
 
     private static void WriteJsonAtomic<T>(string destinationPath, T data)

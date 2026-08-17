@@ -23,6 +23,9 @@ Does **not** own wallet balances, tier/XP config, or raw drop-table logic — th
 |--------|---------|----------|
 | `OpenPack(playerId, packTypeId)` | `PackResult` | Resolves pack cost from config → `EconomyService.TrySpend` (coins only, `source: "pack_purchase"`) → rolls cards via `DropConfigManager.PullCards` → detects duplicates, awards duplicate XP, updates collection & history → publishes `buy_pack`. On failure: `success = false`, `failureReason` set; **no** collection/history writes. |
 | `GetCollection(playerId)` | `IEnumerable<CardCollectionEntry>` | Reads persisted `card_collection.json` for the player (empty if missing). |
+| `GetPackDropHistory(playerId)` | `IEnumerable<PackDropHistoryEntry>` | Reads persisted `pack_drop_history.json` for the player (empty if missing). |
+| `ResetPlayerState(playerId)` | `bool` | Clears CCAS-owned collection, pack history, and that player's CCAS telemetry. Intended for development/test tooling; does not alter Economy or Progression state. |
+| `SeedCollectionForTesting(playerId, entries)` | `bool` | Replaces the player's CCAS collection with deterministic entries for tests/debug tooling; does not alter pack history. |
 
 **`PackResult` failure reasons:** `insufficient_funds` · `pack_not_found` · `catalog_error` · `invalid_player`
 
@@ -33,6 +36,7 @@ Does **not** own wallet balances, tier/XP config, or raw drop-table logic — th
 - Spending: fail closed via `EconomyService.TrySpend` before any roll or persistence.
 - Duplicate XP: `ProgressionService.AddXp(..., source: "duplicate_card_{rarity}", eventId: "ccas_pack_open:{packOpenId}:{cardId}")` for idempotency.
 - Scene: requires `CCASService.Instance` and `DropConfigManager.Instance` (both `DontDestroyOnLoad` singletons).
+- If a post-charge catalog pull fails, CCAS refunds the exact pack cost through Economy before returning `catalog_error`.
 
 ---
 
@@ -105,3 +109,17 @@ Idempotency: CCAS does not consume events. Duplicate XP uses explicit `eventId` 
 2. Service spends coins via `EconomyService`; on failure, UI shows insufficient funds.
 3. Rolls cards, updates collection quantities, appends `PackDropHistoryEntry`, awards duplicate XP via `ProgressionService`.
 4. Publishes `buy_pack`; UI renders `PackResult.cards` (no second spend/event from UI when service path is used).
+
+---
+
+## Automated CCAS checks
+
+`Assets/Scripts/CCAS/Tests/CCASUnitTests.cs` is a dependency-free Unity Editor test harness for the authoritative CCAS service. It runs against a dedicated `__unit_test_ccas__` profile and cleans that profile after execution.
+
+Run it from Unity batch mode:
+
+```text
+Unity -batchmode -projectPath <path-to-MGI_Monorepo> -executeMethod CCASUnitTests.RunAll -quit -logFile <path-to-log>
+```
+
+Coverage includes unknown packs, insufficient funds, successful pack persistence and events, duplicate XP, catalog-failure refunds, and reset/seed behavior.
