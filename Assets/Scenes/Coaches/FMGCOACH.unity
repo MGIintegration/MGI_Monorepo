@@ -6377,6 +6377,7 @@ MonoBehaviour:
   fireOffenseCoachButton: {fileID: 798064900}
   viewDefenseCoachButton: {fileID: 1000408963}
   fireDefenseCoachButton: {fileID: 2020362822}
+  viewSpecialCoachButton: {fileID: 629013844}
   hiringCoachMarketButton: {fileID: 8392322}
   performanceButton: {fileID: 385450309}
   historyButton: {fileID: 578880979}
