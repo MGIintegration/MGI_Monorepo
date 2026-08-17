@@ -82,7 +82,7 @@ public class ScreenManager : MonoBehaviour
     public void ShowXP()
     {
         ShowScreen(screenXP);
-        xpUI?.RefreshXPHistory();
+        xpUI?.ResetToListView();
     }
 
     public void ShowRewards()
@@ -118,7 +118,7 @@ public class ScreenManager : MonoBehaviour
 
 
         UpdateHubDisplay();
-        xpUI?.RefreshXPHistory();
+        xpUI?.Refresh();
         bracketUI?.RefreshBracket();
     }
 
