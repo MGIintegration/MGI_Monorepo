@@ -363,6 +363,158 @@ public static class ProgressionUnitTests
         Assert(error != null, "SimulateWeek_RejectsPastFinalWeek: error callback fired");
     }
 
+    // ---------------- Facilities integration ----------------
+
+    private const string FacilitiesTestPlayerId = "__integration_test_facilities__";
+    private const string FacilitiesTestPlayerId_NoFunds = "__integration_test_facilities_nofunds__";
+
+    /// <summary>
+    /// Integration test: Facilities -> Progression (XP multipliers) and Economy -> Facilities
+    /// (upgrade cost gating). Exercises the real FacilitiesService/EconomyService/ProgressionService
+    /// together - no mocking - via Unity's command-line batch mode:
+    ///   Unity.exe -batchmode -projectPath &lt;path&gt; -executeMethod ProgressionUnitTests.RunFacilitiesIntegration -quit -logFile &lt;path&gt;
+    /// </summary>
+    public static void RunFacilitiesIntegration()
+    {
+        _passed = 0;
+        _failed = 0;
+        _failures.Clear();
+
+        Log("===== ProgressionUnitTests.RunFacilitiesIntegration: starting =====");
+
+        var progression = GetOrCreateProgressionService();
+        var facilities = new FacilitiesService();
+        var economy = new EconomyService();
+
+        // Clean slate for both test players across all three subsystems.
+        ResetFacilitiesIntegrationState(progression, facilities, economy, FacilitiesTestPlayerId);
+        ResetFacilitiesIntegrationState(progression, facilities, economy, FacilitiesTestPlayerId_NoFunds);
+
+        Test_Baseline_Level1FilmRoom_AppliesDefaultMatchMultiplier(progression, facilities);
+        Test_UpgradeFilmRoom_IncreasesMatchXpMultiplier(progression, facilities, economy);
+        Test_UpgradeWeightRoom_AppliesTrainingMultiplier(progression, facilities, economy);
+        Test_UpgradeRehabCenter_AppliesRecoveryMultiplier(progression, facilities, economy);
+        Test_DuplicateCardSource_ExemptFromFacilityMultiplier(progression, facilities);
+        Test_UpgradeFacility_InsufficientFunds_Rejected(facilities, economy);
+
+        ResetFacilitiesIntegrationState(progression, facilities, economy, FacilitiesTestPlayerId);
+        ResetFacilitiesIntegrationState(progression, facilities, economy, FacilitiesTestPlayerId_NoFunds);
+
+        Log($"===== RunFacilitiesIntegration: {_passed} passed, {_failed} failed =====");
+        if (_failed > 0)
+        {
+            Log("FAILURES:\n - " + string.Join("\n - ", _failures));
+        }
+
+        if (Application.isBatchMode)
+        {
+            EditorApplication.Exit(_failed > 0 ? 1 : 0);
+        }
+    }
+
+    private static void ResetFacilitiesIntegrationState(
+        ProgressionService progression, FacilitiesService facilities, EconomyService economy, string playerId)
+    {
+        progression.ClearPlayerProgression(playerId);
+        facilities.ResetFacilityState(playerId);
+        economy.ResetWallet(playerId);
+    }
+
+    private static void Test_Baseline_Level1FilmRoom_AppliesDefaultMatchMultiplier(
+        ProgressionService progression, FacilitiesService facilities)
+    {
+        // A fresh player defaults to level-1 Film Room, which already carries a passive
+        // +3% PlayerIntelligenceBoost (facilities_config.json). Baseline is 1.03x, not 1.0x -
+        // this test locks that in so it's visible if the config or calc ever drifts.
+        float multiplier = facilities.GetProgressionXpMultiplier(FacilitiesTestPlayerId, "match_win");
+        AssertEqual(1.03f, multiplier, "Baseline: level-1 Film Room match multiplier is 1.03x");
+
+        progression.AddXp(FacilitiesTestPlayerId, 100, "match_win", Guid.NewGuid().ToString());
+        int xp = progression.GetState(FacilitiesTestPlayerId).current_xp;
+        AssertEqual(103, xp, "Baseline: 100 base XP becomes 103 at level-1 Film Room");
+    }
+
+    private static void Test_UpgradeFilmRoom_IncreasesMatchXpMultiplier(
+        ProgressionService progression, FacilitiesService facilities, EconomyService economy)
+    {
+        economy.AddCurrency(FacilitiesTestPlayerId, 50000, 0, "integration_test_seed");
+
+        bool upgraded = facilities.TryUpgradeFacility(FacilitiesTestPlayerId, "film_room", out var newState);
+        Assert(upgraded, "UpgradeFilmRoom: TryUpgradeFacility succeeds with sufficient funds");
+        AssertEqual(2, newState?.level ?? -1, "UpgradeFilmRoom: facility reaches level 2");
+
+        float multiplier = facilities.GetProgressionXpMultiplier(FacilitiesTestPlayerId, "match_win");
+        AssertEqual(1.08f, multiplier, "UpgradeFilmRoom: level-2 match multiplier is 1.08x");
+
+        progression.ClearPlayerProgression(FacilitiesTestPlayerId);
+        progression.AddXp(FacilitiesTestPlayerId, 100, "match_win", Guid.NewGuid().ToString());
+        int xp = progression.GetState(FacilitiesTestPlayerId).current_xp;
+        AssertEqual(108, xp, "UpgradeFilmRoom: 100 base XP becomes 108 at level-2 Film Room");
+    }
+
+    private static void Test_UpgradeWeightRoom_AppliesTrainingMultiplier(
+        ProgressionService progression, FacilitiesService facilities, EconomyService economy)
+    {
+        economy.AddCurrency(FacilitiesTestPlayerId, 50000, 0, "integration_test_seed");
+
+        bool upgraded = facilities.TryUpgradeFacility(FacilitiesTestPlayerId, "weight_room", out var newState);
+        Assert(upgraded, "UpgradeWeightRoom: TryUpgradeFacility succeeds with sufficient funds");
+        AssertEqual(2, newState?.level ?? -1, "UpgradeWeightRoom: facility reaches level 2");
+
+        float multiplier = facilities.GetProgressionXpMultiplier(FacilitiesTestPlayerId, "training_session");
+        AssertEqual(1.15f, multiplier, "UpgradeWeightRoom: level-2 training multiplier is 1.15x");
+
+        progression.ClearPlayerProgression(FacilitiesTestPlayerId);
+        progression.AddXp(FacilitiesTestPlayerId, 100, "training_session", Guid.NewGuid().ToString());
+        int xp = progression.GetState(FacilitiesTestPlayerId).current_xp;
+        AssertEqual(115, xp, "UpgradeWeightRoom: 100 base XP becomes 115 at level-2 Weight Room");
+    }
+
+    private static void Test_UpgradeRehabCenter_AppliesRecoveryMultiplier(
+        ProgressionService progression, FacilitiesService facilities, EconomyService economy)
+    {
+        economy.AddCurrency(FacilitiesTestPlayerId, 50000, 0, "integration_test_seed");
+
+        bool upgraded = facilities.TryUpgradeFacility(FacilitiesTestPlayerId, "rehab_center", out var newState);
+        Assert(upgraded, "UpgradeRehabCenter: TryUpgradeFacility succeeds with sufficient funds");
+        AssertEqual(2, newState?.level ?? -1, "UpgradeRehabCenter: facility reaches level 2");
+
+        float multiplier = facilities.GetProgressionXpMultiplier(FacilitiesTestPlayerId, "recovery_bonus");
+        AssertEqual(1.17f, multiplier, "UpgradeRehabCenter: level-2 recovery multiplier is 1.17x");
+
+        progression.ClearPlayerProgression(FacilitiesTestPlayerId);
+        progression.AddXp(FacilitiesTestPlayerId, 100, "recovery_bonus", Guid.NewGuid().ToString());
+        int xp = progression.GetState(FacilitiesTestPlayerId).current_xp;
+        AssertEqual(117, xp, "UpgradeRehabCenter: 100 base XP becomes 117 at level-2 Rehab Center");
+    }
+
+    private static void Test_DuplicateCardSource_ExemptFromFacilityMultiplier(
+        ProgressionService progression, FacilitiesService facilities)
+    {
+        // Film Room is still at level 2 from the earlier test (1.08x for match sources),
+        // but duplicate_card sources must always be exempted regardless of facility level.
+        float multiplier = facilities.GetProgressionXpMultiplier(FacilitiesTestPlayerId, "duplicate_card_common");
+        AssertEqual(1f, multiplier, "DuplicateCardSource: multiplier stays 1.0x despite upgraded facilities");
+
+        progression.ClearPlayerProgression(FacilitiesTestPlayerId);
+        progression.AddXp(FacilitiesTestPlayerId, 100, "duplicate_card_common", Guid.NewGuid().ToString());
+        int xp = progression.GetState(FacilitiesTestPlayerId).current_xp;
+        AssertEqual(100, xp, "DuplicateCardSource: 100 base XP stays 100, unaffected by Facilities");
+    }
+
+    private static void Test_UpgradeFacility_InsufficientFunds_Rejected(
+        FacilitiesService facilities, EconomyService economy)
+    {
+        // Deliberately no AddCurrency call - this player has 0 coins.
+        bool upgraded = facilities.TryUpgradeFacility(FacilitiesTestPlayerId_NoFunds, "film_room", out var state);
+
+        Assert(!upgraded, "InsufficientFunds: TryUpgradeFacility fails with 0 coins");
+        AssertEqual(1, state?.level ?? -1, "InsufficientFunds: facility stays at level 1");
+
+        float multiplier = facilities.GetProgressionXpMultiplier(FacilitiesTestPlayerId_NoFunds, "match_win");
+        AssertEqual(1.03f, multiplier, "InsufficientFunds: multiplier unchanged at baseline (level-1)");
+    }
+
     // ---------------- Test infrastructure ----------------
 
     // In batchmode edit-mode (no Play Mode session), Unity does not reliably invoke
@@ -435,6 +587,14 @@ public static class ProgressionUnitTests
     private static void AssertEqual<T>(T expected, T actual, string testName)
     {
         bool equal = EqualityComparer<T>.Default.Equals(expected, actual);
+        Assert(equal, equal ? testName : $"{testName} (expected {expected}, got {actual})");
+    }
+
+    // Float equality is unreliable bit-for-bit (a literal like 1.03f and a computed
+    // 1f + 0.03f can differ at the ULP level) - compare with a small tolerance instead.
+    private static void AssertEqual(float expected, float actual, string testName, float tolerance = 0.0001f)
+    {
+        bool equal = Mathf.Abs(expected - actual) <= tolerance;
         Assert(equal, equal ? testName : $"{testName} (expected {expected}, got {actual})");
     }
 
