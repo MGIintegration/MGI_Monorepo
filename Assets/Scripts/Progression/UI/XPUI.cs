@@ -163,7 +163,7 @@ using TMPro;
                 var entry = entries[i];
 
                 // Each bar gets its own fixed-size column so a value label can sit
-                // above it and a source label below it, without fighting the row's
+                // above it and a week label below it, without fighting the row's
                 // HorizontalLayoutGroup (which only controls x-position, not sizing -
                 // see the sizeDelta comment below).
                 var column = new GameObject($"BarColumn_{i}", typeof(RectTransform));
@@ -192,7 +192,10 @@ using TMPro;
                     new Vector2(0, ChartIndexLabelHeight + barPixelHeight + 2f), ChartValueLabelHeight, 14, Color.white);
                 valueLabel.fontStyle = FontStyles.Bold;
 
-                CreateChartLabel(columnRt, "SourceLabel", NormalizeSourceShort(entry.source),
+                // "Week N" mirrors the list view's own labeling convention exactly
+                // (RefreshXPHistory also calls a history entry "Week {index+1}") -
+                // per the reviewed spec, the chart's bars must be grouped by week.
+                CreateChartLabel(columnRt, "WeekLabel", $"W{i + 1}",
                     Vector2.zero, ChartIndexLabelHeight, 10, new Color(1f, 1f, 1f, 0.7f));
             }
         }
@@ -250,18 +253,6 @@ using TMPro;
             if (string.IsNullOrEmpty(tier)) return "Unknown";
             var spaced = tier.Replace('_', ' ');
             return char.ToUpper(spaced[0]) + spaced.Substring(1);
-        }
-
-        // Short per-bar category label for the chart - narrow bars can't fit the raw
-        // source string (e.g. "duplicate_card_rare"), so this collapses it to one of
-        // the three buckets the reviewed spec asked for.
-        private static string NormalizeSourceShort(string source)
-        {
-            if (string.IsNullOrEmpty(source)) return "Other";
-            string lower = source.ToLowerInvariant();
-            if (lower.Contains("duplicate")) return "Dup";
-            if (lower.Contains("match") || lower.Contains("win") || lower.Contains("loss")) return "Match";
-            return "Other";
         }
 
         // Helper function to clean up the source string
