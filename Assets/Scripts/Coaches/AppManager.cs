@@ -24,6 +24,8 @@ public class AppManager : MonoBehaviour
     public Button hiringCoachMarketButton;
     public Button performanceButton;
     public Button historyButton;
+    
+    [SerializeField] private TMPro.TextMeshProUGUI teamRatingText;
 
     [Header("Navigation Buttons for Screen 2")]
     public Button backToMainMenuButton;
@@ -148,6 +150,16 @@ public class AppManager : MonoBehaviour
             detailedStatsButton.onClick.AddListener(() => Debug.Log("Detailed Stats button was clicked"));
 
         ShowScreen(mainMenu);
+        UpdateTeamRating();
+    }
+
+    private void UpdateTeamRating()
+    {
+        if (teamRatingText != null)
+        {
+            float rating = CoachesService.GetTeamRating();
+            teamRatingText.text = $"Team Rating: +{Mathf.RoundToInt(rating)}%";
+        }
     }
 
     private void ShowScreen(GameObject targetScreen)
@@ -161,6 +173,9 @@ public class AppManager : MonoBehaviour
         // Activate the one you want
         if (targetScreen != null)
             targetScreen.SetActive(true);
+
+        if (targetScreen == mainMenu)
+            UpdateTeamRating();
     }
 }
 
