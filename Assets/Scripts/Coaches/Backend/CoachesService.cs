@@ -34,6 +34,7 @@ public class CoachContract
     public string coach_type;    // "O" | "D" | "S"
     public float salary;
     public int contract_length;
+    public int games_served;       // NEW: increments on match/week completion
     public string hired_at;      // ISO 8601
 }
 
@@ -60,6 +61,7 @@ public class FireCoachPayload
     public string team_id;
     public string coach_id;
     public string coach_type;
+    public int refund_amount_coins;
 }
 
 /// <summary>
@@ -113,6 +115,9 @@ public static class CoachesService
     private const string CoachHiringRefundSource  = "coach_hiring_refund";
     private const string CoachFiringRefundSource  = "coach_firing_refund";
     private const string CoachBonusConfigFileName = "coaches_bonus_config.json";
+    private const float REFUND_RATE = 0.5f; // tunable: fraction of hire cost refunded, scaled by games served
+    public const float BASELINE_RATING = 12f;
+    public const float NORMALIZATION_FACTOR = 1f;
 
     private static CoachesBonusConfig cachedBonusConfig;
     private static bool bonusConfigLoaded;
@@ -314,6 +319,33 @@ public static class CoachesService
     {
         return LoadCatalog().FirstOrDefault(c => c.coach_id == coachId);
     }
+    public static float GetTeamRating(string playerId = null)
+    {
+        playerId ??= LocalPlayerId;
+        var state = LoadTeamState(playerId);
+        float totalBonus = 0;
+
+        if (state != null)
+        {
+            if (!string.IsNullOrEmpty(state.offence_coach))
+            {
+                var dbRecord = GetCoachById(state.offence_coach);
+                if (dbRecord != null) totalBonus += CoachData.CreateFromDatabaseRecord(dbRecord).offenseBonus;
+            }
+            if (!string.IsNullOrEmpty(state.defence_coach))
+            {
+                var dbRecord = GetCoachById(state.defence_coach);
+                if (dbRecord != null) totalBonus += CoachData.CreateFromDatabaseRecord(dbRecord).defenseBonus;
+            }
+            if (!string.IsNullOrEmpty(state.special_teams_coach))
+            {
+                var dbRecord = GetCoachById(state.special_teams_coach);
+                if (dbRecord != null) totalBonus += CoachData.CreateFromDatabaseRecord(dbRecord).specialTeamsBonus;
+            }
+        }
+
+        return BASELINE_RATING + (totalBonus / NORMALIZATION_FACTOR);
+    }
 
     /// <summary>
     /// Removes the coach of the given type from the team's state and contracts,
@@ -350,7 +382,16 @@ public static class CoachesService
         var activeContracts = GetActiveContracts(playerId);
         var contract = activeContracts.FirstOrDefault(c =>
             string.Equals(NormalizeCoachType(c.coach_type), coachType, StringComparison.Ordinal));
-        int refundAmount = contract != null ? Mathf.RoundToInt(contract.salary * 1_000_000f / 52f) : 0;
+        int refundAmount = 0;
+        if (contract != null)
+        {
+            int hireCost = Mathf.RoundToInt(contract.salary * 1_000_000f / 52f);
+            int gamesServed = Mathf.Clamp(contract.games_served, 0, Math.Max(contract.contract_length, 1));
+            float refundFraction = 1f - ((float)gamesServed / Math.Max(contract.contract_length, 1));
+            refundAmount = Mathf.RoundToInt(hireCost * REFUND_RATE * refundFraction);
+            Debug.Log($"[CoachesService] Refund calc: hireCost={hireCost}, gamesServed={gamesServed}, contractLength={contract?.contract_length}, refundAmount={refundAmount}");
+        }
+        
 
         ApplyAssignedCoachId(state, coachType, string.Empty);
         if (!SaveTeamState(playerId, state))
@@ -378,7 +419,8 @@ public static class CoachesService
             {
                 team_id    = teamId,
                 coach_id   = firedCoachId,
-                coach_type = coachType
+                coach_type = coachType,
+                refund_amount_coins = refundAmount
             })
         });
 

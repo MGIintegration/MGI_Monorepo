@@ -6381,6 +6381,7 @@ MonoBehaviour:
   hiringCoachMarketButton: {fileID: 8392322}
   performanceButton: {fileID: 385450309}
   historyButton: {fileID: 578880979}
+  teamRatingText: {fileID: 1569661125}
   backToMainMenuButton: {fileID: 774974696}
   refreshButton: {fileID: 108088866}
   hireCoach1Button: {fileID: 1611392722}
@@ -9687,6 +9688,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8925982106024687109, guid: ec44ccb746ac546b491020e5d3e8b555, type: 3}
   m_PrefabInstance: {fileID: 1569661122}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1569661125 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5999950326613976955, guid: ec44ccb746ac546b491020e5d3e8b555, type: 3}
+  m_PrefabInstance: {fileID: 1569661122}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1573770818
 PrefabInstance:
   m_ObjectHideFlags: 0
