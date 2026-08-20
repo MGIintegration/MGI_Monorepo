@@ -74,7 +74,7 @@ public class SubsystemResetMenu : MonoBehaviour
 
     private void ResetCCAS()
     {
-        var service = CCASService.Instance;
+        var service = EnsureCCASService();
         if (service != null && service.ResetPlayerState(PlayerIdProvider.Get()))
         {
             PlayerPrefs.DeleteKey("ccas_has_pack_history");
@@ -84,6 +84,19 @@ public class SubsystemResetMenu : MonoBehaviour
         }
 
         SetStatus("CCAS reset failed: CCASService is missing or the reset could not save.");
+    }
+
+    private static CCASService EnsureCCASService()
+    {
+        if (CCASService.Instance != null)
+            return CCASService.Instance;
+
+        var existing = FindObjectOfType<CCASService>();
+        if (existing != null)
+            return existing;
+
+        var go = new GameObject("CCASService_Runtime");
+        return go.AddComponent<CCASService>();
     }
 
     private void AddCoins()
