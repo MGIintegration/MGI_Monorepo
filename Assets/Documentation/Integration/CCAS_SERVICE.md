@@ -123,3 +123,11 @@ Unity -batchmode -projectPath <path-to-MGI_Monorepo> -executeMethod CCASUnitTest
 ```
 
 Coverage includes unknown packs, insufficient funds, successful pack persistence and events, duplicate XP, catalog-failure refunds, and reset/seed behavior.
+
+### CCAS → Economy integration check
+
+`Assets/Scripts/CCAS/Tests/CCASEconomyIntegrationTests.cs` verifies the real file-backed CCAS → Economy purchase workflow for one dedicated player profile. It checks the configured charge, Economy transaction ledger, CCAS collection and history persistence, `buy_pack` publication, and the insufficient-funds path.
+
+```text
+Unity -batchmode -projectPath <path-to-MGI_Monorepo> -executeMethod CCASEconomyIntegrationTests.RunAll -quit -logFile <path-to-log>
+```
