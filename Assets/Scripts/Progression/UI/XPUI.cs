@@ -78,13 +78,13 @@ using TMPro;
 
         public void RefreshXPHistory()
         {
-            var sm = SeasonManager.Instance;
-            if (sm == null || xpListParent == null || xpEntryPrefab == null) return;
+            if (xpListParent == null || xpEntryPrefab == null) return;
 
-            UpdateHeader(sm);
+            var state = GetProgressionState();
+            UpdateHeader(state);
             ClearListParent();
 
-            var prog = sm.XpHistoryEntries;
+            var prog = state?.xp_history;
             if (prog == null || prog.Count == 0)
             {
                 ShowEmptyState();
@@ -127,13 +127,13 @@ using TMPro;
         /// </summary>
         private void RefreshXpChart()
         {
-            var sm = SeasonManager.Instance;
-            if (sm == null || xpListParent == null) return;
+            if (xpListParent == null) return;
 
-            UpdateHeader(sm);
+            var state = GetProgressionState();
+            UpdateHeader(state);
             ClearListParent();
 
-            var entries = sm.XpHistoryEntries;
+            var entries = state?.xp_history;
             if (entries == null || entries.Count == 0)
             {
                 ShowEmptyState();
@@ -235,10 +235,27 @@ using TMPro;
             }
         }
 
-        private void UpdateHeader(SeasonManager sm)
+        private void UpdateHeader(PlayerProgressionState state)
         {
             if (currentXPText == null) return;
-            currentXPText.text = $"Total XP: {sm.PlayerXP}, Tier: {FormatTierLabel(sm.PlayerTier)}";
+            int xp = state?.current_xp ?? 0;
+            string tier = state?.current_tier ?? "rookie";
+            currentXPText.text = $"Total XP: {xp}, Tier: {FormatTierLabel(tier)}";
+        }
+
+        /// <summary>
+        /// Reads the current player's progression state straight from
+        /// ProgressionService - the same source the integration tests assert
+        /// against - rather than through SeasonManager's XpHistoryEntries/PlayerXP/
+        /// PlayerTier wrapper properties. SeasonManager is still consulted for the
+        /// player_id itself (that's genuinely where "who is the current player"
+        /// lives, via the active season's player team), just not for the XP data.
+        /// </summary>
+        private PlayerProgressionState GetProgressionState()
+        {
+            var playerId = SeasonManager.Instance?.PlayerTeam?.player_id;
+            if (string.IsNullOrEmpty(playerId)) return null;
+            return ProgressionService.Instance?.GetState(playerId, createIfMissing: false);
         }
 
         private void ShowEmptyState()
