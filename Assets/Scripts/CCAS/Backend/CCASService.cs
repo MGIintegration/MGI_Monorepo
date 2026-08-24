@@ -33,6 +33,19 @@ public class CCASService : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns the live service or creates the minimal persistent service needed
+    /// by development tools before the CCAS scene has been loaded.
+    /// </summary>
+    public static CCASService GetOrCreateForDevelopmentTools()
+    {
+        if (Instance != null)
+            return Instance;
+
+        var serviceObject = new GameObject("CCASService_DevelopmentTools");
+        return serviceObject.AddComponent<CCASService>();
+    }
+
+    /// <summary>
     /// Opens a pack for the given player: spends coins, rolls cards, returns PackResult.
     /// </summary>
     public PackResult OpenPack(string playerId, string packTypeId)
