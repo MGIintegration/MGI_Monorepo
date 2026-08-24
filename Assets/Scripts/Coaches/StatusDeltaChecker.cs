@@ -45,6 +45,8 @@ public class StatusDeltaChecker : MonoBehaviour
     // Coaching impact tracking
     private DateTime coachingStartTime;
     private Dictionary<string, CoachImpactRecord> coachImpactRecords = new Dictionary<string, CoachImpactRecord>();
+    private IDisposable hireCoachSubscription;
+    private IDisposable fireCoachSubscription;
 
     // Events for delta notifications
     public static event System.Action<StatDelta> OnStatDeltaDetected;
@@ -121,15 +123,25 @@ public class StatusDeltaChecker : MonoBehaviour
         // Subscribe to save/load events for delta persistence
         SaveLoadLogic.OnSaveCompleted += OnSaveCompleted;
         SaveLoadLogic.OnLoadCompleted += OnLoadCompleted;
+
+        // Subscribe to coach hire/fire events so Performance impact tracking
+        // stays in sync with the live CoachesService-driven hire/fire flow.
+        hireCoachSubscription = EventBus.Subscribe("hire_coach", OnHireCoachEvent);
+        fireCoachSubscription = EventBus.Subscribe("fire_coach", OnFireCoachEvent);
     }
 
     /// <summary>
     /// Unsubscribe from events
     /// </summary>
-    private void UnsubscribeFromEvents()
+   private void UnsubscribeFromEvents()
     {
         SaveLoadLogic.OnSaveCompleted -= OnSaveCompleted;
         SaveLoadLogic.OnLoadCompleted -= OnLoadCompleted;
+
+        hireCoachSubscription?.Dispose();
+        hireCoachSubscription = null;
+        fireCoachSubscription?.Dispose();
+        fireCoachSubscription = null;
     }
 
     #endregion
@@ -708,6 +720,60 @@ public class StatusDeltaChecker : MonoBehaviour
             // Update current stats after load
             UpdateCurrentStats();
         }
+    }
+
+        private void OnHireCoachEvent(EventBus.EventEnvelope evt)
+    {
+        if (evt == null || string.IsNullOrEmpty(evt.payloadJson)) return;
+    
+        HireCoachPayload payload;
+        try
+        {
+            payload = JsonUtility.FromJson<HireCoachPayload>(evt.payloadJson);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[StatusDeltaChecker] Failed to parse hire_coach payload: {e.Message}");
+            return;
+        }
+
+        if (payload == null || string.IsNullOrEmpty(payload.coach_id)) return;
+
+        var dbRecord = CoachesService.GetCoachById(payload.coach_id);
+        if (dbRecord == null)
+        {
+            Debug.LogWarning($"[StatusDeltaChecker] hire_coach event referenced unknown coach '{payload.coach_id}'.");
+            return;
+        }
+
+        RecordCoachHired(CoachData.CreateFromDatabaseRecord(dbRecord));
+    }
+
+    private void OnFireCoachEvent(EventBus.EventEnvelope evt)
+    {
+        if (evt == null || string.IsNullOrEmpty(evt.payloadJson)) return;
+
+        FireCoachPayload payload;
+        try
+        {
+            payload = JsonUtility.FromJson<FireCoachPayload>(evt.payloadJson);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[StatusDeltaChecker] Failed to parse fire_coach payload: {e.Message}");
+            return;
+        }
+
+        if (payload == null || string.IsNullOrEmpty(payload.coach_id)) return;
+
+        var dbRecord = CoachesService.GetCoachById(payload.coach_id);
+        if (dbRecord == null)
+        {
+            Debug.LogWarning($"[StatusDeltaChecker] fire_coach event referenced unknown coach '{payload.coach_id}'.");
+            return;
+        }
+
+        RecordCoachFired(CoachData.CreateFromDatabaseRecord(dbRecord));
     }
 
     #endregion
