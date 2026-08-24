@@ -42,7 +42,11 @@ public class CCASService : MonoBehaviour
             return Instance;
 
         var serviceObject = new GameObject("CCASService_DevelopmentTools");
-        return serviceObject.AddComponent<CCASService>();
+        var service = serviceObject.AddComponent<CCASService>();
+        // Awake runs immediately during normal gameplay. Assigning here as well
+        // keeps the helper deterministic for Editor/batch-mode development tools.
+        Instance ??= service;
+        return service;
     }
 
     /// <summary>

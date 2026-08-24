@@ -31,6 +31,7 @@ public static class CCASUnitTests
 
         Log("===== CCASUnitTests: starting =====");
 
+        Test_DevelopmentTools_BootstrapAndReset();
         var ccas = GetOrCreateCCASService();
         var dropConfig = GetOrCreateDropConfigManager();
         var catalog = GetOrCreateCardCatalogLoader();
@@ -194,6 +195,18 @@ public static class CCASUnitTests
             "legendary" => 100,
             _ => 5
         };
+    }
+
+    private static void Test_DevelopmentTools_BootstrapAndReset()
+    {
+        bool hadServiceBefore = CCASService.Instance != null;
+        var service = CCASService.GetOrCreateForDevelopmentTools();
+
+        Assert(service != null, "DevelopmentTools: returns a CCAS service");
+        Assert(CCASService.Instance == service, "DevelopmentTools: registers the returned service as Instance");
+        if (!hadServiceBefore)
+            AssertEqual("CCASService_DevelopmentTools", service.gameObject.name, "DevelopmentTools: creates service before CCAS scene loads");
+        Assert(service.ResetPlayerState(TestPlayerId), "DevelopmentTools: bootstrapped service can reset CCAS state");
     }
 
     private static CCASService GetOrCreateCCASService()
