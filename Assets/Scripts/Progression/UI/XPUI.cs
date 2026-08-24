@@ -17,7 +17,15 @@ using TMPro;
         [SerializeField] private Color chartBarGainColor = new Color(0.4549f, 0.7529f, 0.9882f); // #74C0FC, matches the list view's XP-gain color
         [SerializeField] private Color chartBarLossColor = new Color(1f, 0.4196f, 0.4196f); // #FF6B6B, matches the list view's loss color
 
-        private const float ChartValueLabelHeight = 18f;
+        // 36pt (Test_Row.prefab's list-view size) turned out too wide for a ~44px
+        // bar column - with several bars in a row, neighboring value labels
+        // overlapped into an unreadable jumble. 20pt is the compromise: still well
+        // clear of the earlier blur (which came from forced Bold faking a weight
+        // this pixel font doesn't have, not from being small - see NoWrap fix
+        // below), but narrow enough to fit "+27" within one column without
+        // colliding with its neighbors.
+        [SerializeField] private float chartValueFontSize = 20f;
+        private const float ChartValueLabelHeight = 26f;
         private const float ChartIndexLabelHeight = 18f;
 
         private bool _showingChart;
@@ -152,7 +160,7 @@ using TMPro;
 
             var hlg = row.GetComponent<HorizontalLayoutGroup>();
             hlg.childAlignment = TextAnchor.LowerCenter;
-            hlg.spacing = 6;
+            hlg.spacing = 8;
             hlg.childForceExpandWidth = false;
             hlg.childForceExpandHeight = false;
             hlg.childControlWidth = false;
@@ -188,9 +196,8 @@ using TMPro;
                 barRt.sizeDelta = new Vector2(chartBarWidth, barPixelHeight);
                 barGO.GetComponent<Image>().color = entry.xp_gained >= 0 ? chartBarGainColor : chartBarLossColor;
 
-                var valueLabel = CreateChartLabel(columnRt, "ValueLabel", $"+{entry.xp_gained}",
-                    new Vector2(0, ChartIndexLabelHeight + barPixelHeight + 2f), ChartValueLabelHeight, 14, Color.white);
-                valueLabel.fontStyle = FontStyles.Bold;
+                CreateChartLabel(columnRt, "ValueLabel", $"+{entry.xp_gained}",
+                    new Vector2(0, ChartIndexLabelHeight + barPixelHeight + 2f), ChartValueLabelHeight, chartValueFontSize, Color.white);
 
                 // "Week N" mirrors the list view's own labeling convention exactly
                 // (RefreshXPHistory also calls a history entry "Week {index+1}") -
@@ -221,6 +228,12 @@ using TMPro;
             label.fontSize = fontSize;
             label.alignment = TextAlignmentOptions.Center;
             label.color = color;
+            // These are single-line captions in narrow bar columns - a fresh TMP
+            // component defaults to word-wrap enabled, which at larger font sizes
+            // breaks "+27" etc. onto a second line that spills down into the bar
+            // below it instead of just overflowing sideways (harmless, since
+            // nothing here is clipped by a mask).
+            label.textWrappingMode = TextWrappingModes.NoWrap;
             if (currentXPText != null) label.font = currentXPText.font;
             return label;
         }
