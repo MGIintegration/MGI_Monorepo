@@ -41,10 +41,58 @@ public class StatCardPopulator : MonoBehaviour
     public float valueFontSize = 30f;
     public float weeklyFontSize = 14f;
 
+    private IDisposable hireCoachSubscription;
+    private IDisposable fireCoachSubscription;
+
     void Start()
     {
+        EnsureBaselineStatsSet();
         LoadPerformanceDataFromDatabase();
         // Note: PopulateUI() is now called from RefreshUI() in LoadPerformanceDataFromDatabase()
+
+        hireCoachSubscription = EventBus.Subscribe("hire_coach", OnCoachRosterChanged);
+        fireCoachSubscription = EventBus.Subscribe("fire_coach", OnCoachRosterChanged);
+    }
+
+    private void OnDestroy()
+    {
+        hireCoachSubscription?.Dispose();
+        hireCoachSubscription = null;
+        fireCoachSubscription?.Dispose();
+        fireCoachSubscription = null;
+    }
+
+    /// <summary>
+    /// Refreshes the Performance screen whenever a coach is hired or fired, so
+    /// the "after coaching" values stay live per Bhuvan's spec, instead of only
+    /// updating when the screen is first opened.
+    /// </summary>
+    private void OnCoachRosterChanged(EventBus.EventEnvelope evt)
+    {
+        LoadPerformanceDataFromDatabase();
+    }
+
+    /// <summary>
+    /// Sets the baseline snapshot exactly once — the first time this screen opens
+    /// with no baseline recorded yet. Per Bhuvan's spec, hire/fire must never reset
+    /// the baseline afterward, only update current stats against it.
+    /// </summary>
+    private void EnsureBaselineStatsSet()
+    {
+        if (StatusDeltaChecker.Instance == null)
+        {
+            Debug.LogWarning("[StatCardPopulator] StatusDeltaChecker.Instance is null; cannot set baseline.");
+            return;
+        }
+
+        var existingBaseline = StatusDeltaChecker.Instance.GetBaselineStats();
+        bool hasBaseline = existingBaseline != null && existingBaseline.Values.Any(v => v != 0f);
+
+        if (!hasBaseline)
+        {
+            StatusDeltaChecker.Instance.SetBaselineStats();
+            Debug.Log("[StatCardPopulator] No existing baseline found — baseline stats set for this session.");
+        }
     }
 
     /// <summary>
@@ -76,28 +124,24 @@ public class StatCardPopulator : MonoBehaviour
     /// </summary>
     private void ClearAllContainers()
     {
-        if (beforeContainer != null)
+        ClearContainerChildren(beforeContainer);
+        ClearContainerChildren(afterContainer);
+        ClearContainerChildren(weeklyBreakdownContainer);
+    }
+
+    /// <summary>
+    /// Destroys all children of a container safely. Iterating forward with
+    /// foreach while calling DestroyImmediate skips every other child, since
+    /// destroying shifts subsequent indices down while the enumerator has
+    /// already moved on — iterating backward by index avoids that entirely.
+    /// </summary>
+    private void ClearContainerChildren(Transform container)
+    {
+        if (container == null) return;
+
+        for (int i = container.childCount - 1; i >= 0; i--)
         {
-            foreach (Transform child in beforeContainer)
-            {
-                DestroyImmediate(child.gameObject);
-            }
-        }
-        
-        if (afterContainer != null)
-        {
-            foreach (Transform child in afterContainer)
-            {
-                DestroyImmediate(child.gameObject);
-            }
-        }
-        
-        if (weeklyBreakdownContainer != null)
-        {
-            foreach (Transform child in weeklyBreakdownContainer)
-            {
-                DestroyImmediate(child.gameObject);
-            }
+            DestroyImmediate(container.GetChild(i).gameObject);
         }
     }
 
@@ -174,98 +218,10 @@ public class StatCardPopulator : MonoBehaviour
             Debug.Log($"[StatCardPopulator] Found {hiredCoaches.Count} hired coaches from CoachManager");
         }
         
-        // If no coaches found from CoachManager, load from database for testing
-        if (hiredCoaches.Count == 0)
-        {
-            Debug.LogWarning("[StatCardPopulator] No hired coaches found, loading sample coaches from database for testing");
-            hiredCoaches = LoadSampleHiredCoachesFromDatabase();
-        }
-        
+        // empty staff should show baseline-only real data, not
+        // fake sample coaches. No fallback here — an empty list is correct when
+        // nothing is hired.
         return hiredCoaches;
-    }
-
-    /// <summary>
-    /// Load sample hired coaches from database for testing when CoachManager has no hired coaches
-    /// </summary>
-    private List<CoachDatabaseRecord> LoadSampleHiredCoachesFromDatabase()
-    {
-        var hiredCoaches = new List<CoachDatabaseRecord>();
-        
-        try
-        {
-            string jsonPath = Path.Combine(Application.streamingAssetsPath, "Database", "coach.json");
-            
-            if (File.Exists(jsonPath))
-            {
-                string jsonContent = File.ReadAllText(jsonPath);
-                string wrappedJson = $"{{\"Items\":{jsonContent}}}";
-                var wrapper = JsonUtility.FromJson<JsonWrapper>(wrappedJson);
-                
-                if (wrapper?.Items != null && wrapper.Items.Length > 0)
-                {
-                    // Take first 2-3 coaches from database as "hired" for testing
-                    var allCoaches = wrapper.Items.ToList();
-                    
-                    // Get one coach of each type if available
-                    var defenseCoach = allCoaches.FirstOrDefault(c => c.coach_type?.ToUpper() == "D");
-                    var offenseCoach = allCoaches.FirstOrDefault(c => c.coach_type?.ToUpper() == "O");
-                    var specialTeamsCoach = allCoaches.FirstOrDefault(c => c.coach_type?.ToUpper() == "S");
-                    
-                    if (defenseCoach != null) hiredCoaches.Add(defenseCoach);
-                    if (offenseCoach != null) hiredCoaches.Add(offenseCoach);
-                    if (specialTeamsCoach != null) hiredCoaches.Add(specialTeamsCoach);
-                    
-                    // If we still don't have any, just take the first 2 coaches
-                    if (hiredCoaches.Count == 0)
-                    {
-                        hiredCoaches.AddRange(allCoaches.Take(2));
-                    }
-                    
-                    Debug.Log($"[StatCardPopulator] Loaded {hiredCoaches.Count} sample hired coaches from database");
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"[StatCardPopulator] Failed to load coaches from database: {e.Message}");
-        }
-        
-        // Final fallback - create sample coaches if database loading failed
-        if (hiredCoaches.Count == 0)
-        {
-            hiredCoaches.Add(CreateSampleCoach("Mike Johnson", "D", 4.0f, 2500000f));
-            hiredCoaches.Add(CreateSampleCoach("Sarah Wilson", "O", 3.5f, 2000000f));
-            Debug.Log("[StatCardPopulator] Using fallback sample coaches");
-        }
-        
-        return hiredCoaches;
-    }
-
-    /// <summary>
-    /// Create sample coach for testing when CoachManager is not available
-    /// </summary>
-    private CoachDatabaseRecord CreateSampleCoach(string name, string type, float rating, float salary)
-    {
-        return new CoachDatabaseRecord
-        {
-            coach_name = name,
-            coach_type = type,
-            overall_rating = rating,
-            salary = salary / 1000000f, // Convert to millions
-            experience = 5,
-            run_defence = rating,
-            pressure_control = rating,
-            coverage_discipline = rating,
-            turnover = rating,
-            passing_efficiency = rating,
-            rush = rating,
-            red_zone_conversion = rating,
-            play_variation = rating,
-            field_goal_accuracy = rating,
-            kickoff_instance = rating,
-            return_speed = rating,
-            return_coverage = rating
-        };
     }
 
     /// <summary>
@@ -307,51 +263,47 @@ public class StatCardPopulator : MonoBehaviour
     {
         var performanceStats = new List<StatEntry>();
 
-        // Win Rate Performance (inspired by CoachingStats_v4.GetWinRateDelta)
-        int baselineWinRate = 42; // Baseline without coaching
-        int currentWinRate = CalculateCurrentWinRate(team, coaches);
-        
+        if (StatusDeltaChecker.Instance == null)
+        {
+            Debug.LogWarning("[StatCardPopulator] StatusDeltaChecker.Instance is null; cannot build live performance stats.");
+            return performanceStats;
+        }
+
+        // Refresh current stats against the locked baseline before reading them.
+        StatusDeltaChecker.Instance.UpdateCurrentStats();
+
+        var baseline = StatusDeltaChecker.Instance.GetBaselineStats();
+        var current = StatusDeltaChecker.Instance.GetCurrentStats();
+
         performanceStats.Add(new StatEntry
         {
             stat = "Win Rate %",
-            beforeValue = baselineWinRate,
-            afterValue = currentWinRate,
+            beforeValue = Mathf.RoundToInt(baseline.GetValueOrDefault(StatType.WinRate)),
+            afterValue = Mathf.RoundToInt(current.GetValueOrDefault(StatType.WinRate)),
             icon = winRateIcon
         });
 
-        // Offensive Rating
-        int baselineOffense = 40;
-        int currentOffense = CalculateOffenseRating(team, coaches);
-        
         performanceStats.Add(new StatEntry
         {
             stat = "Offense",
-            beforeValue = baselineOffense,
-            afterValue = currentOffense,
+            beforeValue = Mathf.RoundToInt(baseline.GetValueOrDefault(StatType.OffenseRating)),
+            afterValue = Mathf.RoundToInt(current.GetValueOrDefault(StatType.OffenseRating)),
             icon = offenseIcon
         });
 
-        // Defensive Rating  
-        int baselineDefense = 38;
-        int currentDefense = CalculateDefenseRating(team, coaches);
-        
         performanceStats.Add(new StatEntry
         {
             stat = "Defense",
-            beforeValue = baselineDefense,
-            afterValue = currentDefense,
+            beforeValue = Mathf.RoundToInt(baseline.GetValueOrDefault(StatType.DefenseRating)),
+            afterValue = Mathf.RoundToInt(current.GetValueOrDefault(StatType.DefenseRating)),
             icon = defenseIcon
         });
 
-        // Special Teams Rating
-        int baselineSpecialTeams = 35;
-        int currentSpecialTeams = CalculateSpecialTeamsRating(team, coaches);
-        
         performanceStats.Add(new StatEntry
         {
             stat = "Special Teams",
-            beforeValue = baselineSpecialTeams,
-            afterValue = currentSpecialTeams,
+            beforeValue = Mathf.RoundToInt(baseline.GetValueOrDefault(StatType.SpecialTeamsRating)),
+            afterValue = Mathf.RoundToInt(current.GetValueOrDefault(StatType.SpecialTeamsRating)),
             icon = specialTeamsIcon
         });
 

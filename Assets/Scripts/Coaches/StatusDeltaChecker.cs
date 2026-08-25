@@ -35,6 +35,11 @@ public class StatusDeltaChecker : MonoBehaviour
     [SerializeField] private float significantDeltaThreshold = 5f; // percentage
     [SerializeField] private float warningDeltaThreshold = -10f; // negative performance warning
     [SerializeField] private int trendAnalysisWindow = 10; // number of records for trend analysis
+    
+    [Header("Rating Baselines (matches StatCardPopulator's prior hardcoded values)")]
+    private const float OffenseBaselineRating = 40f;
+    private const float DefenseBaselineRating = 38f;
+    private const float SpecialTeamsBaselineRating = 35f;
 
     // Delta tracking storage
     private List<StatDelta> deltaHistory = new List<StatDelta>();
@@ -365,22 +370,31 @@ public class StatusDeltaChecker : MonoBehaviour
             statImpacts = new Dictionary<StatType, float>()
         };
 
-        // Calculate stat improvements
+        // Calculate stat improvements. preHireStats can be null for records
+        // reloaded from disk, since JsonUtility does not serialize Dictionary
+        // fields — guard against that instead of crashing.
         var endStats = record.postFireStats ?? currentStats;
-        foreach (var statType in record.preHireStats.Keys)
+        if (record.preHireStats != null)
         {
-            if (endStats.ContainsKey(statType))
+            foreach (var statType in record.preHireStats.Keys)
             {
-                float improvement = endStats[statType] - record.preHireStats[statType];
-                float improvementPercentage = record.preHireStats[statType] != 0 ? 
-                    (improvement / record.preHireStats[statType]) * 100f : 0f;
-                
-                impact.statImpacts[statType] = improvementPercentage;
+                if (endStats.ContainsKey(statType))
+                {
+                    float improvement = endStats[statType] - record.preHireStats[statType];
+                    float improvementPercentage = record.preHireStats[statType] != 0 ?
+                        (improvement / record.preHireStats[statType]) * 100f : 0f;
+
+                    impact.statImpacts[statType] = improvementPercentage;
+                }
             }
         }
+        else
+        {
+            Debug.LogWarning($"[StatusDeltaChecker] preHireStats missing for {record.coachName} (likely reloaded from a prior session); skipping stat-impact calculation for this coach.");
+        }
 
-        // Calculate ROI
-        float totalImprovement = impact.statImpacts.Values.Average();
+        // Calculate ROI — guard against an empty sequence (Average() throws on empty).
+        float totalImprovement = impact.statImpacts.Count > 0 ? impact.statImpacts.Values.Average() : 0f;
         impact.returnOnInvestment = impact.totalSalaryPaid > 0 ? totalImprovement / impact.totalSalaryPaid * 1000f : 0f;
 
         OnCoachImpactCalculated?.Invoke(impact);
@@ -607,24 +621,39 @@ public class StatusDeltaChecker : MonoBehaviour
             stats[StatType.GamesWon] = 0;
         }
 
-        // Get stats from team performance systems - use generic approach
-        var managers = FindObjectsOfType<MonoBehaviour>();
-        var teamManager = System.Array.Find(managers, m => m.GetType().Name.Contains("Team") || m.GetType().Name.Contains("Manager"));
-        if (teamManager != null)
+        // Get offense/defense/special-teams ratings from CoachesService — the live
+        // hire/fire-driven source, following the same per-coach bonus approach as
+        // CoachesService.GetTeamRating(). SpecialTeamsRating is added here since the
+        // old reflection path never actually set it.
+        var teamState = CoachesService.GetTeamState();
+
+        float offenseBonus = 0f, defenseBonus = 0f, specialBonus = 0f;
+
+        if (teamState != null)
         {
-            // Use reflection to get team stats if available
-            var type = teamManager.GetType();
-            var offenseMember = type.GetProperty("OffenseRating") as System.Reflection.MemberInfo ?? type.GetField("OffenseRating");
-            var defenseMember = type.GetProperty("DefenseRating") as System.Reflection.MemberInfo ?? type.GetField("DefenseRating");
-            
-            if (offenseMember != null)
-                stats[StatType.OffenseRating] = GetMemberFloatValue(offenseMember, teamManager, 50f);
-            if (defenseMember != null)
-                stats[StatType.DefenseRating] = GetMemberFloatValue(defenseMember, teamManager, 50f);
+            if (!string.IsNullOrEmpty(teamState.offence_coach))
+            {
+                var offenceRecord = CoachesService.GetCoachById(teamState.offence_coach);
+                if (offenceRecord != null)
+                    offenseBonus = CoachData.CreateFromDatabaseRecord(offenceRecord).offenseBonus;
+            }
+            if (!string.IsNullOrEmpty(teamState.defence_coach))
+            {
+                var defenceRecord = CoachesService.GetCoachById(teamState.defence_coach);
+                if (defenceRecord != null)
+                    defenseBonus = CoachData.CreateFromDatabaseRecord(defenceRecord).defenseBonus;
+            }
+            if (!string.IsNullOrEmpty(teamState.special_teams_coach))
+            {
+                var specialRecord = CoachesService.GetCoachById(teamState.special_teams_coach);
+                if (specialRecord != null)
+                    specialBonus = CoachData.CreateFromDatabaseRecord(specialRecord).specialTeamsBonus;
+            }
         }
 
-        // Get coaching investment
-        stats[StatType.CoachingInvestment] = GetTotalCoachingSalary();
+        stats[StatType.OffenseRating] = OffenseBaselineRating + offenseBonus;
+        stats[StatType.DefenseRating] = DefenseBaselineRating + defenseBonus;
+        stats[StatType.SpecialTeamsRating] = SpecialTeamsBaselineRating + specialBonus;
 
         return stats;
     }
