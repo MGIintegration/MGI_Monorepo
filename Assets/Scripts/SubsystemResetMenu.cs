@@ -74,8 +74,8 @@ public class SubsystemResetMenu : MonoBehaviour
 
     private void ResetCCAS()
     {
-        var service = CCASService.Instance;
-        if (service != null && service.ResetPlayerState(PlayerIdProvider.Get()))
+        var service = CCASService.GetOrCreateForDevelopmentTools();
+        if (service.ResetPlayerState(PlayerIdProvider.Get()))
         {
             PlayerPrefs.DeleteKey("ccas_has_pack_history");
             PlayerPrefs.Save();
