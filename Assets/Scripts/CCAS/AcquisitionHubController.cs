@@ -154,7 +154,7 @@ public class AcquisitionHubController : MonoBehaviour
         }
 
         string playerId = ResolvePlayerId();
-        bool hasHistory = CCAS.Backend.CCASService.Instance?
+        bool hasHistory = CCASService.Instance?
             .GetPackDropHistory(playerId)
             .Any() == true;
 
