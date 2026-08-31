@@ -557,6 +557,28 @@ public class TelemetryLogger : MonoBehaviour
         return cached.logs.GetRange(start, cached.logs.Count - start);
     }
 
+    /// <summary>
+    /// Returns recent pull logs for one player profile only. UI history views
+    /// must use this instead of the global history so local profiles never
+    /// display another profile's old pulls.
+    /// </summary>
+    public List<PackPullLog> GetRecentForPlayer(string playerId, int count)
+    {
+        if (string.IsNullOrWhiteSpace(playerId) || cached?.logs == null)
+            return new List<PackPullLog>();
+
+        var playerLogs = cached.logs
+            .Where(log => log != null && log.player_id == playerId)
+            .ToList();
+
+        if (playerLogs.Count == 0)
+            return new List<PackPullLog>();
+
+        count = Mathf.Max(1, count);
+        int start = Mathf.Max(0, playerLogs.Count - count);
+        return playerLogs.GetRange(start, playerLogs.Count - start);
+    }
+
     // -------------------------------------------------------------------------
     // LOG STRUCTURE
     // -------------------------------------------------------------------------
