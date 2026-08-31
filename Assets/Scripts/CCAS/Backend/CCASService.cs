@@ -249,7 +249,8 @@ public class CCASService : MonoBehaviour
         {
             SaveCardCollection(playerId, new CardCollectionFile());
             SavePackDropHistory(playerId, new PackDropHistoryFile());
-            TelemetryLogger.Instance?.ClearHistoryForPlayer(playerId);
+            if (!TelemetryLogger.ClearPersistedHistoryForPlayer(playerId))
+                Debug.LogWarning($"[CCASService] CCAS state reset, but telemetry history could not be cleared for player {playerId}.");
             Debug.Log($"[CCASService] Reset CCAS state for player {playerId}");
             return true;
         }

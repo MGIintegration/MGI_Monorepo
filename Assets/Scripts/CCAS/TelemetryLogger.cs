@@ -503,17 +503,48 @@ public class TelemetryLogger : MonoBehaviour
     /// Clears telemetry only for one player profile. This keeps development
     /// reset controls from deleting another local profile's diagnostic history.
     /// </summary>
-    public void ClearHistoryForPlayer(string playerId)
+    public static bool ClearPersistedHistoryForPlayer(string playerId)
     {
-        if (string.IsNullOrWhiteSpace(playerId) || cached?.logs == null)
-            return;
+        if (string.IsNullOrWhiteSpace(playerId))
+            return false;
 
-        int removed = cached.logs.RemoveAll(log => log != null && log.player_id == playerId);
-        if (removed == 0)
-            return;
+        try
+        {
+            string path = Path.Combine(Application.persistentDataPath, "Telemetry", "pull_history.json");
+            if (!File.Exists(path))
+                return true;
 
-        SaveFile();
-        Debug.Log($"🗑 [Telemetry] Cleared {removed} pull history entries for player {playerId}");
+            var wrapper = JsonConvert.DeserializeObject<LogWrapper>(File.ReadAllText(path)) ?? new LogWrapper();
+            wrapper.logs ??= new List<PackPullLog>();
+            int removed = wrapper.logs.RemoveAll(log => log != null && log.player_id == playerId);
+
+            if (removed > 0)
+            {
+                File.WriteAllText(path, JsonConvert.SerializeObject(wrapper, Formatting.Indented));
+                Debug.Log($"🗑 [Telemetry] Cleared {removed} pull history entries for player {playerId}");
+            }
+
+            // A Title Screen reset normally has no logger instance. If the player
+            // resets while a logger is live, keep its in-memory view in sync too.
+            if (Instance != null)
+                Instance.cached = wrapper;
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[Telemetry] Failed to clear pull history for player {playerId}: {e.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Instance compatibility wrapper for callers that already have a logger.
+    /// The persisted-file implementation also works before this component loads.
+    /// </summary>
+    public bool ClearHistoryForPlayer(string playerId)
+    {
+        return ClearPersistedHistoryForPlayer(playerId);
     }
 
     public List<PackPullLog> GetRecent(int count)
