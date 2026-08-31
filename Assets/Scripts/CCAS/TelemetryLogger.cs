@@ -499,6 +499,23 @@ public class TelemetryLogger : MonoBehaviour
         Debug.Log("🗑 [Telemetry] Cleared pull_history.json");
     }
 
+    /// <summary>
+    /// Clears telemetry only for one player profile. This keeps development
+    /// reset controls from deleting another local profile's diagnostic history.
+    /// </summary>
+    public void ClearHistoryForPlayer(string playerId)
+    {
+        if (string.IsNullOrWhiteSpace(playerId) || cached?.logs == null)
+            return;
+
+        int removed = cached.logs.RemoveAll(log => log != null && log.player_id == playerId);
+        if (removed == 0)
+            return;
+
+        SaveFile();
+        Debug.Log($"🗑 [Telemetry] Cleared {removed} pull history entries for player {playerId}");
+    }
+
     public List<PackPullLog> GetRecent(int count)
     {
         if (cached?.logs == null || cached.logs.Count == 0)

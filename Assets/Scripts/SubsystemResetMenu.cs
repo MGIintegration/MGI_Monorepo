@@ -74,14 +74,16 @@ public class SubsystemResetMenu : MonoBehaviour
 
     private void ResetCCAS()
     {
-        if (PlayerWallet.Instance != null)
+        var service = CCASService.GetOrCreateForDevelopmentTools();
+        if (service.ResetPlayerState(PlayerIdProvider.Get()))
         {
-            PlayerWallet.Instance.ResetWallet();
-            SetStatus("CCAS wallet reset.");
+            PlayerPrefs.DeleteKey("ccas_has_pack_history");
+            PlayerPrefs.Save();
+            SetStatus("CCAS collection and pack history reset.");
             return;
         }
 
-        SetStatus("CCAS wallet reset failed.");
+        SetStatus("CCAS reset failed: CCASService is missing or the reset could not save.");
     }
 
     private void AddCoins()
@@ -89,15 +91,10 @@ public class SubsystemResetMenu : MonoBehaviour
         var service = new EconomyService();
         service.AddCurrency(playerId, coinsToAdd, 0, 0, "menu_add_coins");
 
-        if (PlayerWallet.Instance != null)
-        {
-            PlayerWallet.Instance.AddCoins(coinsToAdd);
-        }
-
         var hub = FindObjectOfType<AcquisitionHubController>();
         hub?.RefreshEconomyAndProgressionLabels();
 
-        SetStatus($"Added {coinsToAdd:N0} coins to the economy and CCAS wallets.");
+        SetStatus($"Added {coinsToAdd:N0} coins to the Economy wallet.");
     }
 
     private void SetStatus(string message)

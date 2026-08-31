@@ -6377,9 +6377,11 @@ MonoBehaviour:
   fireOffenseCoachButton: {fileID: 798064900}
   viewDefenseCoachButton: {fileID: 1000408963}
   fireDefenseCoachButton: {fileID: 2020362822}
+  viewSpecialCoachButton: {fileID: 629013844}
   hiringCoachMarketButton: {fileID: 8392322}
   performanceButton: {fileID: 385450309}
   historyButton: {fileID: 578880979}
+  teamRatingText: {fileID: 1569661125}
   backToMainMenuButton: {fileID: 774974696}
   refreshButton: {fileID: 108088866}
   hireCoach1Button: {fileID: 1611392722}
@@ -9686,6 +9688,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8925982106024687109, guid: ec44ccb746ac546b491020e5d3e8b555, type: 3}
   m_PrefabInstance: {fileID: 1569661122}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1569661125 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5999950326613976955, guid: ec44ccb746ac546b491020e5d3e8b555, type: 3}
+  m_PrefabInstance: {fileID: 1569661122}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1573770818
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11536,6 +11549,57 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &1916198299
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1916198301}
+  - component: {fileID: 1916198300}
+  m_Layer: 0
+  m_Name: StatusDeltaChecker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1916198300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1916198299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc461aa5d3c8a574aa82b7d14e24ea5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusDeltaChecker
+  enableDeltaTracking: 1
+  enableRealTimeTracking: 1
+  deltaCheckInterval: 1
+  maxDeltaHistory: 200
+  significantDeltaThreshold: 5
+  warningDeltaThreshold: -10
+  trendAnalysisWindow: 10
+--- !u!4 &1916198301
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1916198299}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 556.81714, y: 278, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1920522436
 GameObject:
   m_ObjectHideFlags: 0
@@ -13151,3 +13215,4 @@ SceneRoots:
   - {fileID: 1024213112}
   - {fileID: 385935634}
   - {fileID: 1123927969}
+  - {fileID: 1916198301}
