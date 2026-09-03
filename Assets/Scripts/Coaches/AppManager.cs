@@ -12,6 +12,7 @@ public class AppManager : MonoBehaviour
     public GameObject coachHiringScreen;
     public GameObject coachDetailsScreen;
     public GameObject performanceScreen;
+    public GameObject historyScreen;
 
     [Header("Navigation Buttons for Screen 1")]
 
@@ -47,6 +48,10 @@ public class AppManager : MonoBehaviour
     [Header("Navigation Buttons for Screen 4")]
     public Button backButton;
     public Button detailedStatsButton;
+
+    [Header("Navigation Button for History Screen")]
+    public Button historyBackButton;
+
     private void Start()
     {
         if (viewOffenseCoachButton != null)
@@ -102,7 +107,7 @@ public class AppManager : MonoBehaviour
         if (performanceButton != null)
             performanceButton.onClick.AddListener(() => ShowScreen(performanceScreen));
         if (historyButton != null)
-            historyButton.onClick.AddListener(() => Debug.Log("History button was clicked"));
+            historyButton.onClick.AddListener(() => ShowScreen(historyScreen));
 
         if (backToMainMenuButton != null)
             backToMainMenuButton.onClick.AddListener(() => ShowScreen(mainMenu));
@@ -146,6 +151,8 @@ public class AppManager : MonoBehaviour
 
         if (backButton != null)
             backButton.onClick.AddListener(() => ShowScreen(mainMenu));
+        if (historyBackButton != null)
+            historyBackButton.onClick.AddListener(() => ShowScreen(mainMenu));
         if (detailedStatsButton != null)
             detailedStatsButton.onClick.AddListener(() => Debug.Log("Detailed Stats button was clicked"));
 
@@ -162,13 +169,15 @@ public class AppManager : MonoBehaviour
         }
     }
 
-    private void ShowScreen(GameObject targetScreen)
+        private void ShowScreen(GameObject targetScreen)
     {
         // Deactivate all
         mainMenu.SetActive(false);
         coachHiringScreen.SetActive(false);
         coachDetailsScreen.SetActive(false);
         performanceScreen.SetActive(false);
+        if (historyScreen != null)
+            historyScreen.SetActive(false);
 
         // Activate the one you want
         if (targetScreen != null)
