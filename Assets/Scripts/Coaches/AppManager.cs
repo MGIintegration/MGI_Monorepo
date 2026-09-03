@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class AppManager : MonoBehaviour
 {
@@ -27,6 +28,8 @@ public class AppManager : MonoBehaviour
     public Button historyButton;
     
     [SerializeField] private TMPro.TextMeshProUGUI teamRatingText;
+    private IDisposable hireSubscription;
+    private IDisposable fireSubscription;
 
     [Header("Navigation Buttons for Screen 2")]
     public Button backToMainMenuButton;
@@ -157,6 +160,23 @@ public class AppManager : MonoBehaviour
             detailedStatsButton.onClick.AddListener(() => Debug.Log("Detailed Stats button was clicked"));
 
         ShowScreen(mainMenu);
+        UpdateTeamRating();
+    }
+
+    private void OnEnable()
+    {
+        hireSubscription = EventBus.Subscribe("hire_coach", OnCoachChanged);
+        fireSubscription = EventBus.Subscribe("fire_coach", OnCoachChanged);
+    }
+
+    private void OnDisable()
+    {
+        hireSubscription?.Dispose();
+        fireSubscription?.Dispose();
+    }
+
+    private void OnCoachChanged(EventBus.EventEnvelope evt)
+    {
         UpdateTeamRating();
     }
 
