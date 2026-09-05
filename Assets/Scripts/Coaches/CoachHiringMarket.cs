@@ -16,6 +16,7 @@ public class CoachHiringMarket : MonoBehaviour
     public TextMeshProUGUI ratingText1;
     public TextMeshProUGUI Type1;
     public Button viewCoachButton1;
+    public Button compareCoachButton1;
     public Transform specialtiesContainer1;
     public GameObject specialtyPrefab1;
 
@@ -25,6 +26,7 @@ public class CoachHiringMarket : MonoBehaviour
     public TextMeshProUGUI ratingText2;
     public TextMeshProUGUI Type2;
     public Button viewCoachButton2;
+    public Button compareCoachButton2;
     public Transform specialtiesContainer2;
     public GameObject specialtyPrefab2;
 
@@ -195,6 +197,7 @@ public class CoachHiringMarket : MonoBehaviour
             if (salaryText1 != null) salaryText1.text = "Salary: —";
             if (ratingText1 != null) ratingText1.text = "Rating: —";
             if (Type1 != null)       Type1.text       = "Type: —";
+            if (compareCoachButton1 != null) compareCoachButton1.interactable = false;
             if (specialtiesContainer1 != null)
                 foreach (Transform child in specialtiesContainer1) Destroy(child.gameObject);
             return;
@@ -215,6 +218,9 @@ public class CoachHiringMarket : MonoBehaviour
         if (Type1 != null)
             Type1.text = "Type: " + GetCoachTypeDisplayName(coach.coach_type);
 
+         if (compareCoachButton1 != null)
+            compareCoachButton1.interactable = HasSlottedCoachForRole(coach.coach_type);
+
         UpdateSpecialtiesDisplay1(coach);
     }
 
@@ -226,6 +232,7 @@ public class CoachHiringMarket : MonoBehaviour
             if (salaryText2 != null) salaryText2.text = "Salary: —";
             if (ratingText2 != null) ratingText2.text = "Rating: —";
             if (Type2 != null)       Type2.text       = "Type: —";
+            if (compareCoachButton2 != null) compareCoachButton2.interactable = false;
             if (specialtiesContainer2 != null)
                 foreach (Transform child in specialtiesContainer2) Destroy(child.gameObject);
             return;
@@ -246,9 +253,26 @@ public class CoachHiringMarket : MonoBehaviour
         if (Type2 != null)
             Type2.text = "Type: " + GetCoachTypeDisplayName(coach.coach_type);
 
+        if (compareCoachButton2 != null)
+            compareCoachButton2.interactable = HasSlottedCoachForRole(coach.coach_type);
+
         UpdateSpecialtiesDisplay2(coach);
     }
 
+    private bool HasSlottedCoachForRole(string coachType)
+    {
+        var state = CoachesService.GetTeamState();
+        if (state == null) return false;
+
+        string slottedId = coachType switch
+        {
+            "O" => state.offence_coach,
+            "D" => state.defence_coach,
+            "S" => state.special_teams_coach,
+            _ => null
+        };
+        return !string.IsNullOrEmpty(slottedId);
+    }
     private void UpdateSpecialtiesDisplay1(CoachDatabaseRecord coach)
     {
         if (specialtiesContainer1 == null || specialtyPrefab1 == null) return;

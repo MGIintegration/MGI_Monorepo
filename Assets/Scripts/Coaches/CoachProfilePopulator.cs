@@ -119,6 +119,7 @@ public class CoachProfilePopulator : MonoBehaviour
     public UnityEngine.UI.Button hireButton;
 
     private CoachDatabaseRecord _currentRecord;
+    public CoachDatabaseRecord CurrentRecord => _currentRecord;
     private const string TeamId = "4d1c8be1-c9f0-4f0f-9e91-b424d8343f86";
 
     // Database cache
