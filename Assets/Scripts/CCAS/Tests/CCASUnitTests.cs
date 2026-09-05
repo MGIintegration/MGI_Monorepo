@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using CCAS.Backend;
@@ -46,6 +47,7 @@ public static class CCASUnitTests
         Test_DuplicateCards_AwardConfiguredXp(ccas, catalog, progression);
         Test_CatalogFailure_RefundsThePlayer(ccas, catalog);
         Test_ResetAndSeed_AffectOnlyCCASState(ccas);
+        Test_ResetClearsPersistedTelemetryHistory(ccas);
 
         ResetAllState(ccas, progression);
 
@@ -164,6 +166,37 @@ public static class CCASUnitTests
         Assert(ccas.ResetPlayerState(TestPlayerId), "ResetSeed: reset succeeds");
         AssertEqual(0, ccas.GetCollection(TestPlayerId).Count(), "ResetSeed: collection clears");
         AssertEqual(0, ccas.GetPackDropHistory(TestPlayerId).Count(), "ResetSeed: history clears");
+    }
+
+    private static void Test_ResetClearsPersistedTelemetryHistory(CCASService ccas)
+    {
+        const string otherPlayerId = "__unit_test_other_player__";
+        string telemetryDirectory = Path.Combine(Application.persistentDataPath, "Telemetry");
+        string telemetryPath = Path.Combine(telemetryDirectory, "pull_history.json");
+        Directory.CreateDirectory(telemetryDirectory);
+        bool telemetryFileExisted = File.Exists(telemetryPath);
+        string originalTelemetryFile = telemetryFileExisted ? File.ReadAllText(telemetryPath) : null;
+
+        try
+        {
+            // This writes the persisted file directly, simulating a Title Screen
+            // reset where TelemetryLogger has not been loaded into the scene yet.
+            File.WriteAllText(telemetryPath,
+                "{\"logs\":[{\"player_id\":\"__unit_test_ccas__\",\"pack_name\":\"Old CCAS pack\"}," +
+                "{\"player_id\":\"__unit_test_other_player__\",\"pack_name\":\"Keep this pack\"}]}" );
+
+            Assert(ccas.ResetPlayerState(TestPlayerId), "ResetTelemetry: reset succeeds before telemetry loads");
+            string resetFile = File.ReadAllText(telemetryPath);
+            Assert(!resetFile.Contains(TestPlayerId), "ResetTelemetry: persisted Drop History clears for reset player");
+            Assert(resetFile.Contains(otherPlayerId), "ResetTelemetry: other player telemetry remains");
+        }
+        finally
+        {
+            if (telemetryFileExisted)
+                File.WriteAllText(telemetryPath, originalTelemetryFile);
+            else if (File.Exists(telemetryPath))
+                File.Delete(telemetryPath);
+        }
     }
 
     private static void ResetAllState(CCASService ccas, ProgressionService progression)

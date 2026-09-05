@@ -109,8 +109,9 @@ public class MyPacksController : MonoBehaviour
 
         var logger = TelemetryLogger.Instance;
         int limit  = (maxEntriesToShow > 0) ? maxEntriesToShow : int.MaxValue;
+        string playerId = PlayerIdProvider.Get();
         var logs   = logger != null
-            ? logger.GetRecent(limit)
+            ? logger.GetRecentForPlayer(playerId, limit)
             : new List<TelemetryLogger.PackPullLog>();
 
         if (totalPacksLabel != null)
@@ -144,13 +145,23 @@ public class MyPacksController : MonoBehaviour
             var row = Instantiate(resultTemplate, contentParent);
             row.SetActive(true);
 
+            // A pack entry contains both its summary and timestamp. The legacy
+            // template was only 30 pixels tall, so consecutive entries overlapped.
+            var layout = row.GetComponent<LayoutElement>();
+            if (layout != null)
+            {
+                layout.minHeight = 72f;
+                layout.preferredHeight = 72f;
+            }
+
             var tmp = row.GetComponentInChildren<TextMeshProUGUI>();
             if (tmp != null)
             {
                 tmp.text           = line;
                 tmp.richText       = true;
-                tmp.overflowMode   = TextOverflowModes.Overflow;
+                tmp.overflowMode   = TextOverflowModes.Ellipsis;
                 tmp.color          = Color.white;
+                tmp.rectTransform.sizeDelta = new Vector2(tmp.rectTransform.sizeDelta.x, 64f);
             }
         }
 

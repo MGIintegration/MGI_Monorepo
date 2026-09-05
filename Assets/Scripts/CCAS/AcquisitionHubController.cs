@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -60,6 +61,9 @@ public class AcquisitionHubController : MonoBehaviour
         // Subscribe to buy_pack event — fires every time a pack is opened
         _buyPackSub = EventBus.Subscribe("buy_pack", env =>
         {
+            if (env.player_id != ResolvePlayerId())
+                return;
+
             Debug.Log($"[CCAS] buy_pack event received (player={env.player_id}) → enabling My Packs button");
             PlayerPrefs.SetInt("ccas_has_pack_history", 1);
             PlayerPrefs.Save();
@@ -149,18 +153,10 @@ public class AcquisitionHubController : MonoBehaviour
             return;
         }
 
-        bool hasHistory = PlayerPrefs.GetInt("ccas_has_pack_history", 0) == 1;
-
-        if (!hasHistory)
-        {
-            var recent = TelemetryLogger.Instance?.GetRecent(1);
-            hasHistory = recent != null && recent.Count > 0;
-            if (hasHistory)
-            {
-                PlayerPrefs.SetInt("ccas_has_pack_history", 1);
-                PlayerPrefs.Save();
-            }
-        }
+        string playerId = ResolvePlayerId();
+        bool hasHistory = CCASService.Instance?
+            .GetPackDropHistory(playerId)
+            .Any() == true;
 
         myPacksButton.interactable = hasHistory;
         Debug.Log($"[CCAS] RefreshMyPacksButton({caller}): hasHistory={hasHistory} → interactable={myPacksButton.interactable}");

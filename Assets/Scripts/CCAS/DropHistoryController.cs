@@ -102,7 +102,9 @@ public class DropHistoryController : MonoBehaviour
         }
 
         var logger = TelemetryLogger.Instance;
-        var logs = logger != null ? logger.GetRecent(recentPullsToShow) : new List<TelemetryLogger.PackPullLog>();
+        var logs = logger != null
+            ? logger.GetRecentForPlayer(PlayerIdProvider.Get(), recentPullsToShow)
+            : new List<TelemetryLogger.PackPullLog>();
 
         if (logs == null || logs.Count == 0)
         {
