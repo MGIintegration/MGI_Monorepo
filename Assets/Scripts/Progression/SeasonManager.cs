@@ -38,7 +38,7 @@ public class SeasonManager : MonoBehaviour
             progressionService = progressionGo.AddComponent<ProgressionService>();
         }
 
-        // Initialize the backend (using LocalSeasonBackend by default, can be swapped with ApiClient)
+        // Initialize the backend (ISeasonBackend — swap implementation here if needed)
         backend = LocalSeasonBackend.Instance;
         if (backend == null)
         {
