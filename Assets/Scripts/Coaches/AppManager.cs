@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class AppManager : MonoBehaviour
 {
@@ -28,6 +29,8 @@ public class AppManager : MonoBehaviour
     public Button historyButton;
     
     [SerializeField] private TMPro.TextMeshProUGUI teamRatingText;
+    private IDisposable hireSubscription;
+    private IDisposable fireSubscription;
 
     [Header("Navigation Buttons for Screen 2")]
     public Button backToMainMenuButton;
