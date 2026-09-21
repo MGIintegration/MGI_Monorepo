@@ -76,7 +76,7 @@ public class RewardsUI : MonoBehaviour
                     : "-";
 
                 bool isCurrentTier = string.Equals(tier.display_name, sm.CurrentTierData?.display_name, System.StringComparison.OrdinalIgnoreCase);
-                bool isUnlocked = sm.PlayerXP >= tier.min_xp;
+                bool isUnlocked = sm.PlayerXPExact >= tier.min_xp;
 
                 Color rowColor = isCurrentTier ? new Color(1f, 0.8f, 0f) // Gold — current tier
                     : isUnlocked ? Color.white

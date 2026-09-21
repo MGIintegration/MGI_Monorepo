@@ -50,6 +50,11 @@ public static class ProgressionUnitTests
         Test_GetAllTiers_MatchesConfig(progression);
         Test_ClearPlayerProgression_ResetsState(progression);
 
+        Test_XpFormat_ToDisplay_CeilsWithoutFloatNoise();
+        Test_AddXp_KeepsFractionalXp_AndAccumulatesWithoutDrift(progression);
+        Test_FractionalXp_SurvivesReloadFromDisk(progression);
+        Test_TierLookup_HandlesFractionalXpAndXpBeyondLastTier(progression);
+
         // CreateSeason runs first, matching real gameplay order: a season must be
         // created (which warms up LocalSeasonBackend's ProgressionService reference)
         // before any match simulation or season-end rewards can occur.
@@ -123,12 +128,12 @@ public static class ProgressionUnitTests
     {
         progression.ClearPlayerProgression(TestPlayerId);
         progression.AddXp(TestPlayerId, 20, "unit_test", Guid.NewGuid().ToString());
-        int before = progression.GetState(TestPlayerId).current_xp;
+        float before = progression.GetState(TestPlayerId).current_xp;
 
         progression.AddXp(TestPlayerId, 0, "unit_test", Guid.NewGuid().ToString());
         progression.AddXp(TestPlayerId, -5, "unit_test", Guid.NewGuid().ToString());
 
-        int after = progression.GetState(TestPlayerId).current_xp;
+        float after = progression.GetState(TestPlayerId).current_xp;
         AssertEqual(before, after, "AddXp_NonPositiveIsNoOp");
     }
 
@@ -168,7 +173,9 @@ public static class ProgressionUnitTests
         Assert(entry != null, "XpHistory_RecordsSourceAndAmount: entry exists");
         if (entry != null)
         {
-            AssertEqual(7, entry.xp_gained, "XpHistory_RecordsSourceAndAmount: xp_gained");
+            // match_win picks up Facilities' baseline match multiplier, and the fraction is kept.
+            float expectedGain = 7f * new FacilitiesService().GetProgressionXpMultiplier(TestPlayerId, "match_win");
+            AssertEqual(expectedGain, entry.xp_gained, "XpHistory_RecordsSourceAndAmount: xp_gained", XpTolerance);
             AssertEqual("match_win", entry.source, "XpHistory_RecordsSourceAndAmount: source");
         }
     }
@@ -208,6 +215,85 @@ public static class ProgressionUnitTests
         AssertEqual(0, freshState.current_xp, "ClearPlayerProgression_ResetsState: fresh state is 0 XP");
     }
 
+    // ---------------- Fractional XP ----------------
+
+    private static void Test_XpFormat_ToDisplay_CeilsWithoutFloatNoise()
+    {
+        AssertEqual(0, XpFormat.ToDisplay(0f), "XpFormat: zero displays as 0");
+        AssertEqual(1, XpFormat.ToDisplay(0.2f), "XpFormat: a small bonus never displays as zero");
+        AssertEqual(50, XpFormat.ToDisplay(49.2f), "XpFormat: 49.2 rounds up to 50");
+        AssertEqual(109, XpFormat.ToDisplay(108.4f), "XpFormat: 108.4 rounds up to 109");
+        AssertEqual(103, XpFormat.ToDisplay(103f), "XpFormat: a whole number is unchanged");
+
+        // 100 * 1.08f comes out as 108.0000076 in float math. A bare Math.Ceiling would
+        // show that as 109, which is a wrong number on screen for a whole-number result.
+        AssertEqual(108, XpFormat.ToDisplay(108.0000076f), "XpFormat: float noise above a whole number does not bump it up");
+        AssertEqual(103, XpFormat.ToDisplay(102.9999971f), "XpFormat: float noise below a whole number still reads as that number");
+
+        double stored = XpFormat.ToStorage(15f * 1.03f);
+        Assert(Math.Abs(stored - 15.45) < 1e-9, $"XpFormat: ToStorage drops float noise (15 x 1.03 stores as {stored}, expected 15.45)");
+    }
+
+    private static void Test_AddXp_KeepsFractionalXp_AndAccumulatesWithoutDrift(ProgressionService progression)
+    {
+        progression.ClearPlayerProgression(TestPlayerId);
+
+        // match_win carries the level-1 Film Room's baseline multiplier from Facilities,
+        // so a 1 XP grant is worth slightly more than 1. Rounding each grant used to
+        // discard that every time.
+        float multiplier = new FacilitiesService().GetProgressionXpMultiplier(TestPlayerId, "match_win");
+        Assert(multiplier > 1f, "FractionalXp: match_win has a Facilities multiplier above 1 (precondition)");
+
+        for (int i = 0; i < 10; i++)
+            progression.AddXp(TestPlayerId, 1, "match_win", Guid.NewGuid().ToString());
+
+        var state = progression.GetState(TestPlayerId);
+        AssertEqual(10f * multiplier, state.current_xp, "FractionalXp: ten 1-XP grants total 10 x multiplier, not a rounded 10", XpTolerance);
+        AssertEqual(multiplier, state.xp_history[0].xp_gained, "FractionalXp: each history entry keeps its fractional amount", XpTolerance);
+    }
+
+    private static void Test_FractionalXp_SurvivesReloadFromDisk(ProgressionService progression)
+    {
+        progression.ClearPlayerProgression(TestPlayerId);
+        progression.AddXp(TestPlayerId, 7, "match_win", Guid.NewGuid().ToString());
+
+        var before = progression.GetState(TestPlayerId);
+        float totalBefore = before.current_xp;
+        float gainedBefore = before.xp_history[0].xp_gained;
+        Assert(Mathf.Abs(totalBefore - Mathf.Round(totalBefore)) > 0.05f, $"FractionalXp reload: precondition - {totalBefore} XP is fractional");
+
+        // Drop the in-memory cache so the next GetState has to read the files back.
+        var cacheField = typeof(ProgressionService).GetField("_progressionCache", BindingFlags.NonPublic | BindingFlags.Instance);
+        ((Dictionary<string, PlayerProgressionState>)cacheField.GetValue(progression)).Clear();
+
+        var reloaded = progression.GetState(TestPlayerId, createIfMissing: false);
+        Assert(reloaded != null, "FractionalXp reload: state is read back from disk");
+        if (reloaded == null) return;
+
+        AssertEqual(totalBefore, reloaded.current_xp, "FractionalXp reload: total XP keeps its fraction", XpTolerance);
+        AssertEqual(gainedBefore, reloaded.xp_history[0].xp_gained, "FractionalXp reload: history entry keeps its fraction", XpTolerance);
+    }
+
+    private static void Test_TierLookup_HandlesFractionalXpAndXpBeyondLastTier(ProgressionService progression)
+    {
+        // The tier config uses whole-number ranges (rookie 0-49, pro 50-99, ...). Fractional
+        // XP between one range's max and the next range's min (e.g. 99.5) used to match no
+        // tier at all and fall back to rookie; so did any XP above the last range's max.
+        AssertEqual("rookie", TierFor(progression, 49.5f), "TierLookup: 49.5 XP is rookie");
+        AssertEqual("pro", TierFor(progression, 50f), "TierLookup: 50 XP is pro");
+        AssertEqual("pro", TierFor(progression, 99.5f), "TierLookup: 99.5 XP is pro, not rookie");
+        AssertEqual("all_star", TierFor(progression, 100f), "TierLookup: 100 XP is all_star");
+        AssertEqual("all_star", TierFor(progression, 149.9f), "TierLookup: 149.9 XP is all_star, not rookie");
+        AssertEqual("legend", TierFor(progression, 150f), "TierLookup: 150 XP is legend");
+        AssertEqual("legend", TierFor(progression, 5000f), "TierLookup: XP above the last range's max stays legend");
+    }
+
+    private static string TierFor(ProgressionService progression, float xp)
+    {
+        var method = typeof(ProgressionService).GetMethod("CalculateTierForXp", BindingFlags.NonPublic | BindingFlags.Instance);
+        return (string)method.Invoke(progression, new object[] { xp });
+    }
+
     // ---------------- LocalSeasonBackend ----------------
 
     private static void Test_AwardSeasonRewards_PlacementXp(LocalSeasonBackend backend, ProgressionService progression)
@@ -232,11 +318,12 @@ public static class ProgressionUnitTests
         // AddXp applies Facilities' "season_reward" multiplier on top of the base reward
         // (this is the intended Facility-affected-XP behavior, not a bug) - compute the
         // expected value the same way production does rather than assuming a 1:1 mapping.
-        int expectedXp = baseXp == 0
-            ? 0
-            : Mathf.Max(1, Mathf.RoundToInt(baseXp * new FacilitiesService().GetProgressionXpMultiplier(TestPlayerId, "season_reward")));
+        // XP keeps its fractional part, so nothing is rounded here.
+        float expectedXp = baseXp == 0
+            ? 0f
+            : baseXp * new FacilitiesService().GetProgressionXpMultiplier(TestPlayerId, "season_reward");
 
-        int actualXp = progression.GetState(TestPlayerId, createIfMissing: false)?.current_xp ?? 0;
+        float actualXp = progression.GetState(TestPlayerId, createIfMissing: false)?.current_xp ?? 0f;
         AssertEqual(expectedXp, actualXp, $"AwardSeasonRewards_PlacementXp: placement {placement} awards {expectedXp} XP (base {baseXp})");
     }
 
@@ -343,10 +430,14 @@ public static class ProgressionUnitTests
             AssertEqual(1, updated.current_week, "SimulateWeek_AwardsMatchXpAndAdvancesWeek: week advanced to 1");
         }
 
-        int xpGained = progression.GetState(TestPlayerId, createIfMissing: false)?.current_xp ?? 0;
-        // Match played (5) + win (10) = 15, or match played (5) + loss (2) = 7 - outcome is randomized.
-        Assert(xpGained == 15 || xpGained == 7,
-            $"SimulateWeek_AwardsMatchXpAndAdvancesWeek: XP is 15 (win) or 7 (loss), got {xpGained}");
+        float xpGained = progression.GetState(TestPlayerId, createIfMissing: false)?.current_xp ?? 0f;
+        // Match played (5) + win (10) = 15, or match played (5) + loss (2) = 7 - outcome is
+        // randomized. Facilities' match multiplier applies on top and the fraction is kept.
+        var facilities = new FacilitiesService();
+        float winXp = 15f * facilities.GetProgressionXpMultiplier(TestPlayerId, "match_win");
+        float lossXp = 7f * facilities.GetProgressionXpMultiplier(TestPlayerId, "match_loss");
+        Assert(Mathf.Abs(xpGained - winXp) < 0.001f || Mathf.Abs(xpGained - lossXp) < 0.001f,
+            $"SimulateWeek_AwardsMatchXpAndAdvancesWeek: XP is {winXp} (win) or {lossXp} (loss), got {xpGained}");
     }
 
     private static void Test_SimulateWeek_RejectsPastFinalWeek(LocalSeasonBackend backend)
@@ -434,8 +525,8 @@ public static class ProgressionUnitTests
         AssertEqual(1.03f, multiplier, "Baseline: level-1 Film Room match multiplier is 1.03x");
 
         progression.AddXp(FacilitiesTestPlayerId, 100, "match_win", Guid.NewGuid().ToString());
-        int xp = progression.GetState(FacilitiesTestPlayerId).current_xp;
-        AssertEqual(103, xp, "Baseline: 100 base XP becomes 103 at level-1 Film Room");
+        float xp = progression.GetState(FacilitiesTestPlayerId).current_xp;
+        AssertEqual(103f, xp, "Baseline: 100 base XP becomes 103 at level-1 Film Room", XpTolerance);
     }
 
     private static void Test_UpgradeFilmRoom_IncreasesMatchXpMultiplier(
@@ -452,8 +543,8 @@ public static class ProgressionUnitTests
 
         progression.ClearPlayerProgression(FacilitiesTestPlayerId);
         progression.AddXp(FacilitiesTestPlayerId, 100, "match_win", Guid.NewGuid().ToString());
-        int xp = progression.GetState(FacilitiesTestPlayerId).current_xp;
-        AssertEqual(108, xp, "UpgradeFilmRoom: 100 base XP becomes 108 at level-2 Film Room");
+        float xp = progression.GetState(FacilitiesTestPlayerId).current_xp;
+        AssertEqual(108f, xp, "UpgradeFilmRoom: 100 base XP becomes 108 at level-2 Film Room", XpTolerance);
     }
 
     private static void Test_UpgradeWeightRoom_AppliesTrainingMultiplier(
@@ -470,8 +561,8 @@ public static class ProgressionUnitTests
 
         progression.ClearPlayerProgression(FacilitiesTestPlayerId);
         progression.AddXp(FacilitiesTestPlayerId, 100, "training_session", Guid.NewGuid().ToString());
-        int xp = progression.GetState(FacilitiesTestPlayerId).current_xp;
-        AssertEqual(115, xp, "UpgradeWeightRoom: 100 base XP becomes 115 at level-2 Weight Room");
+        float xp = progression.GetState(FacilitiesTestPlayerId).current_xp;
+        AssertEqual(115f, xp, "UpgradeWeightRoom: 100 base XP becomes 115 at level-2 Weight Room", XpTolerance);
     }
 
     private static void Test_UpgradeRehabCenter_AppliesRecoveryMultiplier(
@@ -488,8 +579,8 @@ public static class ProgressionUnitTests
 
         progression.ClearPlayerProgression(FacilitiesTestPlayerId);
         progression.AddXp(FacilitiesTestPlayerId, 100, "recovery_bonus", Guid.NewGuid().ToString());
-        int xp = progression.GetState(FacilitiesTestPlayerId).current_xp;
-        AssertEqual(117, xp, "UpgradeRehabCenter: 100 base XP becomes 117 at level-2 Rehab Center");
+        float xp = progression.GetState(FacilitiesTestPlayerId).current_xp;
+        AssertEqual(117f, xp, "UpgradeRehabCenter: 100 base XP becomes 117 at level-2 Rehab Center", XpTolerance);
     }
 
     private static void Test_DuplicateCardSource_ExemptFromFacilityMultiplier(
@@ -502,8 +593,8 @@ public static class ProgressionUnitTests
 
         progression.ClearPlayerProgression(FacilitiesTestPlayerId);
         progression.AddXp(FacilitiesTestPlayerId, 100, "duplicate_card_common", Guid.NewGuid().ToString());
-        int xp = progression.GetState(FacilitiesTestPlayerId).current_xp;
-        AssertEqual(100, xp, "DuplicateCardSource: 100 base XP stays 100, unaffected by Facilities");
+        float xp = progression.GetState(FacilitiesTestPlayerId).current_xp;
+        AssertEqual(100f, xp, "DuplicateCardSource: 100 base XP stays 100, unaffected by Facilities", XpTolerance);
     }
 
     private static void Test_UpgradeFacility_InsufficientFunds_Rejected(
@@ -622,8 +713,8 @@ public static class ProgressionUnitTests
         Assert(result.cardDetails.Count > 0, "SpendsCoinsViaEconomy: cards were pulled");
         Assert(result.cardDetails.All(c => !c.isDuplicate), "SpendsCoinsViaEconomy: first-ever pack has no duplicates");
 
-        int xp = progression.GetState(CcasTestPlayerId, createIfMissing: false)?.current_xp ?? 0;
-        AssertEqual(0, xp, "SpendsCoinsViaEconomy: no XP awarded on first pack (no duplicates possible)");
+        float xp = progression.GetState(CcasTestPlayerId, createIfMissing: false)?.current_xp ?? 0f;
+        AssertEqual(0f, xp, "SpendsCoinsViaEconomy: no XP awarded on first pack (no duplicates possible)");
     }
 
     private static void Test_OpenPack_AllDuplicates_AwardsConfigDrivenXp(
@@ -648,7 +739,7 @@ public static class ProgressionUnitTests
         Assert(result.cardDetails.All(c => c.xpAwarded == GetExpectedDupXp(dxp, c.rarity)), "AllDuplicates: per-card xpAwarded matches config's duplicate_xp table");
 
         int expectedXp = result.cardDetails.Sum(c => GetExpectedDupXp(dxp, c.rarity));
-        int actualXp = progression.GetState(CcasTestPlayerId, createIfMissing: false)?.current_xp ?? 0;
+        float actualXp = progression.GetState(CcasTestPlayerId, createIfMissing: false)?.current_xp ?? 0f;
         AssertEqual(expectedXp, actualXp, "AllDuplicates: ProgressionService XP total matches sum of duplicate awards");
 
         AssertEqual(poolSize + result.cardDetails.Count, TotalCollectionQuantity(ccas, CcasTestPlayerId), "AllDuplicates: collection quantities incremented by exactly the cards pulled");
@@ -663,7 +754,7 @@ public static class ProgressionUnitTests
         // packOpenId>:<cardId>), so unlike Test_DuplicateCardXp_EventIdIsIdempotent
         // below, this XP must be additional, not deduplicated against the first batch.
         int quantityBefore = TotalCollectionQuantity(ccas, CcasTestPlayerId);
-        int xpBefore = progression.GetState(CcasTestPlayerId, createIfMissing: false)?.current_xp ?? 0;
+        float xpBefore = progression.GetState(CcasTestPlayerId, createIfMissing: false)?.current_xp ?? 0f;
 
         var result = ccas.OpenPack(CcasTestPlayerId, BronzePackId);
         Assert(result.success, "SecondDuplicateBatch: OpenPack succeeds");
@@ -673,7 +764,7 @@ public static class ProgressionUnitTests
         var dxp = dropConfig.config.duplicate_xp;
         int batchXp = result.cardDetails.Sum(c => GetExpectedDupXp(dxp, c.rarity));
 
-        int xpAfter = progression.GetState(CcasTestPlayerId, createIfMissing: false)?.current_xp ?? 0;
+        float xpAfter = progression.GetState(CcasTestPlayerId, createIfMissing: false)?.current_xp ?? 0f;
         AssertEqual(xpBefore + batchXp, xpAfter, "SecondDuplicateBatch: XP accumulates on top of the first batch, not deduplicated across separate pack opens");
 
         AssertEqual(quantityBefore + result.cardDetails.Count, TotalCollectionQuantity(ccas, CcasTestPlayerId), "SecondDuplicateBatch: collection quantities keep accumulating across pack opens");
@@ -802,6 +893,7 @@ public static class ProgressionUnitTests
         Test_HireBothOffenseAndDefense_SynergyBonusStacks(progression, facilities, economy);
         Test_DuplicateCardSource_ExemptFromCoachBonus(progression);
         Test_FireCoach_RemovesItsBonus(progression, facilities);
+        Test_FacilityThenCoachBonus_IsNotRoundedBetweenSteps(progression, facilities);
 
         ResetCoachesIntegrationState(progression, facilities, economy);
 
@@ -835,11 +927,11 @@ public static class ProgressionUnitTests
         // contributes nothing on top of that when nobody's hired, not that XP
         // is untouched by every system.
         float facilityMultiplier = facilities.GetProgressionXpMultiplier(CoachesTestPlayerId, "match_win");
-        int expectedXp = Mathf.Max(1, Mathf.RoundToInt(100 * facilityMultiplier));
+        float expectedXp = ExpectedBonusXp(100, facilityMultiplier, 0f);
 
         progression.AddXp(CoachesTestPlayerId, 100, "match_win", Guid.NewGuid().ToString());
-        int actualXp = progression.GetState(CoachesTestPlayerId).current_xp;
-        AssertEqual(expectedXp, actualXp, "NoCoachesHired: XP reflects only the Facilities multiplier");
+        float actualXp = progression.GetState(CoachesTestPlayerId).current_xp;
+        AssertEqual(expectedXp, actualXp, "NoCoachesHired: XP reflects only the Facilities multiplier", XpTolerance);
     }
 
     private static void Test_HireOffensiveCoach_AppliesConfigDrivenBonusToMatchWin(
@@ -861,12 +953,11 @@ public static class ProgressionUnitTests
         AssertEqual(expectedBonus, actualBonus, "HireOffensiveCoach: GetCoachXpBonusPercent matches config-derived value");
 
         float facilityMultiplier = facilities.GetProgressionXpMultiplier(CoachesTestPlayerId, "match_win");
-        int afterFacility = Mathf.Max(1, Mathf.RoundToInt(100 * facilityMultiplier));
-        int expectedXp = Mathf.Max(1, Mathf.RoundToInt(afterFacility * (1f + expectedBonus)));
+        float expectedXp = ExpectedBonusXp(100, facilityMultiplier, expectedBonus);
 
         progression.AddXp(CoachesTestPlayerId, 100, "match_win", Guid.NewGuid().ToString());
-        int actualXp = progression.GetState(CoachesTestPlayerId).current_xp;
-        AssertEqual(expectedXp, actualXp, "HireOffensiveCoach: AddXp chains Facilities then Coaches correctly");
+        float actualXp = progression.GetState(CoachesTestPlayerId).current_xp;
+        AssertEqual(expectedXp, actualXp, "HireOffensiveCoach: AddXp chains Facilities then Coaches correctly", XpTolerance);
     }
 
     private static void Test_HireBothOffenseAndDefense_SynergyBonusStacks(
@@ -894,12 +985,11 @@ public static class ProgressionUnitTests
         AssertEqual(expectedTotal, actualTotal, "SynergyBonus: total bonus is both per-type bonuses plus synergy");
 
         float facilityMultiplier = facilities.GetProgressionXpMultiplier(CoachesTestPlayerId, "match_win");
-        int afterFacility = Mathf.Max(1, Mathf.RoundToInt(100 * facilityMultiplier));
-        int expectedXp = Mathf.Max(1, Mathf.RoundToInt(afterFacility * (1f + expectedTotal)));
+        float expectedXp = ExpectedBonusXp(100, facilityMultiplier, expectedTotal);
 
         progression.AddXp(CoachesTestPlayerId, 100, "match_win", Guid.NewGuid().ToString());
-        int actualXp = progression.GetState(CoachesTestPlayerId).current_xp;
-        AssertEqual(expectedXp, actualXp, "SynergyBonus: AddXp reflects the stacked per-type + synergy bonus");
+        float actualXp = progression.GetState(CoachesTestPlayerId).current_xp;
+        AssertEqual(expectedXp, actualXp, "SynergyBonus: AddXp reflects the stacked per-type + synergy bonus", XpTolerance);
     }
 
     private static void Test_DuplicateCardSource_ExemptFromCoachBonus(ProgressionService progression)
@@ -912,8 +1002,8 @@ public static class ProgressionUnitTests
 
         progression.ClearPlayerProgression(CoachesTestPlayerId);
         progression.AddXp(CoachesTestPlayerId, 100, "duplicate_card_common", Guid.NewGuid().ToString());
-        int xp = progression.GetState(CoachesTestPlayerId).current_xp;
-        AssertEqual(100, xp, "DuplicateCardSource: 100 base XP stays 100, unaffected by hired coaches");
+        float xp = progression.GetState(CoachesTestPlayerId).current_xp;
+        AssertEqual(100f, xp, "DuplicateCardSource: 100 base XP stays 100, unaffected by hired coaches");
     }
 
     private static void Test_FireCoach_RemovesItsBonus(ProgressionService progression, FacilitiesService facilities)
@@ -936,13 +1026,39 @@ public static class ProgressionUnitTests
 
         progression.ClearPlayerProgression(CoachesTestPlayerId);
         float facilityMultiplier = facilities.GetProgressionXpMultiplier(CoachesTestPlayerId, "match_win");
-        int afterFacility = Mathf.Max(1, Mathf.RoundToInt(100 * facilityMultiplier));
-        int expectedXp = Mathf.Max(1, Mathf.RoundToInt(afterFacility * (1f + expectedRemaining)));
+        float expectedXp = ExpectedBonusXp(100, facilityMultiplier, expectedRemaining);
 
         progression.AddXp(CoachesTestPlayerId, 100, "match_win", Guid.NewGuid().ToString());
-        int actualXp = progression.GetState(CoachesTestPlayerId).current_xp;
-        AssertEqual(expectedXp, actualXp, "FireCoach: AddXp reflects the reduced bonus after firing");
+        float actualXp = progression.GetState(CoachesTestPlayerId).current_xp;
+        AssertEqual(expectedXp, actualXp, "FireCoach: AddXp reflects the reduced bonus after firing", XpTolerance);
     }
+
+    private static void Test_FacilityThenCoachBonus_IsNotRoundedBetweenSteps(ProgressionService progression, FacilitiesService facilities)
+    {
+        // A Defensive coach is still hired from the previous test. A small base amount
+        // makes rounding visible: 7 * 1.03 (Facilities) * (1 + coach bonus) is about
+        // 7.43, but rounding after the Facilities step and again after the Coaches
+        // step used to collapse it to 7.
+        progression.ClearPlayerProgression(CoachesTestPlayerId);
+        float coachBonus = CoachesService.GetCoachXpBonusPercent(CoachesTestPlayerId, "match_win");
+        float facilityMultiplier = facilities.GetProgressionXpMultiplier(CoachesTestPlayerId, "match_win");
+        float expectedXp = ExpectedBonusXp(7, facilityMultiplier, coachBonus);
+
+        Assert(coachBonus > 0f, "NoIntermediateRounding: a coach bonus is active for this check");
+        Assert(Mathf.Abs(expectedXp - Mathf.Round(expectedXp)) > 0.05f,
+            $"NoIntermediateRounding: test data actually produces a fractional result ({expectedXp}), so rounding would be visible");
+
+        progression.AddXp(CoachesTestPlayerId, 7, "match_win", Guid.NewGuid().ToString());
+        float actualXp = progression.GetState(CoachesTestPlayerId).current_xp;
+        AssertEqual(expectedXp, actualXp, "NoIntermediateRounding: XP keeps its fractional part through both bonus steps", XpTolerance);
+    }
+
+    private const float XpTolerance = 0.001f;
+
+    // Mirrors ProgressionService's bonus chain: Facilities multiplier, then the Coaches
+    // bonus on top, with no rounding at either step (the minimum-1 floor still applies).
+    private static float ExpectedBonusXp(float baseXp, float facilityMultiplier, float coachBonusPercent) =>
+        Mathf.Max(1f, Mathf.Max(1f, baseXp * facilityMultiplier) * (1f + coachBonusPercent));
 
     private static CoachDatabaseRecord HireCoachOfType(string playerId, string coachType)
     {

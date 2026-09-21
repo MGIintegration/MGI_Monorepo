@@ -97,7 +97,7 @@ public class PlayerProgressionUI : MonoBehaviour
         {
             GameObject item = Instantiate(xpHistoryEntryPrefab, xpHistoryContainer);
             Text entryText = item.GetComponent<Text>();
-            entryText.text = $"{entry.timestamp}: +{entry.xp_gained} XP ({entry.source})";
+            entryText.text = $"{entry.timestamp}: +{XpFormat.ToDisplay(entry.xp_gained)} XP ({entry.source})";
         }
     }
 }

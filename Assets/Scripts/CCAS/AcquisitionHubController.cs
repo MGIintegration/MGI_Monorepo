@@ -191,7 +191,7 @@ public class AcquisitionHubController : MonoBehaviour
             var prog = ProgressionService.Instance;
             var state = prog != null ? prog.GetState(playerId, true) : null;
             xpText.text = state != null
-                ? $"XP: {state.current_xp}"
+                ? $"XP: {XpFormat.ToDisplay(state.current_xp)}"
                 : $"XP: {PlayerPrefs.GetInt("player_xp", 0)}";
         }
     }
