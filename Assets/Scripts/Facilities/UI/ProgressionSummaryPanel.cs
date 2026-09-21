@@ -63,6 +63,11 @@ public class ProgressionSummaryPanel : MonoBehaviour
             }
         }
 
+        var facilities = new FacilitiesService();
+        float trainingMultiplier = facilities.GetProgressionXpMultiplier(id, "training");
+        float recoveryMultiplier = facilities.GetProgressionXpMultiplier(id, "recovery");
+        float matchMultiplier = facilities.GetProgressionXpMultiplier(id, "match");
+
         var sb = new System.Text.StringBuilder();
         sb.AppendLine($"Current Tier: {tierDisplayName}");
         sb.AppendLine($"Total XP: {currentXp}");
@@ -70,7 +75,17 @@ public class ProgressionSummaryPanel : MonoBehaviour
         sb.AppendLine(nextTierDisplayName != null
             ? $"Next Tier: {nextTierDisplayName} ({Mathf.Max(0, nextTierMinXp - currentXp)} XP to go)"
             : "Highest tier reached.");
+        sb.AppendLine();
+        sb.AppendLine("Facility XP Bonuses:");
+        sb.AppendLine($"- Training (Weight Room): +{FormatBonusPercent(trainingMultiplier)}%");
+        sb.AppendLine($"- Recovery (Rehab Center): +{FormatBonusPercent(recoveryMultiplier)}%");
+        sb.AppendLine($"- Match (Film Room): +{FormatBonusPercent(matchMultiplier)}%");
 
         outputText.text = sb.ToString().TrimEnd();
+    }
+
+    static string FormatBonusPercent(float multiplier)
+    {
+        return Mathf.Max(0f, (multiplier - 1f) * 100f).ToString("0.#");
     }
 }

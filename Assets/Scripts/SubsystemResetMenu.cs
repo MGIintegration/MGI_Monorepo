@@ -14,10 +14,14 @@ public class SubsystemResetMenu : MonoBehaviour
     [SerializeField] private Button resetCoachesButton;
     [SerializeField] private Button resetCCASButton;
     [SerializeField] private Button addCoinsButton;
+    [SerializeField] private Button simulateXpGainButton;
     [SerializeField] private TMP_Text statusText;
 
     [Header("Coin Settings")]
     [SerializeField] private int coinsToAdd = 10000;
+
+    [Header("XP Simulation Settings")]
+    [SerializeField] private int simulatedBaseXp = 10;
 
     [Header("Player")]
     [SerializeField] private string playerId = "local_player";
@@ -39,6 +43,7 @@ public class SubsystemResetMenu : MonoBehaviour
         if (resetCoachesButton != null) resetCoachesButton.onClick.AddListener(ResetCoaches);
         if (resetCCASButton != null) resetCCASButton.onClick.AddListener(ResetCCAS);
         if (addCoinsButton != null) addCoinsButton.onClick.AddListener(AddCoins);
+        if (simulateXpGainButton != null) simulateXpGainButton.onClick.AddListener(SimulateXpGain);
     }
 
     private void Open()
@@ -95,6 +100,22 @@ public class SubsystemResetMenu : MonoBehaviour
         hub?.RefreshEconomyAndProgressionLabels();
 
         SetStatus($"Added {coinsToAdd:N0} coins to the Economy wallet.");
+    }
+
+    private void SimulateXpGain()
+    {
+        var progression = ProgressionService.Instance;
+        if (progression == null)
+        {
+            var go = new GameObject("ProgressionService (runtime-instantiated)");
+            progression = go.AddComponent<ProgressionService>();
+        }
+
+        progression.AddXp(playerId, simulatedBaseXp, "training", Guid.NewGuid().ToString());
+        progression.AddXp(playerId, simulatedBaseXp, "recovery", Guid.NewGuid().ToString());
+        progression.AddXp(playerId, simulatedBaseXp, "match_win", Guid.NewGuid().ToString());
+
+        SetStatus($"Granted {simulatedBaseXp} base XP each for training/recovery/match to {playerId}.");
     }
 
     private void SetStatus(string message)
