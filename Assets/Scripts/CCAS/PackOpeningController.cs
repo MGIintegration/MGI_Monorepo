@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 using CCAS.Backend;
@@ -11,7 +10,6 @@ public class PackOpeningController : MonoBehaviour
     [Header("Navigation")]
     public Button continueButton;
     public Button backToHubButton;
-    [SerializeField] private string ccasSceneName = "CCAS";
     public GameObject packPanel;
     public GameObject dropHistoryPanel;
 
@@ -53,17 +51,6 @@ public class PackOpeningController : MonoBehaviour
     private void OnBackToHubClicked()
     {
         FindFirstObjectByType<AcquisitionHubController>()?.ShowHub();
-    }
-
-    public void LoadCcasScene()
-    {
-        if (string.IsNullOrWhiteSpace(ccasSceneName))
-        {
-            Debug.LogError("[PackOpening] Missing CCAS scene name.");
-            return;
-        }
-
-        SceneManager.LoadScene(ccasSceneName);
     }
 
     public void OpenPackOfType(string key)
