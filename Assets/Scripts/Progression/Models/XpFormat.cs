@@ -6,9 +6,9 @@ using System;
 /// </summary>
 public static class XpFormat
 {
-    // float math leaves noise on values that are mathematically whole (100 * 1.08f
-    // is 108.0000076), and a bare Ceiling would show that as 109. Rounding away the
-    // noise first keeps Ceiling honest without hiding any real fraction.
+    // float math leaves noise on values that are mathematically whole or exactly
+    // half (100 * 1.08f is 108.0000076). Rounding the noise away first keeps a value
+    // that should sit on a .5 boundary from landing on the wrong side of it.
     private const int NoiseDecimals = 3;
 
     // Persisted JSON is written through double, which would otherwise store
@@ -16,11 +16,14 @@ public static class XpFormat
     private const int StorageDecimals = 4;
 
     /// <summary>
-    /// Integer XP for the UI. Ceiling, not floor, so a small bonus never displays as zero.
+    /// Integer XP for the UI: the nearest whole number, with .5 rounding up.
+    /// Always call this on the running total or on a single value, never on a sum
+    /// of already-rounded values, so two 15.4 gains show 31 (30.8), not 30.
     /// </summary>
     public static int ToDisplay(float xp)
     {
-        return (int)Math.Ceiling(Math.Round(xp, NoiseDecimals));
+        double clean = Math.Round(xp, NoiseDecimals);
+        return (int)Math.Round(clean, MidpointRounding.AwayFromZero);
     }
 
     /// <summary>

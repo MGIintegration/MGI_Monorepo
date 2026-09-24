@@ -70,7 +70,7 @@ public class SeasonManager : MonoBehaviour
     public List<TeamSaveData> Teams => seasonData?.teams ?? new List<TeamSaveData>();
     public TeamSaveData PlayerTeam => seasonData?.teams?.FirstOrDefault(t => t.is_player_team);
 
-    /// <summary>XP rounded up to a whole number, for display only.</summary>
+    /// <summary>XP rounded to the nearest whole number, for display only.</summary>
     public int PlayerXP => XpFormat.ToDisplay(PlayerXPExact);
 
     /// <summary>

@@ -50,7 +50,7 @@ public static class ProgressionUnitTests
         Test_GetAllTiers_MatchesConfig(progression);
         Test_ClearPlayerProgression_ResetsState(progression);
 
-        Test_XpFormat_ToDisplay_CeilsWithoutFloatNoise();
+        Test_XpFormat_ToDisplay_RoundsToNearestWithoutFloatNoise();
         Test_AddXp_KeepsFractionalXp_AndAccumulatesWithoutDrift(progression);
         Test_FractionalXp_SurvivesReloadFromDisk(progression);
         Test_TierLookup_HandlesFractionalXpAndXpBeyondLastTier(progression);
@@ -217,18 +217,35 @@ public static class ProgressionUnitTests
 
     // ---------------- Fractional XP ----------------
 
-    private static void Test_XpFormat_ToDisplay_CeilsWithoutFloatNoise()
+    private static void Test_XpFormat_ToDisplay_RoundsToNearestWithoutFloatNoise()
     {
+        // The spec's worked examples: the UI is the running internal total rounded to the
+        // nearest whole number.
+        AssertEqual(15, XpFormat.ToDisplay(15.4f), "XpFormat: example 1, match 1 (15.4) shows 15");
+        AssertEqual(31, XpFormat.ToDisplay(30.8f), "XpFormat: example 1, match 2 (30.8) shows 31");
+        AssertEqual(15, XpFormat.ToDisplay(15.2f), "XpFormat: example 2, match 1 (15.2) shows 15");
+        AssertEqual(30, XpFormat.ToDisplay(30.4f), "XpFormat: example 2, match 2 (30.4) shows 30");
+        AssertEqual(46, XpFormat.ToDisplay(45.6f), "XpFormat: example 2, match 3 (45.6) shows 46");
+
+        // Rounding the total, not summing rounded gains: two 15.4 gains show 31, not 15 + 15.
+        Assert(XpFormat.ToDisplay(15.4f + 15.4f) != XpFormat.ToDisplay(15.4f) * 2,
+            "XpFormat: the total is rounded once (30.8 -> 31), not built from rounded gains (15 + 15 = 30)");
+
         AssertEqual(0, XpFormat.ToDisplay(0f), "XpFormat: zero displays as 0");
-        AssertEqual(1, XpFormat.ToDisplay(0.2f), "XpFormat: a small bonus never displays as zero");
-        AssertEqual(50, XpFormat.ToDisplay(49.2f), "XpFormat: 49.2 rounds up to 50");
-        AssertEqual(109, XpFormat.ToDisplay(108.4f), "XpFormat: 108.4 rounds up to 109");
+        AssertEqual(0, XpFormat.ToDisplay(0.4f), "XpFormat: below .5 rounds down");
         AssertEqual(103, XpFormat.ToDisplay(103f), "XpFormat: a whole number is unchanged");
 
-        // 100 * 1.08f comes out as 108.0000076 in float math. A bare Math.Ceiling would
-        // show that as 109, which is a wrong number on screen for a whole-number result.
-        AssertEqual(108, XpFormat.ToDisplay(108.0000076f), "XpFormat: float noise above a whole number does not bump it up");
+        // .5 rounds up. Plain Math.Round would round half to even and show 30.5 as 30.
+        AssertEqual(1, XpFormat.ToDisplay(0.5f), "XpFormat: 0.5 rounds up to 1");
+        AssertEqual(31, XpFormat.ToDisplay(30.5f), "XpFormat: 30.5 rounds up to 31, not to the even 30");
+        AssertEqual(32, XpFormat.ToDisplay(31.5f), "XpFormat: 31.5 rounds up to 32");
+
+        // float math leaves noise: 100 * 1.08f is 108.0000076, and a value that is 30.5 up to
+        // noise must still land on the .5 side of the boundary.
+        AssertEqual(108, XpFormat.ToDisplay(108.0000076f), "XpFormat: float noise above a whole number does not change it");
         AssertEqual(103, XpFormat.ToDisplay(102.9999971f), "XpFormat: float noise below a whole number still reads as that number");
+        AssertEqual(31, XpFormat.ToDisplay(30.4999998f), "XpFormat: 30.5 with float noise below it still rounds up");
+        AssertEqual(30, XpFormat.ToDisplay(30.4994f), "XpFormat: a real value just under .5 rounds down");
 
         double stored = XpFormat.ToStorage(15f * 1.03f);
         Assert(Math.Abs(stored - 15.45) < 1e-9, $"XpFormat: ToStorage drops float noise (15 x 1.03 stores as {stored}, expected 15.45)");

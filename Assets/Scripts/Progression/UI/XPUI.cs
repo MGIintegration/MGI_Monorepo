@@ -149,7 +149,7 @@ using TMPro;
             }
 
             // Bar heights use the full-precision gain so proportions stay accurate;
-            // only the printed labels are rounded up to whole numbers.
+            // only the printed labels are rounded to whole numbers.
             float maxGain = Mathf.Max(1f, entries.Max(e => Mathf.Abs(e.xp_gained)));
             float barAreaHeight = Mathf.Max(10f, chartRowHeight - ChartValueLabelHeight - ChartIndexLabelHeight);
 
