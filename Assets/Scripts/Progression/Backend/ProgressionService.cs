@@ -20,7 +20,7 @@ public class ProgressionService : MonoBehaviour
     private FacilitiesService _facilitiesReader;
 
     // Events
-    public event Action<string, int> OnXpUpdated; // (playerId, newTotalXp)
+    public event Action<string, float> OnXpUpdated; // (playerId, newTotalXp - full precision, not display-rounded)
     public event Action<string, string> OnTierChanged; // (playerId, newTier)
 
     private void Awake()
@@ -128,7 +128,7 @@ public class ProgressionService : MonoBehaviour
             return;
         }
 
-        int finalXp = ApplyXpBonuses(playerId, xp, source);
+        float finalXp = ApplyXpBonuses(playerId, xp, source);
 
         var historyEntry = new XpHistoryEntry(playerId, finalXp, source)
         {
@@ -137,7 +137,7 @@ public class ProgressionService : MonoBehaviour
 
         state.xp_history.Add(historyEntry);
 
-        int oldXp = state.current_xp;
+        float oldXp = state.current_xp;
         state.current_xp += finalXp;
 
         // Recalculate tier
@@ -170,13 +170,16 @@ public class ProgressionService : MonoBehaviour
         return _facilitiesReader ??= new FacilitiesService();
     }
 
-    private int ApplyXpBonuses(string playerId, int baseXp, string source)
+    // Bonuses are deliberately not rounded here: rounding after the Facilities
+    // step and again after the Coaches step compounded into visible drift. The
+    // full value is kept and only the UI turns it into an integer (XpFormat).
+    private float ApplyXpBonuses(string playerId, int baseXp, string source)
     {
-        int xp = ApplyFacilityXpMultiplier(playerId, baseXp, source);
+        float xp = ApplyFacilityXpMultiplier(playerId, baseXp, source);
         return ApplyCoachXpBonus(playerId, xp, source);
     }
 
-    private int ApplyFacilityXpMultiplier(string playerId, int baseXp, string source)
+    private float ApplyFacilityXpMultiplier(string playerId, float baseXp, string source)
     {
         float multiplier = GetFacilitiesReader().GetProgressionXpMultiplier(playerId, source);
         if (multiplier <= 0f)
@@ -189,14 +192,14 @@ public class ProgressionService : MonoBehaviour
             return baseXp;
         }
 
-        return Mathf.Max(1, Mathf.RoundToInt(baseXp * multiplier));
+        return Mathf.Max(1f, baseXp * multiplier);
     }
 
     /// <summary>
     /// Read-only coach bonus from CoachesService (active assignments + coaches_bonus_config.json).
     /// Applied on top of facility-adjusted XP.
     /// </summary>
-    private static int ApplyCoachXpBonus(string playerId, int xpAfterFacilities, string source)
+    private static float ApplyCoachXpBonus(string playerId, float xpAfterFacilities, string source)
     {
         float coachBonusPercent = CoachesService.GetCoachXpBonusPercent(playerId, source);
         if (coachBonusPercent <= 0f || Mathf.Approximately(coachBonusPercent, 0f))
@@ -204,7 +207,7 @@ public class ProgressionService : MonoBehaviour
             return xpAfterFacilities;
         }
 
-        return Mathf.Max(1, Mathf.RoundToInt(xpAfterFacilities * (1f + coachBonusPercent)));
+        return Mathf.Max(1f, xpAfterFacilities * (1f + coachBonusPercent));
     }
 
 
@@ -235,7 +238,7 @@ public class ProgressionService : MonoBehaviour
     }
 
    
-    private string CalculateTierForXp(int totalXp)
+    private string CalculateTierForXp(float totalXp)
     {
         if (_progressionConfig == null)
         {
@@ -267,7 +270,7 @@ public class ProgressionService : MonoBehaviour
             if (stateExists)
             {
                 var json = JSONNode.Parse(File.ReadAllText(statePath));
-                state.current_xp = json["current_xp"].AsInt;
+                state.current_xp = json["current_xp"].AsFloat;
                 state.current_tier = json["current_tier"].Value;
             }
 
@@ -294,7 +297,7 @@ public class ProgressionService : MonoBehaviour
             // Save current state (XP and tier) - overwrite
             var json = new JSONObject();
             json["player_id"] = state.player_id;
-            json["current_xp"] = state.current_xp;
+            json["current_xp"] = XpFormat.ToStorage(state.current_xp);
             json["current_tier"] = state.current_tier;
             File.WriteAllText(statePath, json.ToString(2));
 
@@ -319,7 +322,7 @@ public class ProgressionService : MonoBehaviour
                         entryJson["id"] = entry.id;
                         entryJson["player_id"] = entry.player_id;
                         entryJson["timestamp"] = entry.timestamp;
-                        entryJson["xp_gained"] = entry.xp_gained;
+                        entryJson["xp_gained"] = XpFormat.ToStorage(entry.xp_gained);
                         entryJson["source"] = entry.source;
                         writer.WriteLine(entryJson.ToString());
                     }
@@ -333,13 +336,13 @@ public class ProgressionService : MonoBehaviour
     }
 
 
-    private void PublishXpUpdatedEvent(string playerId, int oldXp, int newXp, string oldTier, string newTier)
+    private void PublishXpUpdatedEvent(string playerId, float oldXp, float newXp, string oldTier, string newTier)
     {
         var payload = new JSONObject();
         payload["player_id"] = playerId;
-        payload["old_xp"] = oldXp;
-        payload["new_xp"] = newXp;
-        payload["xp_gained"] = newXp - oldXp;
+        payload["old_xp"] = XpFormat.ToStorage(oldXp);
+        payload["new_xp"] = XpFormat.ToStorage(newXp);
+        payload["xp_gained"] = XpFormat.ToStorage(newXp - oldXp);
         payload["old_tier"] = oldTier;
         payload["new_tier"] = newTier;
 
@@ -496,15 +499,19 @@ public class ProgressionService : MonoBehaviour
             }
         }
 
-        public string GetTierForXp(int totalXp)
+        public string GetTierForXp(float totalXp)
         {
-            // Find the appropriate tier based on XP
+            // Highest tier whose minimum has been reached. The config's max_xp values
+            // are whole numbers (49, 99, ...), so matching "min <= xp <= max" would
+            // leave fractional XP such as 99.5 in a gap that no tier covers.
             string currentTier = "rookie";
+            int bestMin = int.MinValue;
             foreach (var kvp in _tiers)
             {
-                if (totalXp >= kvp.Value.min_xp && totalXp <= kvp.Value.max_xp)
+                if (totalXp >= kvp.Value.min_xp && kvp.Value.min_xp > bestMin)
                 {
-                    return kvp.Key;
+                    bestMin = kvp.Value.min_xp;
+                    currentTier = kvp.Key;
                 }
             }
             return currentTier;
@@ -552,7 +559,7 @@ public class ProgressionService : MonoBehaviour
                 id = json["id"].Value,
                 player_id = string.IsNullOrEmpty(entryPlayerId) ? playerId : entryPlayerId,
                 timestamp = json["timestamp"].Value,
-                xp_gained = json["xp_gained"].AsInt,
+                xp_gained = json["xp_gained"].AsFloat,
                 source = json["source"].Value
             });
         }

@@ -409,7 +409,8 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
         var legacy = new PlayerProgressionSaveData
         {
             player_id = state.player_id,
-            current_xp = state.current_xp,
+            // The legacy DTO is what UI screens read, so it carries the display integer.
+            current_xp = XpFormat.ToDisplay(state.current_xp),
             current_tier = state.current_tier,
             tier_progression = _progressionService?.GetAllTiers() ?? new Dictionary<string, TierData>(),
             xp_history = new List<XpHistoryEntry>()
@@ -566,7 +567,7 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
                             ["id"] = entry.id,
                             ["player_id"] = state.player_id,
                             ["timestamp"] = entry.timestamp,
-                            ["xp_gained"] = entry.xp_gained,
+                            ["xp_gained"] = XpFormat.ToStorage(entry.xp_gained),
                             ["source"] = entry.source
                         };
 
@@ -582,7 +583,7 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
                 var s = new JSONObject
                 {
                     ["player_id"] = state.player_id,
-                    ["current_xp"] = state.current_xp,
+                    ["current_xp"] = XpFormat.ToStorage(state.current_xp),
                     ["current_tier"] = state.current_tier
                 };
                 progArray.Add(s);

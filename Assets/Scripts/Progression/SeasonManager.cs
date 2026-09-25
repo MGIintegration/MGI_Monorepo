@@ -70,15 +70,22 @@ public class SeasonManager : MonoBehaviour
     public List<TeamSaveData> Teams => seasonData?.teams ?? new List<TeamSaveData>();
     public TeamSaveData PlayerTeam => seasonData?.teams?.FirstOrDefault(t => t.is_player_team);
 
-    public int PlayerXP
+    /// <summary>XP rounded to the nearest whole number, for display only.</summary>
+    public int PlayerXP => XpFormat.ToDisplay(PlayerXPExact);
+
+    /// <summary>
+    /// Full-precision XP. Use this (not PlayerXP) for comparisons such as tier
+    /// unlocks, so logic agrees with ProgressionService's own tier calculation.
+    /// </summary>
+    public float PlayerXPExact
     {
         get
         {
             var playerId = PlayerTeam?.player_id;
-            if (string.IsNullOrEmpty(playerId)) return 0;
+            if (string.IsNullOrEmpty(playerId)) return 0f;
 
             var state = progressionService?.GetState(playerId, createIfMissing: false);
-            return state?.current_xp ?? 0;
+            return state?.current_xp ?? 0f;
         }
     }
 
@@ -155,7 +162,7 @@ public class SeasonManager : MonoBehaviour
             var result = new List<string>();
             foreach (var entry in XpHistoryEntries)
             {
-                result.Add($"{entry.timestamp}: +{entry.xp_gained} XP ({entry.source})");
+                result.Add($"{entry.timestamp}: +{XpFormat.ToDisplay(entry.xp_gained)} XP ({entry.source})");
             }
             return result;
         }
@@ -168,7 +175,7 @@ public class SeasonManager : MonoBehaviour
             var entries = XpHistoryEntries;
             if (entries.Count == 0) return 0;
 
-            return entries[entries.Count - 1].xp_gained;
+            return XpFormat.ToDisplay(entries[entries.Count - 1].xp_gained);
         }
     }
 

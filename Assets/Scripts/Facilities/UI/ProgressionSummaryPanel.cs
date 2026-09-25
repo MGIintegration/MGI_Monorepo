@@ -22,14 +22,14 @@ public class ProgressionSummaryPanel : MonoBehaviour
 
         string id = string.IsNullOrWhiteSpace(playerId) ? FacilitiesService.DefaultPlayerId : playerId;
 
-        int currentXp = 0;
+        float currentXp = 0f;
         string currentTier = "rookie";
 
         var statePath = FilePathResolver.GetProgressionPath(id, "progression_state.json");
         if (File.Exists(statePath))
         {
             var state = JObject.Parse(File.ReadAllText(statePath));
-            currentXp = state.Value<int?>("current_xp") ?? 0;
+            currentXp = state.Value<float?>("current_xp") ?? 0f;
             currentTier = state.Value<string>("current_tier") ?? "rookie";
         }
 
@@ -70,10 +70,10 @@ public class ProgressionSummaryPanel : MonoBehaviour
 
         var sb = new System.Text.StringBuilder();
         sb.AppendLine($"Current Tier: {tierDisplayName}");
-        sb.AppendLine($"Total XP: {currentXp}");
+        sb.AppendLine($"Total XP: {XpFormat.ToDisplay(currentXp)}");
         sb.AppendLine();
         sb.AppendLine(nextTierDisplayName != null
-            ? $"Next Tier: {nextTierDisplayName} ({Mathf.Max(0, nextTierMinXp - currentXp)} XP to go)"
+            ? $"Next Tier: {nextTierDisplayName} ({Mathf.Max(0, XpFormat.ToDisplay(nextTierMinXp - currentXp))} XP to go)"
             : "Highest tier reached.");
         sb.AppendLine();
         sb.AppendLine("Facility XP Bonuses:");
