@@ -23,13 +23,13 @@ public class XpHistoryEntry
     public string id;
     public string player_id;
     public string timestamp;
-    public int xp_gained;
+    public float xp_gained;
     public string source;
 
     public XpHistoryEntry() {}
 
-    
-    public XpHistoryEntry(string playerId, int xpGained, string source)
+
+    public XpHistoryEntry(string playerId, float xpGained, string source)
     {
         id = Guid.NewGuid().ToString();
         player_id = playerId;
@@ -45,7 +45,7 @@ public class XpHistoryEntry
 public class PlayerProgressionState
 {
     public string player_id;
-    public int current_xp;
+    public float current_xp;
     public string current_tier;
     public List<XpHistoryEntry> xp_history;
 

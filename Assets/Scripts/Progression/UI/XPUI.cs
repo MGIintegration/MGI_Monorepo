@@ -114,12 +114,12 @@ using TMPro;
                     texts[1].text = FormatResult(entry.source);
 
                     string color = entry.xp_gained > 0 ? "#74C0FC" : "#FF6B6B";
-                    texts[2].text = $"<color={color}>+{entry.xp_gained} XP</color>";
+                    texts[2].text = $"<color={color}>+{XpFormat.ToDisplay(entry.xp_gained)} XP</color>";
                     Debug.Log("XPUI three text fields found");
                 }
                 else if (texts.Length == 1)
                 {
-                    texts[0].text = $"{FormatResult(entry.source)}: +{entry.xp_gained}";
+                    texts[0].text = $"{FormatResult(entry.source)}: +{XpFormat.ToDisplay(entry.xp_gained)}";
                     Debug.Log("XPUI single text field found");
                 }
             }
@@ -148,7 +148,9 @@ using TMPro;
                 return;
             }
 
-            int maxGain = Mathf.Max(1, entries.Max(e => Mathf.Abs(e.xp_gained)));
+            // Bar heights use the full-precision gain so proportions stay accurate;
+            // only the printed labels are rounded to whole numbers.
+            float maxGain = Mathf.Max(1f, entries.Max(e => Mathf.Abs(e.xp_gained)));
             float barAreaHeight = Mathf.Max(10f, chartRowHeight - ChartValueLabelHeight - ChartIndexLabelHeight);
 
             var row = new GameObject("ChartRow", typeof(RectTransform), typeof(LayoutElement), typeof(HorizontalLayoutGroup));
@@ -179,7 +181,7 @@ using TMPro;
                 columnRt.SetParent(row.transform, false);
                 columnRt.sizeDelta = new Vector2(chartBarWidth + 16f, chartRowHeight);
 
-                float heightRatio = (float)Mathf.Abs(entry.xp_gained) / maxGain;
+                float heightRatio = Mathf.Abs(entry.xp_gained) / maxGain;
                 float barPixelHeight = Mathf.Max(2f, heightRatio * barAreaHeight);
 
                 var barGO = new GameObject("Bar", typeof(RectTransform), typeof(Image));
@@ -196,7 +198,7 @@ using TMPro;
                 barRt.sizeDelta = new Vector2(chartBarWidth, barPixelHeight);
                 barGO.GetComponent<Image>().color = entry.xp_gained >= 0 ? chartBarGainColor : chartBarLossColor;
 
-                CreateChartLabel(columnRt, "ValueLabel", $"+{entry.xp_gained}",
+                CreateChartLabel(columnRt, "ValueLabel", $"+{XpFormat.ToDisplay(entry.xp_gained)}",
                     new Vector2(0, ChartIndexLabelHeight + barPixelHeight + 2f), ChartValueLabelHeight, chartValueFontSize, Color.white);
 
                 // "Week N" mirrors the list view's own labeling convention exactly
@@ -251,7 +253,7 @@ using TMPro;
         private void UpdateHeader(PlayerProgressionState state)
         {
             if (currentXPText == null) return;
-            int xp = state?.current_xp ?? 0;
+            int xp = XpFormat.ToDisplay(state?.current_xp ?? 0f);
             string tier = state?.current_tier ?? "rookie";
             currentXPText.text = $"Total XP: {xp}, Tier: {FormatTierLabel(tier)}";
         }

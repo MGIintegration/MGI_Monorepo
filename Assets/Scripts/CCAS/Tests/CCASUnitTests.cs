@@ -215,7 +215,9 @@ public static class CCASUnitTests
 
     private static int GetStateXp(ProgressionService progression)
     {
-        return progression.GetState(TestPlayerId, createIfMissing: true).current_xp;
+        // current_xp is a float now; CCAS duplicate XP is exempt from XP multipliers,
+        // so these tests only ever see whole numbers.
+        return Mathf.RoundToInt(progression.GetState(TestPlayerId, createIfMissing: true).current_xp);
     }
 
     private static int ExpectedDuplicateXp(string rarity)
