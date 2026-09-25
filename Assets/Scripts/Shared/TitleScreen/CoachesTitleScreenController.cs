@@ -14,13 +14,15 @@ namespace MGI.Shared.TitleScreen
         [SerializeField] string mainTitleSceneName = TitleScreenController.SceneName;
         [SerializeField] string ccasSceneName = "CCAS";
         [SerializeField] string fmgCoachSceneName = "FMGCOACH";
-        [SerializeField] string coachProfileSceneName = "CoachProfile";
         [SerializeField] string performanceAnalyticsSceneName = "PerformanceAnalytics";
 
         public void LoadCcas() => LoadScene(ccasSceneName);
         public void LoadFmgCoach() => LoadScene(fmgCoachSceneName);
-        public void LoadCoachProfile() => LoadScene(coachProfileSceneName);
-        public void LoadPerformanceAnalytics() => LoadScene(performanceAnalyticsSceneName);
+        public void LoadPerformanceAnalytics()
+        {
+            AppManager.OpenPerformanceOnLoad = true;
+            LoadScene(fmgCoachSceneName);
+        }        
         public void LoadMainTitle() => LoadScene(mainTitleSceneName);
 
         void LoadScene(string sceneName)
