@@ -12,9 +12,11 @@ namespace MGI.Shared.TitleScreen
 
         [Header("Scene Names")]
         [SerializeField] string mainTitleSceneName = TitleScreenController.SceneName;
+        [SerializeField] string ccasSceneName = "CCAS";
         [SerializeField] string fmgCoachSceneName = "FMGCOACH";
         [SerializeField] string performanceAnalyticsSceneName = "PerformanceAnalytics";
 
+        public void LoadCcas() => LoadScene(ccasSceneName);
         public void LoadFmgCoach() => LoadScene(fmgCoachSceneName);
         public void LoadPerformanceAnalytics()
         {
