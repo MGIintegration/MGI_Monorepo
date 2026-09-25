@@ -498,9 +498,9 @@ public static class CoachesService
             return null;
 
         if (s.Contains("match") && s.Contains("win"))
-            return "offensive_drill";
+            return "win";
         if (s.Contains("match") && s.Contains("loss"))
-            return "defensive_drill";
+            return "loss";
 
         if (s.Contains("offensive") || s.Contains("offence") || s.Contains("offense_drill"))
             return "offensive_drill";
