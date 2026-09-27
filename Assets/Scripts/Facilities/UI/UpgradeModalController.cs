@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UpgradeModalController : MonoBehaviour
 {
@@ -18,6 +19,12 @@ public class UpgradeModalController : MonoBehaviour
     [Header("Upgrade Logic")]
     [SerializeField] private FacilityUpgradeHandler upgradeHandler;
 
+    [Header("Gate Message (reuses the modal's existing warning text)")]
+    [SerializeField] private TMP_Text warningText;
+    [SerializeField] private string defaultWarningText = "This action is permanent and affects player recovery.";
+
+    private readonly FacilitiesService _facilitiesService = new();
+
     void Start()
     {
         confirmButton.onClick.AddListener(HandleConfirm);
@@ -26,6 +33,25 @@ public class UpgradeModalController : MonoBehaviour
 
     public void ShowModal()
     {
+        bool canUpgrade = true;
+        string blockReason = null;
+
+        if (upgradeHandler != null)
+        {
+            canUpgrade = _facilitiesService.CanUpgradeFacility(
+                upgradeHandler.playerId, upgradeHandler.facilityTypeId, out blockReason);
+        }
+
+        if (warningText != null)
+        {
+            warningText.text = canUpgrade ? defaultWarningText : blockReason;
+        }
+
+        if (confirmButton != null)
+        {
+            confirmButton.interactable = canUpgrade;
+        }
+
         modalPanel.SetActive(true);
         if (facilityDetailPanelToReturn != null)
             facilityDetailPanelToReturn.SetActive(false);
