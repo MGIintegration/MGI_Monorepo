@@ -29,6 +29,10 @@ public class UpgradeModalController : MonoBehaviour
 
     private readonly FacilitiesService _facilitiesService = new();
 
+    // Short first-line summary of the boost being confirmed, cached from ShowModal's preview
+    // so HandleConfirm's toast can name the room's actual new benefit instead of a fixed string.
+    private string _pendingBoostSummary;
+
     void Start()
     {
         confirmButton.onClick.AddListener(HandleConfirm);
@@ -69,6 +73,10 @@ public class UpgradeModalController : MonoBehaviour
                     ? "Projected Boost:\n" + FacilityDetailsHandler.FormatWeeklyBoost(preview.benefits)
                     : "This facility is already at its maximum level.";
             }
+
+            _pendingBoostSummary = preview != null
+                ? StripBulletPrefix(FacilityDetailsHandler.FormatWeeklyBoost(preview.benefits).Split('\n')[0])
+                : null;
         }
 
         modalPanel.SetActive(true);
@@ -84,8 +92,12 @@ public class UpgradeModalController : MonoBehaviour
 
         if (success)
         {
+            string toastMessage = _pendingBoostSummary != null
+                ? $"✅ Upgrade Complete: {_pendingBoostSummary}!"
+                : "✅ Upgrade Complete!";
+
             if (toastController != null)
-                toastController.ShowToast("🏋️ Upgrade Complete: +1.3 STR/week!");
+                toastController.ShowToast(toastMessage);
             else if (upgradeToastPanel != null)
                 upgradeToastPanel.SetActive(true);
         }
@@ -93,6 +105,15 @@ public class UpgradeModalController : MonoBehaviour
         {
             facilityDetailPanelToReturn.SetActive(true);
         }
+    }
+
+    // FormatWeeklyBoost returns bullet lines ("- +16% STR"); this drops the "- " for a
+    // one-line toast. The InjuryTimeReductionWeeks special case in FormatWeeklyBoost has
+    // no bullet prefix and is returned unchanged (not currently reachable via the live
+    // config, since no facility's benefits use that key today, but kept safe either way).
+    private static string StripBulletPrefix(string line)
+    {
+        return line.StartsWith("- ") ? line.Substring(2) : line;
     }
 
     private void HandleCancel()
