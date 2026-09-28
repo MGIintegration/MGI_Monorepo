@@ -1124,6 +1124,8 @@ MonoBehaviour:
   upgradeHandler: {fileID: 191008643}
   warningText: {fileID: 1184478330}
   defaultWarningText: This action is permanent and affects player recovery.
+  costText: {fileID: 739759096}
+  projectedBoostText: {fileID: 1382461917}
 --- !u!1 &109816117 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4950629350796841481, guid: 2d5722113b86640b0a18e6d8e29dfafa, type: 3}
@@ -1227,6 +1229,17 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &165062040 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2482658844499494516, guid: 5ef18d7c646b446eb933a5030b6aff34, type: 3}
+  m_PrefabInstance: {fileID: 1434807038}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &191008641
 GameObject:
   m_ObjectHideFlags: 0
@@ -4044,6 +4057,8 @@ MonoBehaviour:
   upgradeHandler: {fileID: 2031005158}
   warningText: {fileID: 1434807041}
   defaultWarningText: This action is permanent and affects player recovery.
+  costText: {fileID: 165062040}
+  projectedBoostText: {fileID: 1013009751}
 --- !u!1001 &536524061
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6822,6 +6837,17 @@ MonoBehaviour:
   m_FlexibleWidth: 1
   m_FlexibleHeight: 0
   m_LayoutPriority: 1
+--- !u!114 &739759096 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2482658844499494516, guid: 5ef18d7c646b446eb933a5030b6aff34, type: 3}
+  m_PrefabInstance: {fileID: 1184478327}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &746250109
 GameObject:
   m_ObjectHideFlags: 0
@@ -8007,6 +8033,17 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &841212605 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4542564306333928646, guid: 5ef18d7c646b446eb933a5030b6aff34, type: 3}
+  m_PrefabInstance: {fileID: 6014685186342702616}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &845814059
 GameObject:
   m_ObjectHideFlags: 0
@@ -9961,6 +9998,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1013009751 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4542564306333928646, guid: 5ef18d7c646b446eb933a5030b6aff34, type: 3}
+  m_PrefabInstance: {fileID: 1434807038}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1025170838
 GameObject:
   m_ObjectHideFlags: 0
@@ -14367,6 +14415,17 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1382461917 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4542564306333928646, guid: 5ef18d7c646b446eb933a5030b6aff34, type: 3}
+  m_PrefabInstance: {fileID: 1184478327}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1409954762
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15286,6 +15345,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1436722192 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2482658844499494516, guid: 5ef18d7c646b446eb933a5030b6aff34, type: 3}
+  m_PrefabInstance: {fileID: 6014685186342702616}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1452526640 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 212177401192794709, guid: e47ab310ec3654ab0bcb65b9a59a1395, type: 3}
@@ -15806,6 +15876,8 @@ MonoBehaviour:
   upgradeHandler: {fileID: 948377929}
   warningText: {fileID: 6014685186342702619}
   defaultWarningText: This action is permanent and affects player recovery.
+  costText: {fileID: 1436722192}
+  projectedBoostText: {fileID: 841212605}
 --- !u!1 &1493806912
 GameObject:
   m_ObjectHideFlags: 0

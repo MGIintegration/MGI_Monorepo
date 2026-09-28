@@ -333,6 +333,53 @@ public class FacilitiesService
     }
 
     /// <summary>
+    /// Returns the cost and benefits of the *next* level for the given facility, for UI
+    /// (Upgrade Preview / Confirm modal) to display before the player commits. Returns null
+    /// if the facility is already at its max level or the facility type is invalid.
+    /// Does not check the tier gate - callers that need the block reason should also call
+    /// CanUpgradeFacility.
+    /// </summary>
+    public NextUpgradePreview GetNextUpgradePreview(string playerId, string facilityTypeId)
+    {
+        if (!IsValidFacilityType(facilityTypeId))
+        {
+            return null;
+        }
+
+        var config = LoadFacilityConfig(facilityTypeId);
+        if (config == null || config.levels == null || config.levels.Count == 0)
+        {
+            return null;
+        }
+
+        var progress = GetFacilityProgress(playerId, facilityTypeId);
+        if (progress == null)
+        {
+            return null;
+        }
+
+        int maxLevel = config.max_level > 0 ? config.max_level : config.levels.Max(l => l.level);
+        if (progress.level >= maxLevel)
+        {
+            return null;
+        }
+
+        int nextLevel = progress.level + 1;
+        var nextLevelConfig = config.levels.FirstOrDefault(l => l.level == nextLevel);
+        if (nextLevelConfig == null)
+        {
+            return null;
+        }
+
+        return new NextUpgradePreview
+        {
+            nextLevel = nextLevel,
+            upgradeCost = nextLevelConfig.upgrade_cost,
+            benefits = nextLevelConfig.benefits ?? new Dictionary<string, float>()
+        };
+    }
+
+    /// <summary>
     /// Returns all current facility effects keyed by facility_type_id.
     /// This is convenient if Progression wants one call instead of three separate calls.
     /// </summary>
@@ -739,6 +786,17 @@ public class PlayerFacilityState
 {
     public string player_id;
     public Dictionary<string, PlayerFacilityProgress> facilities;
+}
+
+/// <summary>
+/// Cost and benefits of the next level for a facility, for display before the player commits.
+/// See FacilitiesService.GetNextUpgradePreview.
+/// </summary>
+public class NextUpgradePreview
+{
+    public int nextLevel;
+    public int upgradeCost;
+    public Dictionary<string, float> benefits;
 }
 
 [System.Serializable]

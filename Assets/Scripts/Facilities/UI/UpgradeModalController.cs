@@ -23,6 +23,10 @@ public class UpgradeModalController : MonoBehaviour
     [SerializeField] private TMP_Text warningText;
     [SerializeField] private string defaultWarningText = "This action is permanent and affects player recovery.";
 
+    [Header("Live Preview (was static per-room scene text; now filled in from config at ShowModal)")]
+    [SerializeField] private TMP_Text costText;
+    [SerializeField] private TMP_Text projectedBoostText;
+
     private readonly FacilitiesService _facilitiesService = new();
 
     void Start()
@@ -50,6 +54,21 @@ public class UpgradeModalController : MonoBehaviour
         if (confirmButton != null)
         {
             confirmButton.interactable = canUpgrade;
+        }
+
+        if (upgradeHandler != null)
+        {
+            var preview = _facilitiesService.GetNextUpgradePreview(upgradeHandler.playerId, upgradeHandler.facilityTypeId);
+            if (costText != null)
+            {
+                costText.text = preview != null ? $"Cost: ${preview.upgradeCost:n0}" : "-";
+            }
+            if (projectedBoostText != null)
+            {
+                projectedBoostText.text = preview != null
+                    ? "Projected Boost:\n" + FacilityDetailsHandler.FormatWeeklyBoost(preview.benefits)
+                    : "This facility is already at its maximum level.";
+            }
         }
 
         modalPanel.SetActive(true);
