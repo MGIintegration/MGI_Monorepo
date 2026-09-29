@@ -22,6 +22,13 @@ public static class CCASProgressionIntegrationTests
 
     public static void RunAll()
     {
+        bool passed = RunSuite().Passed;
+        if (Application.isBatchMode)
+            EditorApplication.Exit(passed ? 0 : 1);
+    }
+
+    public static TestSuiteRunResult RunSuite()
+    {
         _passed = 0;
         _failed = 0;
         Failures.Clear();
@@ -43,8 +50,7 @@ public static class CCASProgressionIntegrationTests
         if (_failed > 0)
             Log("FAILURES:\n - " + string.Join("\n - ", Failures));
 
-        if (Application.isBatchMode)
-            EditorApplication.Exit(_failed > 0 ? 1 : 0);
+        return new TestSuiteRunResult(_passed, _failed, Failures);
     }
 
     private static void Test_DuplicatePack_AwardsAndPersistsProgressionXp(

@@ -28,6 +28,13 @@ public static class ProgressionUnitTests
 
     public static void RunAll()
     {
+        bool passed = RunSuite().Passed;
+        if (Application.isBatchMode)
+            EditorApplication.Exit(passed ? 0 : 1);
+    }
+
+    public static TestSuiteRunResult RunSuite()
+    {
         _passed = 0;
         _failed = 0;
         _failures.Clear();
@@ -72,10 +79,7 @@ public static class ProgressionUnitTests
             Log("FAILURES:\n - " + string.Join("\n - ", _failures));
         }
 
-        if (Application.isBatchMode)
-        {
-            EditorApplication.Exit(_failed > 0 ? 1 : 0);
-        }
+        return new TestSuiteRunResult(_passed, _failed, _failures);
     }
 
     // ---------------- ProgressionService ----------------
@@ -488,6 +492,13 @@ public static class ProgressionUnitTests
     /// </summary>
     public static void RunFacilitiesIntegration()
     {
+        bool passed = RunFacilitiesSuite().Passed;
+        if (Application.isBatchMode)
+            EditorApplication.Exit(passed ? 0 : 1);
+    }
+
+    public static TestSuiteRunResult RunFacilitiesSuite()
+    {
         _passed = 0;
         _failed = 0;
         _failures.Clear();
@@ -518,10 +529,7 @@ public static class ProgressionUnitTests
             Log("FAILURES:\n - " + string.Join("\n - ", _failures));
         }
 
-        if (Application.isBatchMode)
-        {
-            EditorApplication.Exit(_failed > 0 ? 1 : 0);
-        }
+        return new TestSuiteRunResult(_passed, _failed, _failures);
     }
 
     private static void ResetFacilitiesIntegrationState(
@@ -641,6 +649,13 @@ public static class ProgressionUnitTests
     /// </summary>
     public static void RunCcasIntegration()
     {
+        bool passed = RunCcasSuite().Passed;
+        if (Application.isBatchMode)
+            EditorApplication.Exit(passed ? 0 : 1);
+    }
+
+    public static TestSuiteRunResult RunCcasSuite()
+    {
         _passed = 0;
         _failed = 0;
         _failures.Clear();
@@ -671,10 +686,7 @@ public static class ProgressionUnitTests
             Log("FAILURES:\n - " + string.Join("\n - ", _failures));
         }
 
-        if (Application.isBatchMode)
-        {
-            EditorApplication.Exit(_failed > 0 ? 1 : 0);
-        }
+        return new TestSuiteRunResult(_passed, _failed, _failures);
     }
 
     private static void ResetCcasIntegrationState(ProgressionService progression, EconomyService economy, string playerId)
