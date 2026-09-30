@@ -1,5 +1,11 @@
 {
   "schema_version": "1.0",
+  "tier_upgrade_gates": {
+    "rookie": 2,
+    "pro": 3,
+    "all_star": 4,
+    "legend": 5
+  },
   "facility_definitions": [
     {
       "facility_type_id": "weight_room",

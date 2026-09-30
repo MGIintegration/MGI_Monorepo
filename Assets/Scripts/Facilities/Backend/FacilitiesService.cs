@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 public class FacilitiesService
 {
@@ -11,6 +12,7 @@ public class FacilitiesService
     private const string FacilitiesConfigFileName = "facilities_config.json";
     private const string PlayerFacilitiesFileName = "player_facilities.json";
     private const string UpgradeFacilitySpendSource = "upgrade_facility";
+    private const string DefaultTier = "rookie";
 
     private readonly EconomyService _economy = new EconomyService();
     private FacilitiesConfigRoot _configCache;
@@ -72,6 +74,16 @@ public class FacilitiesService
             return false;
         }
 
+        int tierMaxLevel = GetMaxFacilityLevelForPlayerTier(playerId);
+        if (nextLevel > tierMaxLevel)
+        {
+            Debug.LogWarning(
+                $"FacilitiesService.TryUpgradeFacility: '{facilityTypeId}' level {nextLevel} exceeds " +
+                $"the max level ({tierMaxLevel}) allowed by {playerId}'s current Progression tier.");
+            newState = progress;
+            return false;
+        }
+
         int costCoins = nextLevelConfig.upgrade_cost;
         int costGems = 0;
 
@@ -91,6 +103,124 @@ public class FacilitiesService
 
         newState = progress;
         return true;
+    }
+
+    /// <summary>
+    /// Checks whether an upgrade would be allowed without attempting it or spending coins -
+    /// for the UI to show the right message (tier-gated vs. insufficient funds vs. max level)
+    /// before the player clicks Confirm. blockReason is null when the upgrade is allowed.
+    /// </summary>
+    public bool CanUpgradeFacility(string playerId, string facilityTypeId, out string blockReason)
+    {
+        blockReason = null;
+
+        if (!IsValidFacilityType(facilityTypeId))
+        {
+            blockReason = "Invalid facility.";
+            return false;
+        }
+
+        var config = LoadFacilityConfig(facilityTypeId);
+        if (config == null || config.levels == null || config.levels.Count == 0)
+        {
+            blockReason = "Facility configuration is unavailable.";
+            return false;
+        }
+
+        var playerState = GetPlayerFacilityState(playerId);
+        var progress = GetOrCreateFacilityProgress(playerState, facilityTypeId);
+
+        int maxLevel = config.max_level > 0 ? config.max_level : config.levels.Max(l => l.level);
+        if (progress.level >= maxLevel)
+        {
+            blockReason = "This facility is already at its maximum level.";
+            return false;
+        }
+
+        int nextLevel = progress.level + 1;
+        int tierMaxLevel = GetMaxFacilityLevelForPlayerTier(playerId);
+        if (nextLevel > tierMaxLevel)
+        {
+            string tierDisplayName = GetTierDisplayName(GetPlayerTier(playerId));
+            blockReason = $"Reach a higher Progression tier than {tierDisplayName} to upgrade this room further.";
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// The highest facility level the player's current Progression tier allows,
+    /// from facilities_config.json's tier_upgrade_gates. Unknown/missing tiers or
+    /// a missing gate config default to allowing every level (no gate).
+    /// </summary>
+    public int GetMaxFacilityLevelForPlayerTier(string playerId)
+    {
+        var root = LoadFacilitiesConfigRoot();
+        var gates = root?.tier_upgrade_gates;
+        if (gates == null || gates.Count == 0)
+        {
+            return int.MaxValue;
+        }
+
+        string tier = GetPlayerTier(playerId);
+        if (gates.TryGetValue(tier, out var maxLevel))
+        {
+            return maxLevel;
+        }
+
+        return int.MaxValue;
+    }
+
+    /// <summary>
+    /// Reads the player's current Progression tier directly from progression_state.json,
+    /// the same direct-file-read pattern used elsewhere in Facilities - avoids depending
+    /// on ProgressionService.Instance, which only exists once the CCAS scene has loaded.
+    /// </summary>
+    private string GetPlayerTier(string playerId)
+    {
+        string id = string.IsNullOrWhiteSpace(playerId) ? DefaultPlayerId : playerId;
+
+        try
+        {
+            var statePath = FilePathResolver.GetProgressionPath(id, "progression_state.json");
+            if (!File.Exists(statePath))
+            {
+                return DefaultTier;
+            }
+
+            var state = JObject.Parse(File.ReadAllText(statePath));
+            return state.Value<string>("current_tier") ?? DefaultTier;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"FacilitiesService.GetPlayerTier: failed to read progression state for {id}: {ex.Message}");
+            return DefaultTier;
+        }
+    }
+
+    private string GetTierDisplayName(string tierKey)
+    {
+        var configPath = Path.Combine(Application.streamingAssetsPath, "Progression", "progression.json");
+        if (!File.Exists(configPath))
+        {
+            return tierKey;
+        }
+
+        try
+        {
+            var tiers = JObject.Parse(File.ReadAllText(configPath))["tier_progression"] as JObject;
+            if (tiers != null && tiers.TryGetValue(tierKey, out var tierToken))
+            {
+                return tierToken.Value<string>("display_name") ?? tierKey;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"FacilitiesService.GetTierDisplayName: failed to read progression config: {ex.Message}");
+        }
+
+        return tierKey;
     }
 
     private void PublishUpgradeFacilityEvent(
@@ -200,6 +330,53 @@ public class FacilitiesService
 
         var levelData = config.levels.FirstOrDefault(l => l.level == progress.level);
         return levelData?.benefits ?? new Dictionary<string, float>();
+    }
+
+    /// <summary>
+    /// Returns the cost and benefits of the *next* level for the given facility, for UI
+    /// (Upgrade Preview / Confirm modal) to display before the player commits. Returns null
+    /// if the facility is already at its max level or the facility type is invalid.
+    /// Does not check the tier gate - callers that need the block reason should also call
+    /// CanUpgradeFacility.
+    /// </summary>
+    public NextUpgradePreview GetNextUpgradePreview(string playerId, string facilityTypeId)
+    {
+        if (!IsValidFacilityType(facilityTypeId))
+        {
+            return null;
+        }
+
+        var config = LoadFacilityConfig(facilityTypeId);
+        if (config == null || config.levels == null || config.levels.Count == 0)
+        {
+            return null;
+        }
+
+        var progress = GetFacilityProgress(playerId, facilityTypeId);
+        if (progress == null)
+        {
+            return null;
+        }
+
+        int maxLevel = config.max_level > 0 ? config.max_level : config.levels.Max(l => l.level);
+        if (progress.level >= maxLevel)
+        {
+            return null;
+        }
+
+        int nextLevel = progress.level + 1;
+        var nextLevelConfig = config.levels.FirstOrDefault(l => l.level == nextLevel);
+        if (nextLevelConfig == null)
+        {
+            return null;
+        }
+
+        return new NextUpgradePreview
+        {
+            nextLevel = nextLevel,
+            upgradeCost = nextLevelConfig.upgrade_cost,
+            benefits = nextLevelConfig.benefits ?? new Dictionary<string, float>()
+        };
     }
 
     /// <summary>
@@ -566,6 +743,7 @@ public class FacilitiesService
 public class FacilitiesConfigRoot
 {
     public string schema_version = "1.0";
+    public Dictionary<string, int> tier_upgrade_gates;
     public List<FacilityDefinition> facility_definitions;
 }
 
@@ -608,6 +786,17 @@ public class PlayerFacilityState
 {
     public string player_id;
     public Dictionary<string, PlayerFacilityProgress> facilities;
+}
+
+/// <summary>
+/// Cost and benefits of the next level for a facility, for display before the player commits.
+/// See FacilitiesService.GetNextUpgradePreview.
+/// </summary>
+public class NextUpgradePreview
+{
+    public int nextLevel;
+    public int upgradeCost;
+    public Dictionary<string, float> benefits;
 }
 
 [System.Serializable]

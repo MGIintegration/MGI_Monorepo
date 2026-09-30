@@ -131,14 +131,14 @@ public class FacilityDetailsHandler : MonoBehaviour
         if (cur != null)
         {
             if (multiplierText) multiplierText.text = FormatMultiplier(cur.effects);
-            if (weeklyBoostText) weeklyBoostText.text = "Weekly Boost: " + FormatWeeklyBoost(cur.effects);
+            if (weeklyBoostText) weeklyBoostText.text = "Weekly Boost:\n" + FormatWeeklyBoost(cur.effects);
         }
 
         if (next != null)
         {
             if (nextLevelText) nextLevelText.text = $"Next: Level {next.level}";
             if (nextMultiplierText) nextMultiplierText.text = FormatMultiplier(next.effects);
-            if (nextBoostText) nextBoostText.text = "Weekly Boost: " + FormatWeeklyBoost(next.effects);
+            if (nextBoostText) nextBoostText.text = "Weekly Boost:\n" + FormatWeeklyBoost(next.effects);
             if (costText) costText.text = $"Cost: ${next.upgradeCost:n0}";
         }
         else
@@ -235,9 +235,18 @@ public class FacilityDetailsHandler : MonoBehaviour
     string FormatMultiplier(Dictionary<string, float> effects)
     {
         if (effects == null || effects.Count == 0) return "-";
+
+        // Weight Room
+        if (effects.TryGetValue("PlayerStrengthBoost", out var str)) return $"Strength Boost: {str * 100f:0.#}%";
+
+        // Film Room
+        if (effects.TryGetValue("PlayerIntelligenceBoost", out var intel)) return $"Intelligence Boost: {intel * 100f:0.#}%";
+
+        // Rehab Center
+        if (effects.TryGetValue("InjuryRecoveryMultiplier", out var recoveryMult)) return $"Injury Recovery Multiplier: {recoveryMult:0.00}x";
+
         if (effects.TryGetValue("AwarenessMultiplier", out var aware)) return $"Awareness Multiplier: {aware:0.00}x";
         if (effects.TryGetValue("RecoveryMultiplier", out var rec)) return $"Recovery Multiplier: {rec:0.00}x";
-        if (effects.TryGetValue("PlayerStrengthBoost", out var str)) return $"Strength Boost: {str * 100f:0.#}%";
         if (effects.TryGetValue("PlayerConditioningBoost", out var c)) return $"Conditioning Boost: {c * 100f:0.#}%";
 
         var first = effects.First();
@@ -251,19 +260,42 @@ public class FacilityDetailsHandler : MonoBehaviour
         if (effects.TryGetValue("InjuryTimeReductionWeeks", out var weeks))
             return $"-{weeks:0.#} week{(weeks >= 2 ? "s" : "")} injury time";
 
+        var handled = new HashSet<string> { "InjuryTimeReductionWeeks" };
         var parts = new List<string>();
-        if (effects.TryGetValue("PlayerStrengthBoost", out var str)) parts.Add($"+{str * 100f:0.#}% STR");
-        if (effects.TryGetValue("PlayerConditioningBoost", out var c)) parts.Add($"+{c * 100f:0.#}% conditioning");
-        if (effects.TryGetValue("FatigueResistance", out var fat)) parts.Add($"+{fat * 100f:0.#}% fatigue resist");
+
+        // Weight Room
+        if (effects.TryGetValue("PlayerStrengthBoost", out var str))
+        { parts.Add($"+{str * 100f:0.#}% STR"); handled.Add("PlayerStrengthBoost"); }
+        if (effects.TryGetValue("PlayerConditioningBoost", out var cond))
+        { parts.Add($"+{cond * 100f:0.#}% conditioning"); handled.Add("PlayerConditioningBoost"); }
+        if (effects.TryGetValue("FatigueResistance", out var fat))
+        { parts.Add($"+{fat * 100f:0.#}% fatigue resist"); handled.Add("FatigueResistance"); }
+
+        // Film Room
+        if (effects.TryGetValue("PlayerIntelligenceBoost", out var intel))
+        { parts.Add($"+{intel * 100f:0.#}% intelligence"); handled.Add("PlayerIntelligenceBoost"); }
+        if (effects.TryGetValue("ScoutingEfficiencyBoost", out var scout))
+        { parts.Add($"+{scout * 100f:0.#}% scouting"); handled.Add("ScoutingEfficiencyBoost"); }
+        if (effects.TryGetValue("GamePlanEffectiveness", out var gamePlan))
+        { parts.Add($"+{gamePlan * 100f:0.#}% game plan"); handled.Add("GamePlanEffectiveness"); }
+
+        // Rehab Center
+        if (effects.TryGetValue("InjuryRecoveryMultiplier", out var recoveryMult))
+        { parts.Add($"+{(recoveryMult - 1f) * 100f:0.#}% recovery"); handled.Add("InjuryRecoveryMultiplier"); }
+        if (effects.TryGetValue("PlayerHealthBoost", out var health))
+        { parts.Add($"+{health * 100f:0.#}% health"); handled.Add("PlayerHealthBoost"); }
+        if (effects.TryGetValue("InjuryRiskReduction", out var riskReduction))
+        { parts.Add($"-{riskReduction * 100f:0.#}% injury risk"); handled.Add("InjuryRiskReduction"); }
+        if (effects.TryGetValue("WeeklyRecoveryBoost", out var weeklyRecovery))
+        { parts.Add($"+{weeklyRecovery:0.#} weekly recovery"); handled.Add("WeeklyRecoveryBoost"); }
 
         foreach (var kv in effects)
         {
-            if (kv.Key is "PlayerStrengthBoost" or "PlayerConditioningBoost" or "FatigueResistance" or "InjuryTimeReductionWeeks")
-                continue;
+            if (handled.Contains(kv.Key)) continue;
             parts.Add($"{PrettyKey(kv.Key)} {PrettyValue(kv.Key, kv.Value)}");
         }
 
-        return parts.Count > 0 ? string.Join(", ", parts) : "-";
+        return parts.Count > 0 ? string.Join("\n", parts.Select(p => "- " + p)) : "-";
     }
 
     public static string PrettyKey(string raw)
