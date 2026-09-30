@@ -32,8 +32,7 @@ public class SubsystemResetMenu : MonoBehaviour
 
         if (!string.IsNullOrWhiteSpace(playerId))
         {
-            PlayerPrefs.SetString("player_id", playerId);
-            PlayerPrefs.Save();
+            PlayerIdProvider.Set(playerId);
         }
 
         if (openButton != null) openButton.onClick.AddListener(Open);
@@ -60,20 +59,20 @@ public class SubsystemResetMenu : MonoBehaviour
     private void ResetEconomy()
     {
         var service = new EconomyService();
-        bool ok = service.ResetWallet(playerId);
+        bool ok = service.ResetWallet(PlayerIdProvider.Get());
         SetStatus(ok ? "Economy wallet reset." : "Economy reset failed.");
     }
 
     private void ResetFacilities()
     {
         var service = new FacilitiesService();
-        bool ok = service.ResetFacilityState(playerId);
+        bool ok = service.ResetFacilityState(PlayerIdProvider.Get());
         SetStatus(ok ? "Facilities state reset." : "Facilities reset failed.");
     }
 
     private void ResetCoaches()
     {
-        bool ok = CoachesService.ResetPlayerCoachState(playerId);
+        bool ok = CoachesService.ResetPlayerCoachState(PlayerIdProvider.Get());
         SetStatus(ok ? "Coaches state reset." : "No coach state to reset.");
     }
 
@@ -94,7 +93,7 @@ public class SubsystemResetMenu : MonoBehaviour
     private void AddCoins()
     {
         var service = new EconomyService();
-        service.AddCurrency(playerId, coinsToAdd, 0, 0, "menu_add_coins");
+        service.AddCurrency(PlayerIdProvider.Get(), coinsToAdd, 0, 0, "menu_add_coins");
 
         var hub = FindObjectOfType<AcquisitionHubController>();
         hub?.RefreshEconomyAndProgressionLabels();
@@ -111,11 +110,12 @@ public class SubsystemResetMenu : MonoBehaviour
             progression = go.AddComponent<ProgressionService>();
         }
 
-        progression.AddXp(playerId, simulatedBaseXp, "training", Guid.NewGuid().ToString());
-        progression.AddXp(playerId, simulatedBaseXp, "recovery", Guid.NewGuid().ToString());
-        progression.AddXp(playerId, simulatedBaseXp, "match_win", Guid.NewGuid().ToString());
+        string activePlayerId = PlayerIdProvider.Get();
+        progression.AddXp(activePlayerId, simulatedBaseXp, "training", Guid.NewGuid().ToString());
+        progression.AddXp(activePlayerId, simulatedBaseXp, "recovery", Guid.NewGuid().ToString());
+        progression.AddXp(activePlayerId, simulatedBaseXp, "match_win", Guid.NewGuid().ToString());
 
-        SetStatus($"Granted {simulatedBaseXp} base XP each for training/recovery/match to {playerId}.");
+        SetStatus($"Granted {simulatedBaseXp} base XP each for training/recovery/match to {activePlayerId}.");
     }
 
     private void SetStatus(string message)

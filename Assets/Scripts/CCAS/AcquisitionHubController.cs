@@ -198,14 +198,6 @@ public class AcquisitionHubController : MonoBehaviour
 
     private string ResolvePlayerId()
     {
-        var savedPlayerId = PlayerPrefs.GetString("player_id", string.Empty);
-        if (string.IsNullOrWhiteSpace(savedPlayerId))
-        {
-            savedPlayerId = "local_player";
-            PlayerPrefs.SetString("player_id", savedPlayerId);
-            PlayerPrefs.Save();
-        }
-
-        return savedPlayerId;
+        return PlayerIdProvider.Get();
     }
 }

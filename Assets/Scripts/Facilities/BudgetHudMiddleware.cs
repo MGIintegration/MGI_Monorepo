@@ -13,7 +13,7 @@ public class BudgetHudMiddleware
     {
         if (string.IsNullOrWhiteSpace(playerId))
         {
-            playerId = FacilitiesService.DefaultPlayerId;
+            playerId = PlayerIdProvider.Get();
         }
 
         var wallet = economyService.GetWallet(playerId);

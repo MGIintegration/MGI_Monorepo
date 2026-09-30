@@ -188,7 +188,7 @@ public class FacilityDetailsHandler : MonoBehaviour
     {
         LoadAllFromResources();
 
-        string playerId = string.IsNullOrWhiteSpace(teamId) ? FacilitiesService.DefaultPlayerId : teamId;
+        string playerId = PlayerIdProvider.Get();
         string facilityTypeId = ResolveFacilityTypeId();
 
         if (!_facilityIdToType.TryGetValue(facilityTypeId, out var facilityType))
