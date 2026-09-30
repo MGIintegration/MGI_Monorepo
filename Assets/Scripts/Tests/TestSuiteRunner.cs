@@ -135,6 +135,13 @@ public static class TestSuiteRunner
                 Subsystem = "CCAS -> Progression; Facilities and Coaches boundary",
                 Description = "Duplicate-card XP remains owned by CCAS despite facility upgrades and active coaches.",
                 Run = CCASFacilitiesCoachesBoundaryIntegrationTests.RunSuite
+            },
+            new SuiteDefinition
+            {
+                Name = "ccas-scene-smoke",
+                Subsystem = "CCAS scene UI",
+                Description = "CCAS scene opens, critical services and inspector references exist, and core panel navigation works.",
+                Run = CCASSceneSmokeTests.RunSuite
             }
         };
     }
@@ -239,6 +246,7 @@ public static class TestSuiteRunner
         report.AppendLine("| `CCASProgressionIntegrationTests` | CCASService -> ProgressionService | Automated Unity integration suite |");
         report.AppendLine("| `CCASEconomyIntegrationTests` | CCASService -> EconomyService | Automated Unity integration suite |");
         report.AppendLine("| `CCASFacilitiesCoachesBoundaryIntegrationTests` | CCAS duplicate XP boundary; FacilitiesService and CoachesService must not modify it | Automated Unity integration suite |");
+        report.AppendLine("| `CCASSceneSmokeTests` | CCAS scene asset, services, inspector wiring, and core panel navigation | Automated Unity editor smoke suite |");
         report.AppendLine("| `EconomyServiceSmokeTestRunner` | EconomyService wallet, currency, spending, transactions, and events | Manual Play Mode/context-menu diagnostic; does not fail the process |");
         report.AppendLine("| `EconomyServiceJsonOperationsTester` | Economy JSON files | Manual inspector utility |");
         report.AppendLine("| `SystemTester` | SaveLoadLogic, RuntimeValidator, StatusDeltaChecker, CoachManager | Manual coroutine/scene diagnostic |");
@@ -280,7 +288,7 @@ public static class TestSuiteRunner
         report.AppendLine("MGI_TESTS=ccas-economy Unity -batchmode -projectPath <path-to-MGI_Monorepo> -executeMethod TestSuiteRunner.RunSelected -quit -logFile <path-to-log>");
         report.AppendLine("```");
         report.AppendLine();
-        report.AppendLine("Available selections: `progression`, `progression-facilities`, `progression-ccas`, `ccas`, `ccas-progression`, `ccas-economy`, `ccas-boundary`, or `all`.");
+        report.AppendLine("Available selections: `progression`, `progression-facilities`, `progression-ccas`, `ccas`, `ccas-progression`, `ccas-economy`, `ccas-boundary`, `ccas-scene-smoke`, or `all`.");
 
         File.WriteAllText(reportPath, report.ToString());
     }
