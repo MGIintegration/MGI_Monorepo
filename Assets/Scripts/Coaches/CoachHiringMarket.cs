@@ -98,7 +98,7 @@ public class CoachHiringMarket : MonoBehaviour
     // Loads available coaches from CoachesService, applies current filter, picks 2 random.
     public void RefreshCoaches()
     {
-        var available = CoachesService.GetAvailableCoaches(CoachesService.LocalPlayerId);
+        var available = CoachesService.GetAvailableCoaches(PlayerIdProvider.Get());
         var filtered = FilterCoaches(available, currentFilter);
 
         if (filtered.Count >= 2)
@@ -124,7 +124,7 @@ public class CoachHiringMarket : MonoBehaviour
     private void UpdateBudgetDisplay()
     {
         if (budgetText == null) return;
-        var wallet = new EconomyService().GetWallet(CoachesService.LocalPlayerId);
+        var wallet = new EconomyService().GetWallet(PlayerIdProvider.Get());
         budgetText.text = wallet != null
             ? $"Budget: {wallet.coins.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)} coins | {wallet.gems.ToString("N0", System.Globalization.CultureInfo.InvariantCulture)} gems"
             : "Budget: --";
@@ -402,7 +402,7 @@ public class CoachHiringMarket : MonoBehaviour
             return;
         }
 
-        if (CoachesService.TryHireCoach(teamId, dbCoach1.coach_id, out var hired, CoachesService.LocalPlayerId))
+        if (CoachesService.TryHireCoach(teamId, dbCoach1.coach_id, out var hired, PlayerIdProvider.Get()))
         {
             Debug.Log($"[CoachHiringMarket] Successfully hired: {hired.coach_name}");
             UpdateBudgetDisplay();
@@ -427,7 +427,7 @@ public class CoachHiringMarket : MonoBehaviour
             return;
         }
 
-        if (CoachesService.TryHireCoach(teamId, dbCoach2.coach_id, out var hired, CoachesService.LocalPlayerId))
+        if (CoachesService.TryHireCoach(teamId, dbCoach2.coach_id, out var hired, PlayerIdProvider.Get()))
         {
             Debug.Log($"[CoachHiringMarket] Successfully hired: {hired.coach_name}");
             UpdateBudgetDisplay();

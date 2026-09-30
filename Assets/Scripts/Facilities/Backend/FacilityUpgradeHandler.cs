@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class FacilityUpgradeHandler : MonoBehaviour
 {
     [Header("Set these in Inspector")]
+    [Tooltip("Legacy inspector field. Runtime actions use PlayerIdProvider's active profile.")]
     public string playerId = FacilitiesService.DefaultPlayerId;
     public string facilityTypeId; // weight_room, rehab_center, film_room
     public Button upgradeButton;
@@ -23,7 +24,8 @@ public class FacilityUpgradeHandler : MonoBehaviour
         if (upgradeButton != null)
             upgradeButton.interactable = false;
 
-        bool success = facilitiesService.TryUpgradeFacility(playerId, facilityTypeId, out var newState);
+        string activePlayerId = PlayerIdProvider.Get();
+        bool success = facilitiesService.TryUpgradeFacility(activePlayerId, facilityTypeId, out var newState);
 
         if (success)
         {
@@ -37,7 +39,7 @@ public class FacilityUpgradeHandler : MonoBehaviour
             {
                 foreach (var detailsHandler in matchingHandlers)
                 {
-                    detailsHandler.SetIds(playerId, facilityTypeId);
+                    detailsHandler.SetIds(activePlayerId, facilityTypeId);
                     detailsHandler.RefreshFromLocalState();
                 }
                 Debug.Log($"Refreshed {matchingHandlers.Count} FacilityDetailsHandler instance(s) for {facilityTypeId}.");

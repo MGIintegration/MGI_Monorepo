@@ -179,7 +179,7 @@ public class FacilitiesService
     /// </summary>
     private string GetPlayerTier(string playerId)
     {
-        string id = string.IsNullOrWhiteSpace(playerId) ? DefaultPlayerId : playerId;
+        string id = string.IsNullOrWhiteSpace(playerId) ? PlayerIdProvider.Get() : playerId;
 
         try
         {
@@ -262,7 +262,7 @@ public class FacilitiesService
     {
         if (string.IsNullOrWhiteSpace(playerId))
         {
-            playerId = DefaultPlayerId;
+            playerId = PlayerIdProvider.Get();
         }
 
         var root = LoadPlayerFacilitiesRoot(playerId);
@@ -401,7 +401,7 @@ public class FacilitiesService
     /// </summary>
     public ProgressionFacilitySnapshot GetProgressionSnapshot(string playerId)
     {
-        var normalizedPlayerId = string.IsNullOrWhiteSpace(playerId) ? DefaultPlayerId : playerId;
+        var normalizedPlayerId = string.IsNullOrWhiteSpace(playerId) ? PlayerIdProvider.Get() : playerId;
         var levels = new Dictionary<string, int>();
         var effects = new Dictionary<string, Dictionary<string, float>>();
 
@@ -460,7 +460,7 @@ public class FacilitiesService
     {
         if (string.IsNullOrWhiteSpace(playerId))
         {
-            playerId = DefaultPlayerId;
+            playerId = PlayerIdProvider.Get();
         }
 
         var state = CreateDefaultPlayerFacilityState(playerId);

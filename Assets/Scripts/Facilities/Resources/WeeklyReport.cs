@@ -32,7 +32,7 @@ public class WeeklyReport : MonoBehaviour
     {
         if (!outputText) return;
 
-        string playerId = string.IsNullOrWhiteSpace(teamId) ? FacilitiesService.DefaultPlayerId : teamId;
+        string playerId = PlayerIdProvider.Get();
         var snapshot = _facilitiesService.GetProgressionSnapshot(playerId);
 
         var sb = new System.Text.StringBuilder();
