@@ -14,6 +14,7 @@ public class AppManager : MonoBehaviour
     public GameObject performanceScreen;
     public GameObject historyScreen;
     public GameObject compareScreen;
+    public static bool OpenPerformanceOnLoad = false;
 
     [Header("Navigation Buttons for Screen 1")]
 
@@ -163,7 +164,15 @@ public class AppManager : MonoBehaviour
         if (detailedStatsButton != null)
             detailedStatsButton.onClick.AddListener(() => Debug.Log("Detailed Stats button was clicked"));
 
-        ShowScreen(mainMenu);
+        if (OpenPerformanceOnLoad)
+        {
+            OpenPerformanceOnLoad = false;
+            ShowScreen(performanceScreen);
+        }
+        else
+        {
+            ShowScreen(mainMenu);
+        }
         UpdateTeamRating();
     }
 
