@@ -14,7 +14,7 @@ using UnityEngine;
 public static class TestSuiteRunner
 {
     private const string AllSuites = "all";
-    private const string DefaultReportPath = "TestReports/full-test-report.md";
+    private const string DefaultReportPath = "Logs/test-report.md";
 
     private sealed class SuiteDefinition
     {
