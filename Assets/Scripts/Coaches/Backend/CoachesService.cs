@@ -564,6 +564,50 @@ public static class CoachesService
         return rule.base_bonus + (coach.overall_rating * rule.rating_multiplier);
     }
 
+    /// <summary>
+    /// Derives a static overall rating from the four stats relevant to the coach's role.
+    /// This is intentionally independent of Team Rating, contracts, and XP application.
+    /// </summary>
+    public static float CalculateStaticOverallRating(CoachDatabaseRecord coach)
+    {
+        if (coach == null)
+            return 0f;
+
+        switch (NormalizeSchemaCoachType(coach.coach_type))
+        {
+            case "O":
+                return (coach.passing_efficiency + coach.rush + coach.red_zone_conversion + coach.play_variation) / 4f;
+            case "D":
+                return (coach.coverage_discipline + coach.run_defence + coach.turnover + coach.pressure_control) / 4f;
+            case "S":
+                return (coach.kickoff_instance + coach.return_coverage + coach.field_goal_accuracy + coach.return_speed) / 4f;
+            default:
+                return 0f;
+        }
+    }
+
+    private static List<CoachDatabaseRecord> ApplyStaticOverallRatings(IEnumerable<CoachDatabaseRecord> catalog)
+    {
+        var ratedCatalog = new List<CoachDatabaseRecord>();
+        if (catalog == null)
+            return ratedCatalog;
+
+        foreach (var coach in catalog)
+        {
+            if (coach == null)
+                continue;
+
+            var coachType = NormalizeSchemaCoachType(coach.coach_type);
+            if (coachType != "O" && coachType != "D" && coachType != "S")
+                Debug.LogWarning($"[CoachesService] Unsupported coach type '{coach.coach_type}' for coach '{coach.coach_id}'. Overall rating set to 0.");
+
+            coach.overall_rating = CalculateStaticOverallRating(coach);
+            ratedCatalog.Add(coach);
+        }
+
+        return ratedCatalog;
+    }
+
     private static List<CoachDatabaseRecord> LoadCatalog()
     {
         // Primary: coaches_schema_data.json (canonical catalog from main)
@@ -576,10 +620,7 @@ public static class CoachesService
                 var file = JsonUtility.FromJson<CoachesSchemaFile>(json);
                 if (file?.coach != null && file.coach.Length > 0)
                 {
-                    var result = new List<CoachDatabaseRecord>(file.coach.Length);
-                    foreach (var r in file.coach)
-                        result.Add(r.ToCoachDatabaseRecord());
-                    return result;
+                    return ApplyStaticOverallRatings(file.coach.Select(r => r.ToCoachDatabaseRecord()));
                 }
             }
             catch (Exception e)
@@ -601,7 +642,7 @@ public static class CoachesService
             string json = File.ReadAllText(legacyPath);
             var wrapper = JsonUtility.FromJson<JsonWrapper>("{\"Items\":" + json + "}");
             return wrapper?.Items != null
-                ? new List<CoachDatabaseRecord>(wrapper.Items)
+                ? ApplyStaticOverallRatings(wrapper.Items)
                 : new List<CoachDatabaseRecord>();
         }
         catch (Exception e)
