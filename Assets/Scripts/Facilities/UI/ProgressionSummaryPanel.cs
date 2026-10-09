@@ -20,7 +20,7 @@ public class ProgressionSummaryPanel : MonoBehaviour
     {
         if (!outputText) return;
 
-        string id = string.IsNullOrWhiteSpace(playerId) ? FacilitiesService.DefaultPlayerId : playerId;
+        string id = PlayerIdProvider.Get();
 
         float currentXp = 0f;
         string currentTier = "rookie";

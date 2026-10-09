@@ -18,4 +18,18 @@ public static class PlayerIdProvider
         var stored = PlayerPrefs.GetString(PlayerPrefsKey, DefaultPlayerId);
         return string.IsNullOrWhiteSpace(stored) ? DefaultPlayerId : stored.Trim();
     }
+
+    /// <summary>
+    /// Sets the active local profile used by UI entry points that do not receive
+    /// an explicit player id. AI and server-driven actions should still pass a
+    /// player id directly to their service methods.
+    /// </summary>
+    public static void Set(string playerId)
+    {
+        if (string.IsNullOrWhiteSpace(playerId))
+            throw new System.ArgumentException("A player id is required.", nameof(playerId));
+
+        PlayerPrefs.SetString(PlayerPrefsKey, playerId.Trim());
+        PlayerPrefs.Save();
+    }
 }

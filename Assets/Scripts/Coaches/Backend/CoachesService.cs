@@ -109,8 +109,8 @@ public class SynergyBonusRule
 /// </summary>
 public static class CoachesService
 {
-    // In single-player the player id is fixed; wire to a proper PlayerService later.
-    public const string LocalPlayerId = "local_player";
+    // Retained for compatibility; PlayerIdProvider is the canonical local resolver.
+    public const string LocalPlayerId = PlayerIdProvider.DefaultPlayerId;
     private const string CoachHiringSpendSource = "coach_hiring";
     private const string CoachHiringRefundSource  = "coach_hiring_refund";
     private const string CoachFiringRefundSource  = "coach_firing_refund";
@@ -122,6 +122,13 @@ public static class CoachesService
     private static CoachesBonusConfig cachedBonusConfig;
     private static bool bonusConfigLoaded;
 
+    private static string ResolvePlayerId(string playerId)
+    {
+        return string.IsNullOrWhiteSpace(playerId)
+            ? PlayerIdProvider.Get()
+            : playerId.Trim();
+    }
+
     // ── Public API ───────────────────────────────────────────────────────────
 
     /// <summary>
@@ -129,7 +136,7 @@ public static class CoachesService
     /// </summary>
     public static List<CoachDatabaseRecord> GetAvailableCoaches(string playerId = null)
     {
-        playerId ??= LocalPlayerId;
+        playerId = ResolvePlayerId(playerId);
 
         var catalog = LoadCatalog();
         var state = LoadTeamState(playerId);
@@ -154,7 +161,7 @@ public static class CoachesService
     public static bool TryHireCoach(string teamId, string coachId,
         out CoachDatabaseRecord hiredCoach, string playerId = null)
     {
-        playerId ??= LocalPlayerId;
+        playerId = ResolvePlayerId(playerId);
         hiredCoach = null;
 
         // 1. Resolve coach from catalog
@@ -253,7 +260,7 @@ public static class CoachesService
     /// <summary>Returns the current runtime team state for this player, or null if none exists yet.</summary>
     public static bool ResetPlayerCoachState(string playerId = null)
     {
-        playerId ??= LocalPlayerId;
+        playerId = ResolvePlayerId(playerId);
 
         foreach (var fileName in new[] { "teams.json", "coach_contracts.json" })
         {
@@ -292,13 +299,13 @@ public static class CoachesService
 
     public static TeamState GetTeamState(string playerId = null)
     {
-        return LoadTeamState(playerId ?? LocalPlayerId);
+        return LoadTeamState(ResolvePlayerId(playerId));
     }
 
     /// <summary>Returns all active coach contracts for this player.</summary>
     public static List<CoachContract> GetActiveContracts(string playerId = null)
     {
-        playerId ??= LocalPlayerId;
+        playerId = ResolvePlayerId(playerId);
         var path = FilePathResolver.GetCoachesPath(playerId, "coach_contracts.json");
         if (!File.Exists(path)) return new List<CoachContract>();
 
@@ -321,7 +328,7 @@ public static class CoachesService
     }
     public static float GetTeamRating(string playerId = null)
     {
-        playerId ??= LocalPlayerId;
+        playerId = ResolvePlayerId(playerId);
         var state = LoadTeamState(playerId);
         float totalBonus = 0;
 
@@ -353,7 +360,7 @@ public static class CoachesService
     /// </summary>
     public static bool FireCoach(string coachType, string playerId = null)
     {
-        playerId ??= LocalPlayerId;
+        playerId = ResolvePlayerId(playerId);
         coachType = NormalizeCoachType(coachType);
 
         if (coachType != "O" && coachType != "D" && coachType != "S")
@@ -435,7 +442,7 @@ public static class CoachesService
     /// </summary>
     public static float GetCoachXpBonusPercent(string playerId, string xpSource)
     {
-        playerId ??= LocalPlayerId;
+        playerId = ResolvePlayerId(playerId);
         var normalizedXpSource = NormalizeXpSourceForCoachBonus(xpSource);
         if (string.IsNullOrEmpty(normalizedXpSource)) return 0f;
 
