@@ -346,7 +346,7 @@ public class LocalSeasonBackend : MonoBehaviour, ISeasonBackend
                 .OrderByDescending(t => t.stats.points)
                 .ToList();
 
-            placement = allTeamsByPoints.FindIndex(t => t.team_id == playerTeam.team_id) + 1;
+            placement = allTeamsByPoints.FindIndex(t => t.is_player_team) + 1;
 
             if (placement == 1)
             {
